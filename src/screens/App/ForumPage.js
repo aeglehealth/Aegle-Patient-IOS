@@ -214,9 +214,6 @@ export default class ForumPage extends React.Component {
                                   </Text>
                                   <Text style={styles.cardHeaderTime}>
                                     {moment(post.createdAt).fromNow()}
-                                    {/* {moment(post.createdAt).format(
-                                      'YYYY-MM-DD HH:mm:ss',
-                                    )} */}
                                   </Text>
                                 </View>
 

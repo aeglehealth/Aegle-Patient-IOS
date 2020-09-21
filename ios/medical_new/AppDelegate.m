@@ -33,8 +33,9 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-[FIRApp configure];
-//[RNFirebaseNotifications configure];
+  if ([FIRApp defaultApp] == nil) {
+    [FIRApp configure];
+  }
 #if DEBUG
   InitializeFlipper(application);
 #endif

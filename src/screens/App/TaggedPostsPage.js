@@ -214,9 +214,7 @@ export default class ForumPage2 extends React.Component {
                       post.owner.profile.lastName}
                   </Text>
                   <Text style={styles.cardHeaderTime}>
-                    {moment(parseInt(post.createdAt))
-                      .utc()
-                      .fromNow()}
+                    {moment(post.createdAt).fromNow()}
                   </Text>
                 </View>
 

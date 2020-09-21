@@ -265,6 +265,7 @@ export default class PostDetailPage extends React.Component {
       : this.props.navigation.state.params.createComment
       ? this.props.navigation.state.params.createComment
       : this.props.navigation.state.params;
+    console.log(id, 'iddd');
     const comments =
       commentsCount >= '1' ? (
         <Query query={COMMENT} variables={{forumId: id}}>
@@ -311,8 +312,7 @@ export default class PostDetailPage extends React.Component {
                               owner.profile.lastName}
                         </Text>
                         <Text style={styles.commentTimeText}>
-                          {/* -{new Date(result.timestamp).toUTCString()} */}-{' '}
-                          {moment(result.timestamp).fromNow()}
+                          - {moment(result.timestamp).fromNow()}
                         </Text>
                       </View>
                       <Text styles={styles.commentCommentText}>
@@ -392,9 +392,7 @@ export default class PostDetailPage extends React.Component {
                 </Text>
                 <Text style={styles.cardHeaderTime}>
                   {createdAt
-                    ? moment(parseInt(createdAt))
-                        .utc()
-                        .fromNow()
+                    ? moment(createdAt).fromNow()
                     : new Date(timestamp).toISOString()}
                 </Text>
               </View>
