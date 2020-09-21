@@ -144,7 +144,6 @@ export default class CreatePostPage extends React.Component {
               mutation={NewCOMMENT}
               awaitRefetchQueries
               refetchQueries={[
-                {query: POSTS},
                 {
                   query: COMMENT,
                   variables: {forumId: this.props.navigation.state.params.id},

@@ -69,8 +69,10 @@
 	<string>We use access to music responsibly</string>
 	<key>NSCameraUsageDescription</key>
 	<string>For taking a photo.</string>
+	<key>NSHumanReadableCopyright</key>
+	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow microphone?</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
@@ -118,7 +120,7 @@
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>audio</string>
+		<string>fetch</string>
 		<string>remote-notification</string>
 		<string>voip</string>
 	</array>
@@ -134,7 +136,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSHumanReadableCopyright</key>
-	<string/>
 </dict>
 </plist>

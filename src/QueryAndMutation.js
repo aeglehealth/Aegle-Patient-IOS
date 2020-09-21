@@ -444,7 +444,6 @@ export const NewCOMMENT = gql`
         }
       }
       comment
-      timestamp
     }
   }
 `;

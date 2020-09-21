@@ -3,23 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>756985957982-6csirifs3us8f7jpprg60p4rjoh5mra0.apps.googleusercontent.com</string>
+	<string>337583357264-at66l16oi7ur00ks1omre9a8vmegf1cp.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.756985957982-6csirifs3us8f7jpprg60p4rjoh5mra0</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>756985957982-0p8nji54vag4dk2njafq6jfhkp39c3cb.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.337583357264-at66l16oi7ur00ks1omre9a8vmegf1cp</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAdCJ7diknSrF-nhiuwAoxQEfE78qVX5rY</string>
+	<string>AIzaSyBF94WxjuRl5jmyn1gr6k_C_6E9IOAr8_A</string>
 	<key>GCM_SENDER_ID</key>
-	<string>756985957982</string>
+	<string>337583357264</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>org.reactjs.native.example.medical-new</string>
 	<key>PROJECT_ID</key>
-	<string>aegle-healthcare</string>
+	<string>aegle-mobile</string>
 	<key>STORAGE_BUCKET</key>
-	<string>aegle-healthcare.appspot.com</string>
+	<string>aegle-mobile.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:756985957982:ios:f5f8b17cbc3d920e072ecf</string>
+	<string>1:337583357264:ios:1db49721b940314e5c0055</string>
 	<key>DATABASE_URL</key>
-	<string>https://aegle-healthcare.firebaseio.com</string>
+	<string>https://aegle-mobile.firebaseio.com</string>
 </dict>
 </plist>
