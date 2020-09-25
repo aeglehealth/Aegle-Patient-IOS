@@ -21,16 +21,6 @@ import {withClientState} from 'apollo-link-state';
 import {ApolloLink, Observable} from 'apollo-link';
 import {DEPLOYMENT_URL, AUTH_TOKEN, NOTIFICATION} from 'react-native-dotenv';
 
-messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('Message handled in the background!', remoteMessage);
-  if (remoteMessage) {
-    console.log(remoteMessage.data, 'datatta');
-    const data = JSON.stringify(remoteMessage);
-    console.log(data, 'dat');
-    await AsyncStorage.setItem(NOTIFICATION, data);
-  }
-});
-
 console.disableYellowBox = true;
 
 const cache = new InMemoryCache({});
@@ -169,6 +159,14 @@ export const MEPOST = gql`
   }
 `;
 
+function HeadlessCheck({isHeadless}) {
+  if (isHeadless) {
+    // App has been launched in the background by iOS, ignore
+    return null;
+  }
+  return <AegleApp />;
+}
+
 const AegleApp = props => {
   const [data, setState] = useState({});
   return (
@@ -186,4 +184,4 @@ const AegleApp = props => {
   );
 };
 
-AppRegistry.registerComponent(appName, () => AegleApp);
+AppRegistry.registerComponent(appName, () => HeadlessCheck);

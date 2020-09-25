@@ -107,16 +107,16 @@ export default class DoctorReportPage extends React.Component {
   }
   async createPDF(description, doctorName, times, share) {
     this.setState({loading: true});
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      {
-        title: 'Aegle Storage permission',
-        message: 'Aegle needs access to your Storage',
-        buttonNeutral: 'Ask me later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'Ok',
-      },
-    );
+    // const granted = await PermissionsAndroid.request(
+    //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+    //   {
+    //     title: 'Aegle Storage permission',
+    //     message: 'Aegle needs access to your Storage',
+    //     buttonNeutral: 'Ask me later',
+    //     buttonNegative: 'Cancel',
+    //     buttonPositive: 'Ok',
+    //   },
+    // );
 
     let options = {
       html: NotesPDF(description, doctorName, times),

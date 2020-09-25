@@ -7,6 +7,7 @@
 #import "RNSplashScreen.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <Firebase.h>
+#import "RNFBMessagingModule.h"
 //#import "RNFirebaseNotifications.h"
 //#import "RNFirebaseMessaging.h"
 
@@ -36,14 +37,17 @@ static void InitializeFlipper(UIApplication *application) {
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }
-#if DEBUG
-  InitializeFlipper(application);
-#endif
+  
+  #if DEBUG
+    InitializeFlipper(application);
+  #endif
+
+  NSMutableDictionary * appProperties = [RNFBMessagingModule addCustomPropsToUserProps:nil withLaunchOptions:launchOptions];
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"medical_new"
-                                            initialProperties:nil];
+                                            initialProperties:appProperties];
 
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
 

@@ -135,16 +135,16 @@ class DoctorReferralPage extends React.Component {
       return;
     }
 
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      {
-        title: 'Aegle Storage permission',
-        message: 'Aegle needs access to your Storage',
-        buttonNeutral: 'Ask me later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'Ok',
-      },
-    );
+    // const granted = await PermissionsAndroid.request(
+    //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+    //   {
+    //     title: 'Aegle Storage permission',
+    //     message: 'Aegle needs access to your Storage',
+    //     buttonNeutral: 'Ask me later',
+    //     buttonNegative: 'Cancel',
+    //     buttonPositive: 'Ok',
+    //   },
+    // );
 
     this.setState({loading: false});
 

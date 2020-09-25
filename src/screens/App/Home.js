@@ -29,7 +29,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Aegle from '../../assets/aegle-black.svg';
 import FastImage from 'react-native-fast-image';
 import {NavigationActions} from 'react-navigation';
-
 import ActivityIndicatorPage from './ActivityIndicatorPage';
 import {
   check,
@@ -267,7 +266,10 @@ class HomePage extends React.Component {
     const {appointmentId, sessionId, roomId} = data && data;
 
     await AsyncStorage.removeItem(NOTIFICATION);
-    await this.confirmRequestPermissions();
+
+    Platform.OS === 'ios'
+      ? await this.checkIosPermissions()
+      : await this.confirmRequestPermissions();
 
     if (
       !this.state.permissionsAndroidCamera ||
@@ -369,6 +371,14 @@ class HomePage extends React.Component {
       this.setState({
         declineLoading: false,
       });
+    }
+  };
+
+  requestNotificationPermission = async () => {
+    const authorizationStatus = await messaging().requestPermission();
+
+    if (authorizationStatus) {
+      console.log('Permission status:', authorizationStatus);
     }
   };
 
@@ -529,7 +539,14 @@ class HomePage extends React.Component {
 
   requestFirebasePermission = async () => {
     try {
-      await messaging().requestPermission();
+      await messaging().requestPermission({
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        provisional: true,
+        sound: true,
+      });
       // User has authorised
     } catch (error) {
       // User has rejected permissions
@@ -561,8 +578,6 @@ class HomePage extends React.Component {
 
         const fcm = devices.find(arr => arr.fcmToken === fcmToken);
 
-        console.log(fingerPrint, 'fingerprint');
-
         if (fingerPrint === undefined || fcm === undefined) {
           console.log('result');
           try {
@@ -575,7 +590,6 @@ class HomePage extends React.Component {
                 },
               },
             });
-            console.log(data, 'data');
           } catch (err) {
             console.log(err);
           }
@@ -628,7 +642,7 @@ class HomePage extends React.Component {
       if (action === 'appointment.started') {
         const {appointmentId, sessionId, roomId} = data;
         if (appointmentId && sessionId && roomId) {
-          console.log(title, body, 'body');
+          console.log(title, body, data, 'body');
           this.showAlertVideo(title, body, data);
         }
         return;
@@ -662,9 +676,10 @@ class HomePage extends React.Component {
         {
           text: 'OK',
           onPress: async () => {
+            this.unsubscribe;
             const {navigation} = this.props;
             await AsyncStorage.removeItem(NOTIFICATION);
-            console.log(data, 'dataaa');
+            console.log(data, 'dataaaas');
             const {action} = data;
             console.log(action.appointmentId, 'id');
             if (
@@ -677,16 +692,16 @@ class HomePage extends React.Component {
                 {
                   appointmentId: data.appointmentId,
                 },
-                NavigationActions.navigate({
-                  routeName:
-                    action == 'report.created'
-                      ? 'Report'
-                      : action == 'prescription.created'
-                      ? 'Prescription'
-                      : action == 'referral.created'
-                      ? 'Referral'
-                      : '',
-                }),
+                // NavigationActions.navigate({
+                //   routeName:
+                //     action == 'report.created'
+                //       ? 'Report'
+                //       : action == 'prescription.created'
+                //       ? 'Prescription'
+                //       : action == 'referral.created'
+                //       ? 'Referral'
+                //       : '',
+                // }),
               );
             }
 
@@ -707,6 +722,7 @@ class HomePage extends React.Component {
         {
           text: 'OK',
           onPress: async () => {
+            this.unsubscribe;
             that.handleVideo(data);
             await AsyncStorage.removeItem(NOTIFICATION);
             console.log('OK Pressed');
@@ -725,8 +741,9 @@ class HomePage extends React.Component {
         {
           text: 'OK',
           onPress: async () => {
+            this.unsubscribe;
             await AsyncStorage.removeItem(NOTIFICATION);
-            this.addToCalendar('Aegle Doctor Appointment', newDate);
+            // this.addToCalendar('Aegle Doctor Appointment', newDate);
           },
         },
       ],
@@ -738,12 +755,11 @@ class HomePage extends React.Component {
     if (await AsyncStorage.getItem(NOTIFICATION)) {
       const notification = await AsyncStorage.getItem(NOTIFICATION);
       const payload = JSON.parse(notification);
-      console.log(payload, 'payload');
       const {
         notification: {title, body},
         data: {action},
       } = payload;
-
+      console.log(payload, 'dattattata');
       if (action === 'appointment.started') {
         const {data} = payload;
         const {appointmentId, sessionId, roomId} = data;
@@ -767,8 +783,52 @@ class HomePage extends React.Component {
       } else if (action === 'subscription.created') {
         this.showAlert(title, body);
         return;
+      } else {
+        this.showAlert(title, body, data);
+        return;
       }
     }
+  };
+
+  onNotificationOpenedApp = async () => {
+    this.unsubscribe = messaging().onNotificationOpenedApp(
+      async remoteMessage => {
+        if (remoteMessage) {
+          const {
+            notification: {title, body},
+            data: {action},
+          } = remoteMessage;
+          console.log(remoteMessage, 'dattattata');
+          if (action === 'appointment.started') {
+            const {data} = remoteMessage;
+            const {appointmentId, sessionId, roomId} = data;
+            if (appointmentId && sessionId && roomId) {
+              this.showAlertVideo(title, body, data);
+            }
+            return;
+          } else if (action === 'appointment.approved') {
+            const {data} = remoteMessage;
+            const {date, time} = data;
+            const militaryTime = timeConversion(time);
+
+            if (militaryTime) {
+              const time = militaryTime.trim();
+              const dateToArray = [...date];
+              dateToArray.splice(11, 5, time);
+              const newDate = dateToArray.join('');
+              this.showAlertCalendar(title, body, newDate);
+            }
+            return;
+          } else if (action === 'subscription.created') {
+            this.showAlert(title, body);
+            return;
+          } else {
+            this.showAlert(title, body, data);
+            return;
+          }
+        }
+      },
+    );
   };
 
   _handleAppStateChange = nextAppState => {
@@ -776,19 +836,24 @@ class HomePage extends React.Component {
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      console.log('App has come to the foreground!');
       this.handleBackgroundNotifications();
     }
     this.setState({appState: nextAppState});
   };
 
   async componentDidMount() {
+    // this.requestNotificationPermission();
+
+    await this.checkFirebasePermission();
+
+    await this.fcmNotifications();
+
+    await this.onNotificationOpenedApp();
+
     AppState.addEventListener('change', this._handleAppStateChange);
 
-    this.handleBackgroundNotifications();
-    await this.checkFirebasePermission();
     // await this.getRefreshToken();
-    await this.fcmNotifications();
+    // this.handleBackgroundNotifications();
 
     if (Platform.OS === 'ios') {
       this.checkIosPermissions();
