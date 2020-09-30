@@ -39,6 +39,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CodePushDeploymentKey</key>
+	<string>k895yzwOwnhA_jHxeEcfQ-nHi7d1suAOzI0UK</string>
 	<key>FacebookAppID</key>
 	<string>591380118469951</string>
 	<key>FacebookDisplayName</key>
@@ -67,14 +69,16 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>We use access to music responsibly</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>The device calendar can be accessed for saving appointment schedules</string>
 	<key>NSCameraUsageDescription</key>
-	<string>For taking a photo.</string>
+	<string>This allows you to make video calls with a doctor</string>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow microphone?</string>
+	<string>This allows you to talk with a doctor</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>For saving a photo.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -121,9 +125,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
-		<string>processing</string>
 		<string>remote-notification</string>
-		<string>voip</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

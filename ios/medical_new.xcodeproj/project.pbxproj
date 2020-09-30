@@ -56,6 +56,7 @@
 		CE36994125124DD40068EEEB /* Muli-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE36993A251248A00068EEEB /* Muli-Black.ttf */; };
 		CE36994425124FAB0068EEEB /* Muli-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE36994325124F980068EEEB /* Muli-ExtraBold.ttf */; };
 		CEA00A372498D40600C75C78 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA00A362498D40600C75C78 /* UserNotifications.framework */; };
+		CEE04523251E305500C04A78 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEE04522251E305500C04A78 /* AppCenter-Config.plist */; };
 		CFF48841AD72E1D2B26FD039 /* libPods-medical_new-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 849684171C0C4C506461A194 /* libPods-medical_new-tvOS.a */; };
 		D539C96B0BE14443B609EA40 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 656E78AD7354424DB2684125 /* SimpleLineIcons.ttf */; };
 		DCE13C385BFB864586A06C3F /* libPods-medical_new-medical_newTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E0039982B8B8E8EF91A82215 /* libPods-medical_new-medical_newTests.a */; };
@@ -146,7 +147,6 @@
 		CE0F1D6D245B1ACB0069502E /* medical_new.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = medical_new.entitlements; path = medical_new/medical_new.entitlements; sourceTree = "<group>"; };
 		CE0F1D6E245B1ACB0069502E /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		CE0F1D72245B30FE0069502E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		CE1937BC2471836900F4526E /* medical_new-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "medical_new-Bridging-Header.h"; sourceTree = "<group>"; };
 		CE1937BD2471836900F4526E /* swift_file.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swift_file.swift; sourceTree = "<group>"; };
 		CE36993A251248A00068EEEB /* Muli-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Muli-Black.ttf"; path = "../src/assets/fonts/Muli-Black.ttf"; sourceTree = "<group>"; };
 		CE36993B251248B00068EEEB /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Muli-Regular.ttf"; path = "../src/assets/fonts/Muli-Regular.ttf"; sourceTree = "<group>"; };
@@ -157,6 +157,9 @@
 		CEA00A302498D38800C75C78 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		CEA00A362498D40600C75C78 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		CEA00A382498D42600C75C78 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNFirebase.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEA590A72521018A00357E62 /* medical_new-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "medical_new-Bridging-Header.h"; sourceTree = "<group>"; };
+		CEE0451F251E26E900C04A78 /* AppCenter-Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppCenter-Config.plist"; sourceTree = "<group>"; };
+		CEE04522251E305500C04A78 /* AppCenter-Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppCenter-Config.plist"; sourceTree = "<group>"; };
 		D00FA7A9DBBD41F38DFB9E9E /* Roboto_medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Roboto_medium.ttf; path = "../node_modules/native-base/Fonts/Roboto_medium.ttf"; sourceTree = "<group>"; };
 		D2B5308D4F72893A9109FE52 /* Pods-medical_new-medical_newTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-medical_new-medical_newTests.release.xcconfig"; path = "Target Support Files/Pods-medical_new-medical_newTests/Pods-medical_new-medical_newTests.release.xcconfig"; sourceTree = "<group>"; };
 		D9184661836C45F49C5FF8A2 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
@@ -260,6 +263,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CEE0451F251E26E900C04A78 /* AppCenter-Config.plist */,
 				CEA00A382498D42600C75C78 /* libRNFirebase.a */,
 				CEA00A362498D40600C75C78 /* UserNotifications.framework */,
 				CE0F1D6E245B1ACB0069502E /* AuthenticationServices.framework */,
@@ -284,6 +288,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				CEA590A72521018A00357E62 /* medical_new-Bridging-Header.h */,
+				CEE04522251E305500C04A78 /* AppCenter-Config.plist */,
 				CE1937BD2471836900F4526E /* swift_file.swift */,
 				CE0F1D72245B30FE0069502E /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* medical_new */,
@@ -293,7 +299,6 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				A115EC06920548ABA0B3013C /* Resources */,
 				2C26A445BC7B28A39B596C0C /* Pods */,
-				CE1937BC2471836900F4526E /* medical_new-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -533,6 +538,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEE04523251E305500C04A78 /* AppCenter-Config.plist in Resources */,
 				CE36994425124FAB0068EEEB /* Muli-ExtraBold.ttf in Resources */,
 				CE36993E25124DD40068EEEB /* Muli-SemiBold.ttf in Resources */,
 				CE36993F25124DD40068EEEB /* Muli-Bold.ttf in Resources */,
@@ -611,7 +617,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1035,7 +1041,7 @@
 				CODE_SIGN_ENTITLEMENTS = medical_new/medical_new.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = W272MZSBQM;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1043,6 +1049,7 @@
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = medical_new/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_CFLAGS = (
 					"$(inherited)",
@@ -1072,9 +1079,10 @@
 				CODE_SIGN_ENTITLEMENTS = medical_new/medical_new.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = W272MZSBQM;
 				INFOPLIST_FILE = medical_new/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_CFLAGS = (
 					"$(inherited)",

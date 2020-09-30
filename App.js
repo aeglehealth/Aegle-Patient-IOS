@@ -35,6 +35,7 @@ import {
 import {PRIMARY_COLOR} from './src/shared/Colors';
 import {Provider as PaperProvider, DefaultTheme} from 'react-native-paper';
 import Page from './src/screens/Routes';
+import codePush from 'react-native-code-push';
 
 const theme = {
   ...DefaultTheme,
@@ -69,11 +70,11 @@ class App extends React.Component {
       <PaperProvider theme={theme}>
         <View style={{flex: 1}}>
           {/* {this.statusBarIOS()} */}
-          <SafeAreaView style={{flex: 1}}>
-            {/* <StatusBar
-            backgroundColor={PRIMARY_COLOR}
-            barStyle={'light-content'}
-            /> */}
+          <SafeAreaView style={{flex: 1, backgroundColor: PRIMARY_COLOR}}>
+            <StatusBar
+              backgroundColor={PRIMARY_COLOR}
+              barStyle={'light-content'}
+            />
             <Page />
           </SafeAreaView>
         </View>
@@ -84,4 +85,6 @@ class App extends React.Component {
 
 console.disableYellowBox = true;
 
-export default App;
+const codePushOptions = {checkFrequency: codePush.CheckFrequency.ON_APP_RESUME};
+
+export default codePush(codePushOptions)(App);

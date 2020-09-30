@@ -471,7 +471,10 @@ class HomePage extends React.Component {
             this.permissionsAndroidCheckMic('microphone');
             console.log('You can use the Microphone');
           } else {
-            ShowMessage(type.ERROR, 'Microphone permission denied');
+            ShowMessage(
+              type.INFO,
+              'Microphone permission  was denied. Please enable it from your Settings app',
+            );
             this.permissionsAndroidCheckMic('no microphone');
           }
         } catch (err) {
@@ -505,7 +508,10 @@ class HomePage extends React.Component {
             this.permissionsAndroidCheckCamera('camera');
           } else {
             console.log('Camera permission denied');
-            ShowMessage(type.ERROR, 'Camera permission denied');
+            ShowMessage(
+              type.INFO,
+              'Camera permsission was denied. Please enable it from your Settings app',
+            );
             this.permissionsAndroidCheckCamera('no camera');
           }
         } catch (err) {
@@ -530,23 +536,22 @@ class HomePage extends React.Component {
 
   checkFirebasePermission = async () => {
     const enabled = await messaging().hasPermission();
-    if (enabled) {
-      this.getFcmToken();
-    } else {
-      this.requestFirebasePermission();
+    console.log(enabled, 'enabled');
+    if (enabled == -1) {
+      (await this.requestFirebasePermission()) && (await this.getFcmToken());
+    } else if (enabled == 0) {
+      ShowMessage(
+        type.INFO,
+        'Notification was denied. Please enable it from your Settings app',
+      );
+    } else if (enabled == 1) {
+      await this.getFcmToken();
     }
   };
 
   requestFirebasePermission = async () => {
     try {
-      await messaging().requestPermission({
-        alert: true,
-        announcement: false,
-        badge: true,
-        carPlay: false,
-        provisional: true,
-        sound: true,
-      });
+      await messaging().requestPermission();
       // User has authorised
     } catch (error) {
       // User has rejected permissions
@@ -844,7 +849,7 @@ class HomePage extends React.Component {
   async componentDidMount() {
     // this.requestNotificationPermission();
 
-    await this.checkFirebasePermission();
+    this.checkFirebasePermission();
 
     await this.fcmNotifications();
 
