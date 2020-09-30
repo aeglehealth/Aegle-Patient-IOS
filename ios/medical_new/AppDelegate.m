@@ -8,8 +8,10 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <Firebase.h>
 #import "RNFBMessagingModule.h"
-//#import "RNFirebaseNotifications.h"
-//#import "RNFirebaseMessaging.h"
+#import <CodePush/CodePush.h>
+#import <AppCenterReactNative.h>
+#import <AppCenterReactNativeAnalytics.h>
+#import <AppCenterReactNativeCrashes.h>
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -41,6 +43,10 @@ static void InitializeFlipper(UIApplication *application) {
   #if DEBUG
     InitializeFlipper(application);
   #endif
+
+  [AppCenterReactNative register];
+  [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
+  [AppCenterReactNativeCrashes registerWithAutomaticProcessing];
 
   NSMutableDictionary * appProperties = [RNFBMessagingModule addCustomPropsToUserProps:nil withLaunchOptions:launchOptions];
 
@@ -76,21 +82,8 @@ return handled;
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 #else
-  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  return [CodePush bundleURL];
 #endif
 }
-
-//- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-////  [[RNFirebaseNotifications instance] didReceiveLocalNotification:notification];
-//}
-//
-//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo
-//fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
-////  [[RNFirebaseNotifications instance] didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
-//}
-//
-//- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
-////  [[RNFirebaseMessaging instance] didRegisterUserNotificationSettings:notificationSettings];
-//}
 
 @end

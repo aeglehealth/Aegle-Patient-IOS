@@ -15,6 +15,13 @@ const types = {
     actionTextColor: '#bf0002',
     position: WSnackBar.position.TOP,
   },
+  INFO: {
+    textColor: '#fff',
+    backgroundColor: 'green',
+    actionText: null,
+    actionTextColor: '#bf0002',
+    position: WSnackBar.position.TOP,
+  },
 };
 
 export default (type, message) => {
@@ -25,6 +32,8 @@ export default (type, message) => {
     //   : message
     position: WSnackBar.position.BOTTOM, // 1.TOP 2.CENTER 3.BOTTOM
     duration: WSnackBar.duration.LONG, //1.SHORT 2.LONG 3.INDEFINITE
+    numberOfLines: 2,
+    height: 50,
     ...types[type],
     actionClick: () => {
       // Click Action
@@ -36,4 +45,5 @@ export default (type, message) => {
 export const type = {
   ERROR: 'ERROR',
   DONE: 'DONE',
+  INFO: 'INFO',
 };

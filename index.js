@@ -21,6 +21,16 @@ import {withClientState} from 'apollo-link-state';
 import {ApolloLink, Observable} from 'apollo-link';
 import {DEPLOYMENT_URL, AUTH_TOKEN, NOTIFICATION} from 'react-native-dotenv';
 
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+  if (remoteMessage) {
+    console.log(remoteMessage.data, 'datatta');
+    const data = JSON.stringify(remoteMessage);
+    console.log(data, 'dat');
+    await AsyncStorage.setItem(NOTIFICATION, data);
+  }
+});
+
 console.disableYellowBox = true;
 
 const cache = new InMemoryCache({});
@@ -97,9 +107,9 @@ const client = new ApolloClient({
     createUploadLink({
       // uri: 'https://6feb7adb66bd.ngrok.io/graphql',
       // uri: 'http://192.168.43.115:4000/graphql',
-      uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
+      // uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
       // uri: 'https://aegle-health-api.herokuapp.com/graphql',
-      // uri: DEPLOYMENT_URL,
+      uri: DEPLOYMENT_URL,
       credentials: 'include',
     }),
   ]),
