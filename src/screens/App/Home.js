@@ -60,6 +60,7 @@ import {
   SYMPTOMS_QUESTIONS,
   AUTH_TOKEN,
 } from 'react-native-dotenv';
+import FastStorage from 'react-native-fast-storage';
 
 function elevationShadowStyle(elevation) {
   return {
@@ -261,6 +262,169 @@ class HomePage extends React.Component {
   };
 
   unsubscribe = 0;
+
+  // register = (onRegister, onNotification, onOpenNotification) => {
+  //   this.checkPermission(onRegister);
+  //   this.createNotificationListeners(
+  //     onRegister,
+  //     onNotification,
+  //     onOpenNotification,
+  //   );
+  // };
+
+  // registerAppWithFCM = async () => {
+  //   if (Platform.OS === 'ios') {
+  //     // await messaging().registerDeviceForRemoteMessages();
+  //     await messaging().setAutoInitEnabled(true);
+  //   }
+  // };
+
+  // checkPermission = onRegister => {
+  //   messaging()
+  //     .hasPermission()
+  //     .then(enabled => {
+  //       if (enabled) {
+  //         // User has permissions
+  //         this.getToken(onRegister);
+  //       } else {
+  //         // User doesn't have permission
+  //         this.requestPermission(onRegister);
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.log('[FCMService] Permission rejected ', error);
+  //     });
+  // };
+
+  // getToken = async onRegister => {
+  //   let that = this;
+  //   const getUniqueId = DeviceInfo.getUniqueId();
+  //   console.log(getUniqueId, 'id');
+  //   const fcmToken = await messaging().getToken();
+  //   if (fcmToken) {
+  //     onRegister(fcmToken);
+  //     console.log(fcmToken);
+  //     await AsyncStorage.setItem(FCM_TOKEN, fcmToken);
+  //     await AsyncStorage.setItem(UNIQUE_ID, getUniqueId);
+
+  //     try {
+  //       const me = await that.props.client.query({
+  //         query: MEPOST,
+  //       });
+
+  //       const {
+  //         me: {devices},
+  //       } = me.data;
+
+  //       const fingerPrint = devices.find(
+  //         arr => arr.fingerprint === getUniqueId,
+  //       );
+
+  //       const fcm = devices.find(arr => arr.fcmToken === fcmToken);
+
+  //       if (fingerPrint === undefined || fcm === undefined) {
+  //         console.log('result');
+  //         try {
+  //           const data = await that.props.client.mutate({
+  //             mutation: ADD_DEVICE,
+  //             variables: {
+  //               data: {
+  //                 fingerprint: getUniqueId,
+  //                 fcmToken,
+  //               },
+  //             },
+  //           });
+  //         } catch (err) {
+  //           console.log(err);
+  //         }
+  //       }
+  //     } catch (err) {
+  //       ShowMessage(type.ERROR, err);
+  //     }
+  //   } else {
+  //     console.log('fcm token error');
+  //   }
+  // };
+
+  // requestPermission = onRegister => {
+  //   messaging()
+  //     .requestPermission()
+  //     .then(() => {
+  //       this.getToken(onRegister);
+  //     })
+  //     .catch(error => {
+  //       console.log('[FCMService] Request Permission rejected ', error);
+  //     });
+  // };
+
+  // deleteToken = () => {
+  //   console.log('[FCMService] deleteToken ');
+  //   messaging()
+  //     .deleteToken()
+  //     .catch(error => {
+  //       console.log('[FCMService] Delete token error ', error);
+  //     });
+  // };
+
+  // createNotificationListeners = (
+  //   onRegister,
+  //   onNotification,
+  //   onOpenNotification,
+  // ) => {
+  //   // When the application is running, but in the background
+  //   messaging().onNotificationOpenedApp(remoteMessage => {
+  //     console.log(
+  //       '[FCMService] onNotificationOpenedApp Notification caused app to open from background state:',
+  //       remoteMessage,
+  //     );
+  //     if (remoteMessage) {
+  //       const notification = remoteMessage.notification;
+  //       onOpenNotification(notification);
+  //       // this.removeDeliveredNotification(notification.notificationId)
+  //     }
+  //   });
+
+  //   // When the application is opened from a quit state.
+  //   messaging()
+  //     .getInitialNotification()
+  //     .then(remoteMessage => {
+  //       console.log(
+  //         '[FCMService] getInitialNotification Notification caused app to open from quit state:',
+  //         remoteMessage,
+  //       );
+
+  //       if (remoteMessage) {
+  //         const notification = remoteMessage.notification;
+  //         onOpenNotification(notification);
+  //         //  this.removeDeliveredNotification(notification.notificationId)
+  //       }
+  //     });
+
+  //   // Foreground state messages
+  //   this.messageListener = messaging().onMessage(async remoteMessage => {
+  //     console.log('[FCMService] A new FCM message arrived!', remoteMessage);
+  //     if (remoteMessage) {
+  //       let notification = null;
+  //       if (Platform.OS === 'ios') {
+  //         notification = remoteMessage.notification;
+  //       } else {
+  //         notification = remoteMessage.notification;
+  //       }
+  //       onNotification(notification);
+  //     }
+  //   });
+
+  //   // Triggered when have new token
+  //   messaging().onTokenRefresh(fcmToken => {
+  //     console.log('[FCMService] New token refresh: ', fcmToken);
+  //     onRegister(fcmToken);
+  //   });
+  // };
+
+  // unRegister = () => {
+  //   this.messageListener();
+  // };
+  // /////////////////////
 
   handleVideo = async data => {
     const {appointmentId, sessionId, roomId} = data && data;
@@ -757,9 +921,17 @@ class HomePage extends React.Component {
   };
 
   handleBackgroundNotifications = async () => {
+    console.log('goooooddd');
+    // let myObject = await MMKV.getMap('myobject');
+    if (await FastStorage.getItem('key')) {
+      let myObject = await FastStorage.getItem('key');
+      console.log(myObject, 'handleBackgroundNotifications');
+    }
     if (await AsyncStorage.getItem(NOTIFICATION)) {
+      console.log(await FastStorage.getItem('key'), 'aba');
       const notification = await AsyncStorage.getItem(NOTIFICATION);
       const payload = JSON.parse(notification);
+      console.log(payload, 'abaa');
       const {
         notification: {title, body},
         data: {action},
@@ -795,70 +967,101 @@ class HomePage extends React.Component {
     }
   };
 
-  onNotificationOpenedApp = async () => {
-    this.unsubscribe = messaging().onNotificationOpenedApp(
-      async remoteMessage => {
-        if (remoteMessage) {
-          const {
-            notification: {title, body},
-            data: {action},
-          } = remoteMessage;
-          console.log(remoteMessage, 'dattattata');
-          if (action === 'appointment.started') {
-            const {data} = remoteMessage;
-            const {appointmentId, sessionId, roomId} = data;
-            if (appointmentId && sessionId && roomId) {
-              this.showAlertVideo(title, body, data);
-            }
-            return;
-          } else if (action === 'appointment.approved') {
-            const {data} = remoteMessage;
-            const {date, time} = data;
-            const militaryTime = timeConversion(time);
+  // onNotificationOpenedApp = async () => {
+  //   this.unsubscribe = messaging().onNotificationOpenedApp(
+  //     async remoteMessage => {
+  //       if (remoteMessage) {
+  //         const {
+  //           notification: {title, body},
+  //           data: {action},
+  //         } = remoteMessage;
+  //         console.log(remoteMessage, 'dattattata');
+  //         if (action === 'appointment.started') {
+  //           const {data} = remoteMessage;
+  //           const {appointmentId, sessionId, roomId} = data;
+  //           if (appointmentId && sessionId && roomId) {
+  //             this.showAlertVideo(title, body, data);
+  //           }
+  //           return;
+  //         } else if (action === 'appointment.approved') {
+  //           const {data} = remoteMessage;
+  //           const {date, time} = data;
+  //           const militaryTime = timeConversion(time);
 
-            if (militaryTime) {
-              const time = militaryTime.trim();
-              const dateToArray = [...date];
-              dateToArray.splice(11, 5, time);
-              const newDate = dateToArray.join('');
-              this.showAlertCalendar(title, body, newDate);
-            }
-            return;
-          } else if (action === 'subscription.created') {
-            this.showAlert(title, body);
-            return;
-          } else {
-            this.showAlert(title, body, data);
-            return;
-          }
-        }
-      },
-    );
-  };
+  //           if (militaryTime) {
+  //             const time = militaryTime.trim();
+  //             const dateToArray = [...date];
+  //             dateToArray.splice(11, 5, time);
+  //             const newDate = dateToArray.join('');
+  //             this.showAlertCalendar(title, body, newDate);
+  //           }
+  //           return;
+  //         } else if (action === 'subscription.created') {
+  //           this.showAlert(title, body);
+  //           return;
+  //         } else {
+  //           this.showAlert(title, body, data);
+  //           return;
+  //         }
+  //       }
+  //     },
+  //   );
+  // };
 
   _handleAppStateChange = nextAppState => {
     if (
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
+      console.log(this.state.appState, 'idle');
       this.handleBackgroundNotifications();
     }
     this.setState({appState: nextAppState});
   };
 
   async componentDidMount() {
-    // this.requestNotificationPermission();
+    // console.log(await FastStorage.getItem('key'), 'dom');
 
-    this.checkFirebasePermission();
+    // this.registerAppWithFCM();
+    // this.register(onRegister, onNotification, onOpenNotification);
+    // localNotificationService.configure(onOpenNotification);
+    // function onRegister(token) {
+    //   console.log('[App] onRegister: ', token);
+    // }
+
+    // function onNotification(notify) {
+    //   console.log('[App] onNotification: ', notify);
+    //   const options = {
+    //     soundName: 'default',
+    //     playSound: true, //,
+    //     // largeIcon: 'ic_launcher', // add icon large for Android (Link: app/src/main/mipmap)
+    //     // smallIcon: 'ic_launcher' // add icon small for Android (Link: app/src/main/mipmap)
+    //   };
+    //   localNotificationService.showNotification(
+    //     0,
+    //     notify.title,
+    //     notify.body,
+    //     notify,
+    //     options,
+    //   );
+    // }
+
+    // function onOpenNotification(notify) {
+    //   console.log('[App] onOpenNotification: ', notify);
+    //   alert('Open Notification: ' + notify.body);
+    // }
+    await this.requestNotificationPermission();
+
+    await this.checkFirebasePermission();
 
     await this.fcmNotifications();
 
-    await this.onNotificationOpenedApp();
+    // await this.onNotificationOpenedApp();
 
-    AppState.addEventListener('change', this._handleAppStateChange);
+    // AppState.addEventListener('change', this._handleAppStateChange);
 
     // await this.getRefreshToken();
-    // this.handleBackgroundNotifications();
+    this.handleBackgroundNotifications();
 
     if (Platform.OS === 'ios') {
       this.checkIosPermissions();
@@ -893,10 +1096,11 @@ class HomePage extends React.Component {
   }
 
   async componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange);
-
-    this.unsubscribe;
-    await AsyncStorage.removeItem(NOTIFICATION);
+    // AppState.removeEventListener('change', this._handleAppStateChange);
+    // this.unRegister();
+    // localNotificationService.unregister();
+    // this.unsubscribe;
+    // await AsyncStorage.removeItem(NOTIFICATION);
   }
 
   handleOnCompleted = (data, renewState) => {
