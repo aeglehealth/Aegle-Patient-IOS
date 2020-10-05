@@ -15,13 +15,13 @@ PODS:
     - AppCenter/Crashes
     - AppCenterReactNativeShared
     - React
-  - AppCenter/Analytics (3.3.2):
+  - AppCenter/Analytics (3.3.4):
     - AppCenter/Core
-  - AppCenter/Core (3.3.2)
-  - AppCenter/Crashes (3.3.2):
+  - AppCenter/Core (3.3.4)
+  - AppCenter/Crashes (3.3.4):
     - AppCenter/Core
-  - AppCenterReactNativeShared (3.1.1):
-    - AppCenter/Core (= 3.3.2)
+  - AppCenterReactNativeShared (3.1.2):
+    - AppCenter/Core (= 3.3.4)
   - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
   - BVLinearGradient (2.5.6):
@@ -189,9 +189,9 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
-  - GTMAppAuth (1.0.0):
-    - AppAuth/Core (~> 1.0)
-    - GTMSessionFetcher (~> 1.1)
+  - GTMAppAuth (1.1.0):
+    - AppAuth/Core (~> 1.4)
+    - GTMSessionFetcher (~> 1.4)
   - GTMSessionFetcher (1.4.0):
     - GTMSessionFetcher/Full (= 1.4.0)
   - GTMSessionFetcher/Core (1.4.0)
@@ -208,6 +208,7 @@ PODS:
   - libwebp/mux (1.1.0):
     - libwebp/demux
   - libwebp/webp (1.1.0)
+  - MMKV (1.0.23)
   - nanopb (1.30905.0):
     - nanopb/decode (= 1.30905.0)
     - nanopb/encode (= 1.30905.0)
@@ -391,6 +392,9 @@ PODS:
   - React-jsinspector (0.61.5)
   - react-native-add-calendar-event (3.0.2):
     - React
+  - react-native-fast-storage (0.1.5):
+    - MMKV (= 1.0.23)
+    - React
   - react-native-fbsdk (2.0.0):
     - React
     - react-native-fbsdk/Core (= 2.0.0)
@@ -461,6 +465,8 @@ PODS:
     - React-Core
   - RNCAsyncStorage (1.12.0):
     - React
+  - RNCPushNotificationIOS (1.5.0):
+    - React
   - RNDeviceInfo (5.6.1):
     - React
   - RNFastImage (8.1.5):
@@ -492,16 +498,16 @@ PODS:
     - React
   - RNVectorIcons (6.7.0):
     - React
-  - SDWebImage (5.9.1):
-    - SDWebImage/Core (= 5.9.1)
-  - SDWebImage/Core (5.9.1)
+  - SDWebImage (5.9.2):
+    - SDWebImage/Core (= 5.9.2)
+  - SDWebImage/Core (5.9.2)
   - SDWebImageWebPCoder (0.4.1):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.5)
   - SSZipArchive (2.2.3)
   - toolbar-android (0.1.0-rc.2):
     - React
-  - TwilioVideo (3.7.0)
+  - TwilioVideo (3.7.1)
   - TwilioVoice (2.1.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -555,6 +561,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-add-calendar-event (from `../node_modules/react-native-add-calendar-event`)
+  - react-native-fast-storage (from `../node_modules/react-native-fast-storage`)
   - react-native-fbsdk (from `../node_modules/react-native-fbsdk`)
   - react-native-html-to-pdf (from `../node_modules/react-native-html-to-pdf`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
@@ -577,6 +584,7 @@ DEPENDENCIES:
   - "ReactNativeART (from `../node_modules/@react-native-community/art`)"
   - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
+  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
@@ -627,6 +635,7 @@ SPEC REPOS:
     - GTMSessionFetcher
     - JWT
     - libwebp
+    - MMKV
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
@@ -687,6 +696,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-add-calendar-event:
     :path: "../node_modules/react-native-add-calendar-event"
+  react-native-fast-storage:
+    :path: "../node_modules/react-native-fast-storage"
   react-native-fbsdk:
     :path: "../node_modules/react-native-fbsdk"
   react-native-html-to-pdf:
@@ -729,6 +740,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/rn-fetch-blob"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
+  RNCPushNotificationIOS:
+    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
@@ -760,11 +773,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
-  AppCenter: aba7de06e4c2184f90dc84f7866bd07f82427d69
+  AppCenter: 0487be185c038ed2ecc5ed38219af1dcd280af23
   appcenter-analytics: cca12b5d07593a309e99db475f6da7f1a61ae694
   appcenter-core: cd5eaa48cfc6dd87dad2912d6718f21f4955327f
   appcenter-crashes: 369cc9160392c137b791304ee96957f28ef143d1
-  AppCenterReactNativeShared: b9fa50d999e830e03f086f487b1aa0f9772088c1
+  AppCenterReactNativeShared: 66667cd2dfad295b84bbf0f462e0e139e2128284
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
@@ -797,10 +810,11 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 672fb0ce96fe7f7f31d43672fca62ad2c9c86f7b
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
-  GTMAppAuth: 4deac854479704f348309e7b66189e604cf5e01e
+  GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
   JWT: 9b5c05abbcc1a0e69c3c91e1655b3387fc7e581d
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
+  MMKV: 031ae51aedc0af1b250922f7ed8a6b6ee2f94c4c
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   Permission-Camera: 2465b21ce0e0e1ab720d52609a9300a29125aad8
@@ -819,6 +833,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-add-calendar-event: 991285451b25c3b96486a45b1d45d63e177d1276
+  react-native-fast-storage: 39deadbf094e3539a1fe688bbc6e66d2cc69458b
   react-native-fbsdk: 00c15d138bba6d4efa628670886fc58cec858c19
   react-native-html-to-pdf: be2f7a88b33a12b481b771d1bf172dca5968ef50
   react-native-image-picker: a6c3d644751a388b0fc8b56822ff7cbd398a3008
@@ -840,6 +855,7 @@ SPEC CHECKSUMS:
   ReactNativeART: f003b07dfa7098aa419ed95b69560923440b1eee
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNCAsyncStorage: 3eea36d9460c5159b592f9ecbe5a77f8aca98006
+  RNCPushNotificationIOS: 8025ff0b610d7b28d29ddc1b619cd55814362e4c
   RNDeviceInfo: ab2ab4ca9e7f2bc4f35d62ab6ce2b66f2cbf1e7a
   RNFastImage: 35ae972d6727c84ee3f5c6897e07f84d0a3445e9
   RNFBApp: aa3592e69e0843e3cdb3dc60a9a2fc0177415c75
@@ -852,11 +868,11 @@ SPEC CHECKSUMS:
   RNShare: a1d5064df7a0ebe778d001869b3f0a124bf0a491
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: 368d6d8b8301224e5ffb6254191f4f8876c2be0d
-  SDWebImage: a990c053fff71e388a10f3357edb0be17929c9c5
+  SDWebImage: 0b42b8719ab0c5257177d5894306e8a336b21cbb
   SDWebImageWebPCoder: 36f8f47bd9879a8aea6044765c1351120fd8e3a8
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   toolbar-android: 404f4450b203597e7b417f714ff417bed562a1be
-  TwilioVideo: ac463041934869f6e3794f22e57fbe8db1f62814
+  TwilioVideo: 807526f68043a11f0e17e5c26ef0f0f73d5678e4
   TwilioVoice: 8a85ce501ce9fe8900b79beb6a87ebf8c2d5dc1a
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a

@@ -6,7 +6,6 @@ import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import React, {useState} from 'react';
-import messaging from '@react-native-firebase/messaging';
 import {ApolloProvider} from 'react-apollo';
 import {ApolloProvider as Provider} from '@apollo/react-hooks';
 import ShowMessage, {type} from './src/Components/toster/ShowMessage';
@@ -20,14 +19,28 @@ import {onError} from 'apollo-link-error';
 import {withClientState} from 'apollo-link-state';
 import {ApolloLink, Observable} from 'apollo-link';
 import {DEPLOYMENT_URL, AUTH_TOKEN, NOTIFICATION} from 'react-native-dotenv';
+import messaging from '@react-native-firebase/messaging';
+import FastStorage from 'react-native-fast-storage';
+
+messaging().onNotificationOpenedApp(async remoteMessage => {
+  console.log(remoteMessage, 'Message handled in the background!');
+  if (remoteMessage) {
+    const data = JSON.stringify(remoteMessage);
+    await AsyncStorage.setItem(NOTIFICATION, data);
+    await FastStorage.setItem('key', data);
+
+    console.log(await FastStorage.getItem('key'), 'dat');
+  }
+});
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('Message handled in the background!', remoteMessage);
+  console.log(remoteMessage, 'Message handled in the background!');
   if (remoteMessage) {
-    console.log(remoteMessage.data, 'datatta');
     const data = JSON.stringify(remoteMessage);
-    console.log(data, 'dat');
     await AsyncStorage.setItem(NOTIFICATION, data);
+    await FastStorage.setItem('key', data);
+
+    console.log(await AsyncStorage.getItem(NOTIFICATION), 'daty');
   }
 });
 
