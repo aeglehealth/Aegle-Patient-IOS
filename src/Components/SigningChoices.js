@@ -30,7 +30,7 @@ export default class SigningChoices extends React.Component {
         </View>
 
         <View>
-          <Button
+          {/* <Button
             type="outline"
             icon={googleIconComponent}
             title={this.props.googleText}
@@ -45,7 +45,7 @@ export default class SigningChoices extends React.Component {
             buttonStyle={styles.buttonStyle}
             titleStyle={styles.buttonFacebookTitleStyle}
             onPress={this.props.facebookButtonFunction}
-          />
+          /> */}
           <Button
             type="solid"
             title={this.props.customText}

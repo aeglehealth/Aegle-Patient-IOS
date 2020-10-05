@@ -1058,7 +1058,7 @@ class HomePage extends React.Component {
 
     // await this.onNotificationOpenedApp();
 
-    // AppState.addEventListener('change', this._handleAppStateChange);
+    AppState.addEventListener('change', this._handleAppStateChange);
 
     // await this.getRefreshToken();
     this.handleBackgroundNotifications();

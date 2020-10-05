@@ -120,9 +120,9 @@ const client = new ApolloClient({
     createUploadLink({
       // uri: 'https://6feb7adb66bd.ngrok.io/graphql',
       // uri: 'http://192.168.43.115:4000/graphql',
-      uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
+      // uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
       // uri: 'https://aegle-health-api.herokuapp.com/graphql',
-      // uri: DEPLOYMENT_URL,
+      uri: DEPLOYMENT_URL,
       credentials: 'include',
     }),
   ]),

@@ -87,5 +87,5 @@ console.disableYellowBox = true;
 
 const codePushOptions = {checkFrequency: codePush.CheckFrequency.ON_APP_RESUME};
 
-// export default codePush(codePushOptions)(App);
-export default App;
+export default codePush(codePushOptions)(App);
+// export default App;
