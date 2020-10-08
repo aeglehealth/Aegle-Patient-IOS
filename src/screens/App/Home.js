@@ -891,9 +891,9 @@ class HomePage extends React.Component {
         {
           text: 'OK',
           onPress: async () => {
-            this.unsubscribe;
             that.handleVideo(data);
             await AsyncStorage.removeItem(NOTIFICATION);
+            this.unsubscribe;
             console.log('OK Pressed');
           },
         },
