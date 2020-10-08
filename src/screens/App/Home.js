@@ -981,20 +981,16 @@ class HomePage extends React.Component {
     );
   };
 
-  getInitialNotification = () => {
+  getInitialNotification = async () => {
     console.log('getInitialNotification!');
-    this.unsubscribe = messaging()
-      .getInitialNotification()
-      .then(async remoteMessage => {
-        console.log(remoteMessage, 'getInitialNotification!');
-        if (remoteMessage) {
-          const data = JSON.stringify(remoteMessage);
-          await AsyncStorage.setItem(NOTIFICATION, data);
-          await FastStorage.setItem(NOTIFICATION, data);
-          console.log(await FastStorage.getItem(NOTIFICATION), 'dat');
-        }
-        return;
-      });
+    const remoteMessage = await messaging().getInitialNotification();
+
+    if (remoteMessage) {
+      const data = JSON.stringify(remoteMessage);
+      await AsyncStorage.setItem(NOTIFICATION, data);
+      await FastStorage.setItem(NOTIFICATION, data);
+      console.log(await FastStorage.getItem(NOTIFICATION), 'dat');
+    }
   };
 
   _handleAppStateChange = nextAppState => {
