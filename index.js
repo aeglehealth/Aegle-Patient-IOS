@@ -27,9 +27,8 @@ messaging().onNotificationOpenedApp(async remoteMessage => {
   if (remoteMessage) {
     const data = JSON.stringify(remoteMessage);
     await AsyncStorage.setItem(NOTIFICATION, data);
-    await FastStorage.setItem('key', data);
-
-    console.log(await FastStorage.getItem('key'), 'dat');
+    await FastStorage.setItem(NOTIFICATION, data);
+    console.log(await FastStorage.getItem(NOTIFICATION), 'dat');
   }
 });
 
@@ -38,7 +37,7 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
   if (remoteMessage) {
     const data = JSON.stringify(remoteMessage);
     await AsyncStorage.setItem(NOTIFICATION, data);
-    await FastStorage.setItem('key', data);
+    await FastStorage.setItem(NOTIFICATION, data);
 
     console.log(await AsyncStorage.getItem(NOTIFICATION), 'daty');
   }
@@ -120,9 +119,9 @@ const client = new ApolloClient({
     createUploadLink({
       // uri: 'https://6feb7adb66bd.ngrok.io/graphql',
       // uri: 'http://192.168.43.115:4000/graphql',
-      // uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
+      uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
       // uri: 'https://aegle-health-api.herokuapp.com/graphql',
-      uri: DEPLOYMENT_URL,
+      // uri: DEPLOYMENT_URL,
       credentials: 'include',
     }),
   ]),

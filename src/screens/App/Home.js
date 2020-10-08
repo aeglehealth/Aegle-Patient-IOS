@@ -429,7 +429,7 @@ class HomePage extends React.Component {
   handleVideo = async data => {
     const {appointmentId, sessionId, roomId} = data && data;
 
-    await AsyncStorage.removeItem(NOTIFICATION);
+    await FastStorage.removeItem(NOTIFICATION);
 
     Platform.OS === 'ios'
       ? await this.checkIosPermissions()
@@ -922,21 +922,17 @@ class HomePage extends React.Component {
 
   handleBackgroundNotifications = async () => {
     console.log('goooooddd');
-    // let myObject = await MMKV.getMap('myobject');
-    if (await FastStorage.getItem('key')) {
-      let myObject = await FastStorage.getItem('key');
-      console.log(myObject, 'handleBackgroundNotifications');
-    }
-    if (await AsyncStorage.getItem(NOTIFICATION)) {
-      console.log(await FastStorage.getItem('key'), 'aba');
-      const notification = await AsyncStorage.getItem(NOTIFICATION);
+    // if (await AsyncStorage.getItem(NOTIFICATION)) {
+    if (await FastStorage.getItem(NOTIFICATION)) {
+      console.log(await FastStorage.getItem(NOTIFICATION), 'aba');
+      const notification = await FastStorage.getItem(NOTIFICATION);
+      // const notification = await AsyncStorage.getItem(NOTIFICATION);
       const payload = JSON.parse(notification);
       console.log(payload, 'abaa');
       const {
         notification: {title, body},
         data: {action},
       } = payload;
-      console.log(payload, 'dattattata');
       if (action === 'appointment.started') {
         const {data} = payload;
         const {appointmentId, sessionId, roomId} = data;
@@ -967,46 +963,20 @@ class HomePage extends React.Component {
     }
   };
 
-  // onNotificationOpenedApp = async () => {
-  //   this.unsubscribe = messaging().onNotificationOpenedApp(
-  //     async remoteMessage => {
-  //       if (remoteMessage) {
-  //         const {
-  //           notification: {title, body},
-  //           data: {action},
-  //         } = remoteMessage;
-  //         console.log(remoteMessage, 'dattattata');
-  //         if (action === 'appointment.started') {
-  //           const {data} = remoteMessage;
-  //           const {appointmentId, sessionId, roomId} = data;
-  //           if (appointmentId && sessionId && roomId) {
-  //             this.showAlertVideo(title, body, data);
-  //           }
-  //           return;
-  //         } else if (action === 'appointment.approved') {
-  //           const {data} = remoteMessage;
-  //           const {date, time} = data;
-  //           const militaryTime = timeConversion(time);
-
-  //           if (militaryTime) {
-  //             const time = militaryTime.trim();
-  //             const dateToArray = [...date];
-  //             dateToArray.splice(11, 5, time);
-  //             const newDate = dateToArray.join('');
-  //             this.showAlertCalendar(title, body, newDate);
-  //           }
-  //           return;
-  //         } else if (action === 'subscription.created') {
-  //           this.showAlert(title, body);
-  //           return;
-  //         } else {
-  //           this.showAlert(title, body, data);
-  //           return;
-  //         }
-  //       }
-  //     },
-  //   );
-  // };
+  onNotificationOpenedApp = async () => {
+    console.log('Message!');
+    this.unsubscribe = messaging().onNotificationOpenedApp(
+      async remoteMessage => {
+        console.log(remoteMessage, 'Message handled in the background!');
+        if (remoteMessage) {
+          const data = JSON.stringify(remoteMessage);
+          await AsyncStorage.setItem(NOTIFICATION, data);
+          await FastStorage.setItem(NOTIFICATION, data);
+          console.log(await FastStorage.getItem(NOTIFICATION), 'dat');
+        }
+      },
+    );
+  };
 
   _handleAppStateChange = nextAppState => {
     if (
@@ -1099,8 +1069,8 @@ class HomePage extends React.Component {
     // AppState.removeEventListener('change', this._handleAppStateChange);
     // this.unRegister();
     // localNotificationService.unregister();
-    // this.unsubscribe;
-    // await AsyncStorage.removeItem(NOTIFICATION);
+    this.unsubscribe;
+    await AsyncStorage.removeItem(NOTIFICATION);
   }
 
   handleOnCompleted = (data, renewState) => {

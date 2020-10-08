@@ -70,7 +70,7 @@ class App extends React.Component {
       <PaperProvider theme={theme}>
         <View style={{flex: 1}}>
           {/* {this.statusBarIOS()} */}
-          <SafeAreaView style={{flex: 1, backgroundColor: PRIMARY_COLOR}}>
+          <SafeAreaView style={{flex: 1}}>
             <StatusBar
               backgroundColor={PRIMARY_COLOR}
               barStyle={'light-content'}
