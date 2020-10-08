@@ -922,7 +922,10 @@ class HomePage extends React.Component {
 
   handleBackgroundNotifications = async () => {
     console.log('goooooddd');
-    // if (await AsyncStorage.getItem(NOTIFICATION)) {
+    if (await FastStorage.getItem(NOTIFICATION)) {
+      console.log(await FastStorage.getItem(NOTIFICATION), 'fastStorage');
+    }
+
     if (await FastStorage.getItem(NOTIFICATION)) {
       console.log(await FastStorage.getItem(NOTIFICATION), 'aba');
       const notification = await FastStorage.getItem(NOTIFICATION);
@@ -978,6 +981,22 @@ class HomePage extends React.Component {
     );
   };
 
+  getInitialNotification = () => {
+    console.log('getInitialNotification!');
+    this.unsubscribe = messaging()
+      .getInitialNotification()
+      .then(async remoteMessage => {
+        console.log(remoteMessage, 'getInitialNotification!');
+        if (remoteMessage) {
+          const data = JSON.stringify(remoteMessage);
+          await AsyncStorage.setItem(NOTIFICATION, data);
+          await FastStorage.setItem(NOTIFICATION, data);
+          console.log(await FastStorage.getItem(NOTIFICATION), 'dat');
+        }
+        return;
+      });
+  };
+
   _handleAppStateChange = nextAppState => {
     if (
       this.state.appState.match(/inactive|background/) &&
@@ -1026,7 +1045,7 @@ class HomePage extends React.Component {
 
     await this.fcmNotifications();
 
-    // await this.onNotificationOpenedApp();
+    await this.getInitialNotification();
 
     AppState.addEventListener('change', this._handleAppStateChange);
 

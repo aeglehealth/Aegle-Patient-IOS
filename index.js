@@ -183,6 +183,7 @@ export const MEPOST = gql`
 
 function HeadlessCheck({isHeadless}) {
   if (isHeadless) {
+    console.log('HEADLESS');
     // App has been launched in the background by iOS, ignore
     return null;
   }
