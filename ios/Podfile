@@ -62,6 +62,7 @@ end
 
 target 'medical_new' do
   # Pods for medical_new
+  pod 'MMKV'
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'react-native-twilio-video-webrtc', path: "../node_modules/react-native-twilio-video-webrtc"
