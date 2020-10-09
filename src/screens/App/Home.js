@@ -152,7 +152,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: -50,
+    // marginTop: -50,
+    alignContent: 'center',
   },
   doctorImage: {
     height: 180,
@@ -1218,6 +1219,7 @@ class HomePage extends React.Component {
                       marginTop: 10,
                       width: '100%',
                       alignSelf: 'center',
+                      maxHeight: wp('50%'),
                     }}>
                     <TouchableOpacity
                       onPress={() =>
@@ -1258,38 +1260,38 @@ class HomePage extends React.Component {
 
                   <View style={styles.flexBar}>
                     <TouchableOpacity
-                      style={{maxWidth: wp('45%')}}
+                      // style={{maxWidth: wp('45%'), height: hp('25%')}}
                       underlayColor="rgba(0, 0, 0, 0.01)"
                       onPress={() => {
                         this.props.navigation.navigate('TalkToDoctor');
                       }}>
-                      <DoctorImg width={wp('45%')} height={hp('30%')} />
+                      <DoctorImg width={wp('45%')} height={hp('20%')} />
                     </TouchableOpacity>
                     <TouchableOpacity
-                      // style={{maxWidth: wp('45%')}}
+                      // style={{maxWidth: wp('45%'), height: hp('25%')}}
                       underlayColor="rgba(0, 0, 0, 0.01)"
                       onPress={() => {
                         this.props.navigation.navigate('MentalAssessment', {
                           me,
                         });
                       }}>
-                      <MentalImg width={wp('45%')} height={hp('30%')} />
+                      <MentalImg width={wp('45%')} height={hp('20%')} />
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={{width: wp('45%'), marginTop: -150}}
+                      // style={{width: wp('45%'), marginTop: -150}}
                       underlayColor="rgba(0, 0, 0, 0.01)"
                       onPress={() => {
                         this.props.navigation.navigate('Forum');
                       }}>
-                      <ForumImg width={wp('45%')} height={hp('30%')} />
+                      <ForumImg width={wp('45%')} height={hp('20%')} />
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={{width: wp('45%'), marginTop: -150}}
+                      // style={{width: wp('45%'), marginTop: -150}}
                       underlayColor="rgba(0, 0, 0, 0.01)"
                       onPress={() => {
                         this.props.navigation.navigate('MonitorHealthStart');
                       }}>
-                      <MonitorImg width={wp('45%')} height={hp('30%')} />
+                      <MonitorImg width={wp('45%')} height={hp('20%')} />
                     </TouchableOpacity>
                   </View>
 
