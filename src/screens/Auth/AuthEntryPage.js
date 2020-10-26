@@ -129,14 +129,16 @@ export default class AuthEntryPage extends React.Component {
             title="SIGN UP"
             buttonStyle={styles.buttonSolidStyle}
             titleStyle={styles.buttonSolidTitleStyle}
-            onPress={() => this.props.navigation.navigate('SignUpChoices')}
+            // onPress={() => this.props.navigation.navigate('SignUpChoices')}
+            onPress={() => this.props.navigation.navigate('SignUpEmail')}
           />
           <Button
             type="outline"
             title="LOG IN"
             buttonStyle={styles.buttonStyle}
             titleStyle={styles.buttonTitleStyle}
-            onPress={() => this.props.navigation.navigate('SignInChoices')}
+            // onPress={() => this.props.navigation.navigate('SignInChoices')}
+            onPress={() => this.props.navigation.navigate('SignInEmail')}
           />
         </View>
       </View>

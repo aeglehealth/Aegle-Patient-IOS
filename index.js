@@ -5,7 +5,7 @@ import 'react-native-gesture-handler';
 import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {ApolloProvider} from 'react-apollo';
 import {ApolloProvider as Provider} from '@apollo/react-hooks';
 import ShowMessage, {type} from './src/Components/toster/ShowMessage';
@@ -29,17 +29,6 @@ messaging().onNotificationOpenedApp(async remoteMessage => {
     await AsyncStorage.setItem(NOTIFICATION, data);
     await FastStorage.setItem(NOTIFICATION, data);
     console.log(await FastStorage.getItem(NOTIFICATION), 'dat');
-  }
-});
-
-messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log(remoteMessage, 'Message handled in the background!');
-  if (remoteMessage) {
-    const data = JSON.stringify(remoteMessage);
-    await AsyncStorage.setItem(NOTIFICATION, data);
-    await FastStorage.setItem(NOTIFICATION, data);
-
-    console.log(await AsyncStorage.getItem(NOTIFICATION), 'daty');
   }
 });
 
@@ -119,9 +108,9 @@ const client = new ApolloClient({
     createUploadLink({
       // uri: 'https://6feb7adb66bd.ngrok.io/graphql',
       // uri: 'http://192.168.43.115:4000/graphql',
-      uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
+      // uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
       // uri: 'https://aegle-health-api.herokuapp.com/graphql',
-      // uri: DEPLOYMENT_URL,
+      uri: DEPLOYMENT_URL,
       credentials: 'include',
     }),
   ]),
@@ -182,6 +171,17 @@ export const MEPOST = gql`
 `;
 
 function HeadlessCheck({isHeadless}) {
+  useEffect(
+    React.useCallback(() => {
+      (async () => {
+        console.log(
+          'registration',
+          await messaging().registerDeviceForRemoteMessages(),
+        );
+      })();
+    }),
+  );
+
   if (isHeadless) {
     console.log('HEADLESS');
     // App has been launched in the background by iOS, ignore
