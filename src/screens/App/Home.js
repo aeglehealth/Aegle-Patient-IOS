@@ -61,6 +61,7 @@ import {
   AUTH_TOKEN,
 } from 'react-native-dotenv';
 import FastStorage from 'react-native-fast-storage';
+import {localNotificationService} from './LocalNotifications';
 
 function elevationShadowStyle(elevation) {
   return {
@@ -1046,7 +1047,7 @@ class HomePage extends React.Component {
 
     AppState.addEventListener('change', this._handleAppStateChange);
 
-    // await this.getRefreshToken();
+    await this.getRefreshToken();
     this.handleBackgroundNotifications();
 
     if (Platform.OS === 'ios') {
