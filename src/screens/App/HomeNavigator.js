@@ -4,6 +4,8 @@ import React from 'react';
 import {Image} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
+// import {Badge, Icon} from 'react-native-elements';
+import Badge from '../../Components/Badge';
 
 import Home from './Home';
 // import Home from './HomePage';
@@ -11,6 +13,7 @@ import Care from './CarePage';
 import Forum from './ForumNavigator';
 import Notifications from './NotificationPage';
 import Accounts from './AccountsPage';
+import {View} from 'react-native-animatable';
 
 function elevationShadowStyle(elevation) {
   return {
@@ -34,6 +37,7 @@ const TabNavigator = createBottomTabNavigator(
     defaultNavigationOptions: ({navigation}) => ({
       tabBarIcon: ({tintColor}) => {
         const {routeName} = navigation.state;
+
         if (routeName === 'Home') {
           if (tintColor === '#828282') {
             return (
@@ -88,17 +92,23 @@ const TabNavigator = createBottomTabNavigator(
         if (routeName === 'Notifications') {
           if (tintColor === '#828282') {
             return (
-              <Image
-                style={{height: 23.2, width: 23}}
-                source={require('../../assets/notify-desd.png')}
-              />
+              <View>
+                <Image
+                  style={{height: 23.2, width: 23}}
+                  source={require('../../assets/notify-desd.png')}
+                />
+                <Badge navigation={navigation} />
+              </View>
             );
           }
           return (
-            <Image
-              style={{height: 23.2, width: 23}}
-              source={require('../../assets/notify.png')}
-            />
+            <View>
+              <Image
+                style={{height: 23.2, width: 23}}
+                source={require('../../assets/notify.png')}
+              />
+              <Badge navigation={navigation} />
+            </View>
           );
         }
 

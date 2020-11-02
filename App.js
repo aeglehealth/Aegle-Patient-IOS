@@ -36,6 +36,7 @@ import {PRIMARY_COLOR} from './src/shared/Colors';
 import {Provider as PaperProvider, DefaultTheme} from 'react-native-paper';
 import Page from './src/screens/Routes';
 import codePush from 'react-native-code-push';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 const theme = {
   ...DefaultTheme,
@@ -49,6 +50,35 @@ class App extends React.Component {
   constructor(properties) {
     super(properties);
   }
+
+  // _handleAppStateChange = nextAppState => {
+  //   let badgeCount,
+  //     that = this;
+  //   if (
+  //     this.state.appState.match(/inactive|background/) &&
+  //     nextAppState === 'active'
+  //   ) {
+  //     console.log(this.state.appState, 'idler');
+  //     PushNotificationIOS.getApplicationIconBadgeNumber(async num => {
+  //       badgeCount = num;
+  //       that.setState({badgeCount});
+  //     });
+  //   }
+  //   this.setState({appState: nextAppState});
+  // };
+
+  // componentWillUnmount() {
+  //   AppState.removeEventListener('change', this._handleAppStateChange);
+  // }
+
+  // componentDidMount() {
+  //   let that = this;
+  //   PushNotificationIOS.getApplicationIconBadgeNumber(async num => {
+  //     badgeCount = num;
+  //     that.setState({badgeCount});
+  //   });
+  //   AppState.addEventListener('change', this._handleAppStateChange);
+  // }
 
   statusBarIOS() {
     if (Platform.OS === 'ios') {
