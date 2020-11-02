@@ -472,10 +472,10 @@ PODS:
     - SDWebImage (~> 5.0)
     - SDWebImageWebPCoder (~> 0.4.1)
   - RNFBApp (8.4.6):
-    - Firebase/CoreOnly (~> 6.34.0)
+    - Firebase/CoreOnly (= 6.34.0)
     - React-Core
   - RNFBMessaging (7.9.1):
-    - Firebase/Messaging (~> 6.34.0)
+    - Firebase/Messaging (= 6.34.0)
     - React-Core
     - RNFBApp
   - RNGestureHandler (1.3.0):
@@ -856,8 +856,8 @@ SPEC CHECKSUMS:
   RNCPushNotificationIOS: 8025ff0b610d7b28d29ddc1b619cd55814362e4c
   RNDeviceInfo: ab2ab4ca9e7f2bc4f35d62ab6ce2b66f2cbf1e7a
   RNFastImage: 35ae972d6727c84ee3f5c6897e07f84d0a3445e9
-  RNFBApp: 7eacc7da7ab19f96c05e434017d44a9f09410da8
-  RNFBMessaging: 93a705b8286452d422a404d1303689a9b59012a0
+  RNFBApp: e0fc0113eecc07f440f17639c9b7c59ea90bc583
+  RNFBMessaging: 1d2a6a249cf6b93bed1721befc42650c45615112
   RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0
   RNGoogleSignin: 6baed9bb19c9c54614bef63bdc55c381b4e33c44
   RNPermissions: 69dc24ae1a9507576e2e9cf70ceed51065311da8
@@ -875,6 +875,6 @@ SPEC CHECKSUMS:
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: b3ad5945f0238f96e3b506b033cc31664116ab6f
+PODFILE CHECKSUM: aefac0ed744276e561a5652bf7035816b2b34cb4
 
 COCOAPODS: 1.9.1

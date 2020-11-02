@@ -18,6 +18,9 @@ import gql from 'graphql-tag';
 import {onError} from 'apollo-link-error';
 import {withClientState} from 'apollo-link-state';
 import {ApolloLink, Observable} from 'apollo-link';
+import {getMainDefinition} from 'apollo-utilities';
+import {split} from 'apollo-link';
+import {WebSocketLink} from 'apollo-link-ws';
 import {DEPLOYMENT_URL, AUTH_TOKEN, NOTIFICATION} from 'react-native-dotenv';
 import messaging from '@react-native-firebase/messaging';
 import FastStorage from 'react-native-fast-storage';
@@ -33,17 +36,6 @@ messaging().onNotificationOpenedApp(async remoteMessage => {
 });
 
 console.disableYellowBox = true;
-
-const cache = new InMemoryCache({});
-
-const request = async operation => {
-  const token = await AsyncStorage.getItem(AUTH_TOKEN);
-  operation.setContext({
-    headers: {
-      authorization: token ? `aegle ${token}` : '',
-    },
-  });
-};
 
 const requestLink = new ApolloLink(
   (operation, forward) =>
@@ -65,55 +57,89 @@ const requestLink = new ApolloLink(
       };
     }),
 );
-
-const client = new ApolloClient({
-  link: ApolloLink.from([
-    onError(({graphQLErrors, networkError, operation}) => {
-      if (
-        graphQLErrors &&
-        operation.query.definitions[0].operation === 'mutation'
-      ) {
-        graphQLErrors.map(({message}) => {
-          if (message !== 'Device already exist') {
-            ShowMessage(type.ERROR, message);
-          }
-        });
-        return;
-      }
-      if (operation.query.definitions[0].operation === 'mutation') {
-        ShowMessage(type.ERROR, 'Network error');
-      }
-      if (networkError) {
-        console.log(networkError);
-      }
-      if (graphQLErrors) {
-        console.log(graphQLErrors);
-      }
-    }),
-    requestLink,
-    withClientState({
-      defaults: {
-        isConnected: true,
-      },
-      resolvers: {
-        Mutation: {
-          updateNetworkStatus: (_, {isConnected}, {cache}) => {
-            cache.writeData({data: {isConnected}});
-            return null;
-          },
+// Create an http link:
+const httpLink = ApolloLink.from([
+  onError(({graphQLErrors, networkError, operation}) => {
+    if (
+      graphQLErrors &&
+      operation.query.definitions[0].operation === 'mutation'
+    ) {
+      graphQLErrors.map(({message}) => {
+        if (message !== 'Device already exist') {
+          ShowMessage(type.ERROR, message);
+        }
+      });
+      return;
+    }
+    if (operation.query.definitions[0].operation === 'mutation') {
+      ShowMessage(type.ERROR, 'Network error');
+    }
+    if (networkError) {
+      console.log(networkError);
+    }
+    if (graphQLErrors) {
+      console.log(graphQLErrors);
+    }
+  }),
+  requestLink,
+  withClientState({
+    defaults: {
+      isConnected: true,
+    },
+    resolvers: {
+      Mutation: {
+        updateNetworkStatus: (_, {isConnected}, {cache}) => {
+          cache.writeData({data: {isConnected}});
+          return null;
         },
       },
-      cache,
-    }),
-    createUploadLink({
-      // uri: 'https://6feb7adb66bd.ngrok.io/graphql',
-      // uri: 'http://192.168.43.115:4000/graphql',
-      // uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
-      // uri: 'https://aegle-health-api.herokuapp.com/graphql',
-      uri: DEPLOYMENT_URL,
-      credentials: 'include',
-    }),
-  ]),
+    },
+    cache,
+  }),
+  createUploadLink({
+    uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
+    // uri: 'https://api.aeglehealth.io/graphql',
+    credentials: 'include',
+  }),
+]);
+
+// Create a WebSocket link:
+const wsLink = new WebSocketLink({
+  // uri: 'wss://api.aeglehealth.io/graphql',
+  uri: 'ws://aegle-mongodb-api.herokuapp.com/graphql',
+  options: {
+    reconnect: true,
+  },
+});
+
+// using the ability to split links, you can send data to each link
+// depending on what kind of operation is being sent
+const link = split(
+  // split based on operation type
+  ({query}) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    );
+  },
+  wsLink,
+  httpLink,
+);
+
+const cache = new InMemoryCache({});
+
+const request = async operation => {
+  const token = await AsyncStorage.getItem(AUTH_TOKEN);
+  operation.setContext({
+    headers: {
+      authorization: token ? `aegle ${token}` : '',
+    },
+  });
+};
+
+const client = new ApolloClient({
+  link,
   cache,
 });
 
@@ -171,17 +197,6 @@ export const MEPOST = gql`
 `;
 
 function HeadlessCheck({isHeadless}) {
-  useEffect(
-    React.useCallback(() => {
-      (async () => {
-        console.log(
-          'registration',
-          await messaging().registerDeviceForRemoteMessages(),
-        );
-      })();
-    }),
-  );
-
   if (isHeadless) {
     console.log('HEADLESS');
     // App has been launched in the background by iOS, ignore

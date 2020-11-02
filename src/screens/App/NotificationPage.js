@@ -5,24 +5,29 @@ import {
   Text,
   View,
   Image,
-  ScrollView,
   TouchableOpacity,
-  Dimensions,
+  FlatList,
 } from 'react-native';
 import {Header} from 'react-native-elements';
 import shortid from 'shortid';
-import {Query} from 'react-apollo';
+import {Query, withApollo} from 'react-apollo';
 import ActivityIndicatorPage from '../../screens/App/ActivityIndicatorPage';
-import {NOTIFICATION} from '../../QueryAndMutation';
+import {
+  NOTIFICATION,
+  MARK_NOTIFICATION_AS_READ,
+  UNREAD_NOTIFICATION_COUNT,
+} from '../../QueryAndMutation';
 import moment from 'moment';
 import {NavigationActions} from 'react-navigation';
+import EmptyContent from '../../Components/EmptyContent';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
     justifyContent: 'flex-start',
-    width: '100%',
+    width: '90%',
+    alignSelf: 'center',
   },
   headerStyle: {
     backgroundColor: '#fff',
@@ -63,6 +68,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   careCard: {
+    flex: 1,
+    flexDirection: 'row',
+    borderBottomColor: 'rgba(196, 196, 196, 0.4)',
+    borderBottomWidth: 2,
+    paddingTop: 10,
+    paddingBottom: 20,
+    paddingHorizontal: 10,
+    marginVertical: 10,
+    backgroundColor: '#E1E3F6',
+  },
+  careCard_read: {
     flex: 1,
     flexDirection: 'row',
     borderBottomColor: 'rgba(196, 196, 196, 0.4)',
@@ -113,157 +129,152 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class NotificationPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      appointmentIcon: require('../../assets/notification-appointment.png'),
-      forumIcon: require('../../assets/notification-forum.png'),
-    };
-  }
-
-  componentDidMount() {}
-
+class Notification extends React.PureComponent {
+  state = {
+    refresh: this.props.refresh,
+  };
   render() {
+    const {appointmentIcon, client, item, navigation} = this.props;
     return (
-      <>
-        <View style={styles.container}>
-          <Header
-            containerStyle={styles.headerStyle}
-            leftComponent={<Text style={styles.headerText1}>Notification</Text>}
-            leftContainerStyle={styles.headerLeftContainerStyle}
-          />
-          <ScrollView
-            style={{paddingHorizontal: 15}}
-            showsVerticalScrollIndicator={false}>
-            <Query query={NOTIFICATION} pollInterval={5000}>
-              {({loading, error, data}) => {
-                if (loading)
-                  return (
-                    <View
-                      style={{height: Dimensions.get('screen').height / 1.2}}>
-                      <ActivityIndicatorPage />
-                    </View>
-                  );
-                console.log(data);
-                if (data && data.getNotifications)
-                  return data.getNotifications.length == 0 ? (
-                    <View style={{paddingHorizontal: 15}}>
-                      <Image
-                        style={styles.emptyIcon}
-                        source={require('../../assets/empty-notification.png')}
-                      />
-                      <Text
-                        style={[
-                          styles.bodyText,
-                          {textAlign: 'center', marginHorizontal: 20},
-                        ]}>
-                        You do not have any notifications yet
-                      </Text>
-                    </View>
-                  ) : (
-                    data.getNotifications.map((notification, key) => (
-                      <TouchableOpacity
-                        onPress={() =>
-                          notification.type == 'Referral' ||
-                          notification.type == 'Report' ||
-                          notification.type == 'Prescription'
-                            ? this.props.navigation.navigate(
-                                'DoctorNote',
-                                {
-                                  appointmentId: notification.appointment.id,
-                                },
-                                NavigationActions.navigate({
-                                  routeName: notification.type,
-                                }),
-                              )
-                            : // notification.appointment
-                              //   ? this.props.navigation.navigate(
-                              //       'AppointmentDetail',
-                              //       {
-                              //         appointment: {
-                              //           title:
-                              //             notification.owner.profile.firstName +
-                              //             ' ' +
-                              //             notification.owner.profile.lastName,
-                              //           firstDesc:
-                              //             notification.owner.profile.gender,
-                              //           secondDesc:
-                              //             notification.owner.profile.dateOfBirth,
-                              //           id: notification.appointment.id,
-                              //           date:
-                              //             notification.appointment.ConsultationDate,
-                              //           time: notification.appointment.time,
-                              //           service: '_',
-                              //           status: notification.appointment.status,
-                              //           contact:
-                              //             notification.appointment.meansOfContact,
-                              //           additionalNotes:
-                              //             notification.appointment.additionalNotes,
-                              //           client: true,
-                              //         },
-                              //       },
-                              //     )
-                              null
-                        }>
-                        <View style={styles.careCard} key={shortid.generate()}>
-                          <View
-                            style={{
-                              flex: 1,
-                              justifyContent: 'center',
-                            }}>
-                            <View style={styles.cardImageContainer}>
-                              <Image
-                                style={styles.imageIcon}
-                                source={this.state.appointmentIcon}
-                              />
-                            </View>
-                          </View>
+      <TouchableOpacity
+        onPress={async () => {
+          if (!item.isRead) {
+            try {
+              let res = await client.mutate({
+                mutation: MARK_NOTIFICATION_AS_READ,
+                variables: {
+                  data: {ids: item.id},
+                },
+                awaitRefetchQueries: true,
+                refetchQueries: [
+                  {
+                    query: NOTIFICATION,
+                  },
+                  {
+                    query: UNREAD_NOTIFICATION_COUNT,
+                  },
+                ],
+              });
+            } catch (err) {
+              console.log(err);
+            }
+          }
 
-                          <View style={styles.cardText}>
-                            <View>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'space-between',
-                                }}>
-                                <Text style={styles.cardHeaderText}>
-                                  Appointment
-                                </Text>
-                                <Text style={styles.cardTimeText}>
-                                  {moment(notification.createdAt).fromNow()}
-                                </Text>
-                              </View>
+          (await item.type) == 'Referral' ||
+          item.type == 'Report' ||
+          item.type == 'Prescription'
+            ? navigation.navigate(
+                'DoctorNote',
+                {
+                  appointmentId: item.appointment.id,
+                },
+                NavigationActions.navigate({
+                  routeName: item.type,
+                }),
+              )
+            : item.type == 'Appointment'
+            ? navigation.navigate('CompletedAction', {
+                title: 'Oops!',
+                subTitle: 'This appointment has expired',
+                onCompleted: () => {
+                  navigation.navigate('Notifications');
+                },
+              })
+            : null;
+        }}>
+        <View
+          style={item.isRead ? styles.careCard_read : styles.careCard}
+          key={shortid.generate()}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+            }}>
+            <View style={styles.cardImageContainer}>
+              <Image style={styles.imageIcon} source={appointmentIcon} />
+            </View>
+          </View>
 
-                              <Text style={styles.cardBodyText}>
-                                {notification.message}
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                      </TouchableOpacity>
-                    ))
-                  );
-                return (
-                  <View style={{paddingHorizontal: 15}}>
-                    <Image
-                      style={styles.emptyIcon}
-                      source={require('../../assets/empty-notification.png')}
-                    />
-                    <Text
-                      style={[
-                        styles.bodyText,
-                        {textAlign: 'center', marginHorizontal: 20},
-                      ]}>
-                      You do not have any notifications yet
-                    </Text>
-                  </View>
-                );
-              }}
-            </Query>
-          </ScrollView>
+          <View style={styles.cardText}>
+            <View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Text style={styles.cardHeaderText}>Appointment</Text>
+                <Text style={styles.cardTimeText}>
+                  {moment(item.createdAt).fromNow()}
+                </Text>
+              </View>
+
+              <Text style={styles.cardBodyText}>{item.message}</Text>
+            </View>
+          </View>
         </View>
-      </>
+      </TouchableOpacity>
     );
   }
 }
+
+class NotificationPage extends React.Component {
+  state = {
+    appointmentIcon: require('../../assets/notification-appointment.png'),
+    forumIcon: require('../../assets/notification-forum.png'),
+    refresh: false,
+  };
+
+  componentDidMount() {}
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.refresh != this.state.refresh) {
+      console.log('happenstance');
+    }
+  }
+
+  render() {
+    return (
+      <Query query={NOTIFICATION} fetchPolicy="network-and-cache">
+        {({loading, error, data}) => {
+          if (loading) return <ActivityIndicatorPage />;
+          if (error) return <Text>{error}</Text>;
+          return (
+            <View style={styles.container}>
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                ListHeaderComponent={
+                  <Header
+                    containerStyle={styles.headerStyle}
+                    leftComponent={
+                      <Text style={styles.headerText1}>Notification</Text>
+                    }
+                    leftContainerStyle={styles.headerLeftContainerStyle}
+                  />
+                }
+                keyExtractor={() => shortid.generate()}
+                data={data.getNotifications}
+                renderItem={({item}) => {
+                  return (
+                    <Notification
+                      item={item}
+                      navigation={this.props.navigation}
+                      client={this.props.client}
+                      appointmentIcon={this.state.appointmentIcon}
+                      refresh={this.state.refresh}
+                    />
+                  );
+                }}
+                keyExtractor={item => item.id}
+                ListEmptyComponent={
+                  <EmptyContent text="You do not have any notifications yet" />
+                }
+              />
+            </View>
+          );
+        }}
+      </Query>
+    );
+  }
+}
+
+export default withApollo(NotificationPage);

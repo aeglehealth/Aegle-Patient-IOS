@@ -1248,6 +1248,7 @@ export const NOTIFICATION = gql`
       action
       message
       createdAt
+      isRead
       url
       appointment {
         id
@@ -1409,6 +1410,30 @@ export const CANCEL_SUBSCRIPTION = gql`
       type
       entity
       name
+    }
+  }
+`;
+
+export const MARK_NOTIFICATION_AS_READ = gql`
+  mutation($data: MarkNotificationDTO!) {
+    markNotificationsAsRead(data: $data)
+  }
+`;
+
+export const UNREAD_NOTIFICATION_COUNT = gql`
+  query {
+    unreadNotificationCount
+  }
+`;
+
+export const START_VIDEO_CALL = gql`
+  subscription {
+    videoStarted {
+      room
+      token
+      sessionId
+      appointmentId
+      subject
     }
   }
 `;

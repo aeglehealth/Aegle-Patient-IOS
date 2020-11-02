@@ -24,6 +24,7 @@ import {
   ADD_DEVICE,
   CANCEL_APPOINTMENT,
   UPDATE_DEVICE,
+  START_VIDEO_CALL,
 } from '../../QueryAndMutation';
 import AsyncStorage from '@react-native-community/async-storage';
 import Aegle from '../../assets/aegle-black.svg';
@@ -62,6 +63,7 @@ import {
 } from 'react-native-dotenv';
 import FastStorage from 'react-native-fast-storage';
 import {localNotificationService} from './LocalNotifications';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 function elevationShadowStyle(elevation) {
   return {
@@ -460,7 +462,6 @@ class HomePage extends React.Component {
         session: {id, room},
       } = res.data.getAppointmentById;
 
-      console.log('hurray');
       this.setState({
         roomId: roomId || room,
         sessionId: sessionId || id,
@@ -810,14 +811,15 @@ class HomePage extends React.Component {
         data: {action},
         data,
       } = remoteMessage;
-      if (action === 'appointment.started') {
-        const {appointmentId, sessionId, roomId} = data;
-        if (appointmentId && sessionId && roomId) {
-          console.log(title, body, data, 'body');
-          this.showAlertVideo(title, body, data);
-        }
-        return;
-      } else if (action === 'appointment.approved') {
+      // if (action === 'appointment.started') {
+      //   const {appointmentId, sessionId, roomId} = data;
+      //   if (appointmentId && sessionId && roomId) {
+      //     console.log(title, body, data, 'body');
+      //     this.showAlertVideo(title, body, data);
+      //   }
+      //   return;
+      // } else
+      if (action === 'appointment.approved') {
         const {date, time} = data;
         const militaryTime = timeConversion(time);
 
@@ -933,19 +935,19 @@ class HomePage extends React.Component {
       const notification = await FastStorage.getItem(NOTIFICATION);
       // const notification = await AsyncStorage.getItem(NOTIFICATION);
       const payload = JSON.parse(notification);
-      console.log(payload, 'abaa');
       const {
         notification: {title, body},
         data: {action},
       } = payload;
-      if (action === 'appointment.started') {
-        const {data} = payload;
-        const {appointmentId, sessionId, roomId} = data;
-        if (appointmentId && sessionId && roomId) {
-          this.showAlertVideo(title, body, data);
-        }
-        return;
-      } else if (action === 'appointment.approved') {
+      // if (action === 'appointment.started') {
+      //   const {data} = payload;
+      //   const {appointmentId, sessionId, roomId} = data;
+      //   if (appointmentId && sessionId && roomId) {
+      //     this.showAlertVideo(title, body, data);
+      //   }
+      //   return;
+      // } else
+      if (action === 'appointment.approved') {
         const {data} = payload;
         const {date, time} = data;
         const militaryTime = timeConversion(time);
@@ -996,17 +998,29 @@ class HomePage extends React.Component {
   };
 
   _handleAppStateChange = nextAppState => {
+    // let badgeCount;
     if (
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
       console.log(this.state.appState, 'idle');
       this.handleBackgroundNotifications();
+      PushNotificationIOS.removeAllDeliveredNotifications();
     }
     this.setState({appState: nextAppState});
   };
 
   async componentDidMount() {
+    const {client} = this.props;
+
+    client.subscribe({query: START_VIDEO_CALL}).subscribe({
+      next({data}) {
+        // console.log(data, 'video started');
+        // this.showAlertVideo(title, body, data);
+      },
+    });
+
+    PushNotificationIOS.removeAllDeliveredNotifications();
     // console.log(await FastStorage.getItem('key'), 'dom');
 
     // this.registerAppWithFCM();
@@ -1037,6 +1051,7 @@ class HomePage extends React.Component {
     //   console.log('[App] onOpenNotification: ', notify);
     //   alert('Open Notification: ' + notify.body);
     // }
+
     await this.requestNotificationPermission();
 
     await this.checkFirebasePermission();
@@ -1047,7 +1062,8 @@ class HomePage extends React.Component {
 
     AppState.addEventListener('change', this._handleAppStateChange);
 
-    await this.getRefreshToken();
+    // await this.getRefreshToken();
+
     this.handleBackgroundNotifications();
 
     if (Platform.OS === 'ios') {
@@ -1056,11 +1072,11 @@ class HomePage extends React.Component {
       this.requestPermissions();
     }
 
-    const {client} = this.props;
     const res = await client.query({
       query: MEPOST,
       fetchPolicy: 'network-only',
     });
+
     const {id, profile, isPhoneVerified} = res.data.me;
     this.setState({id});
     await AsyncStorage.setItem(FIRST_NAME, profile.firstName);
@@ -1083,7 +1099,7 @@ class HomePage extends React.Component {
   }
 
   async componentWillUnmount() {
-    // AppState.removeEventListener('change', this._handleAppStateChange);
+    AppState.removeEventListener('change', this._handleAppStateChange);
     // this.unRegister();
     // localNotificationService.unregister();
     this.unsubscribe;
