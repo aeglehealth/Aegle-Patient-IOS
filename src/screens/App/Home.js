@@ -430,8 +430,8 @@ class HomePage extends React.Component {
   // };
   // /////////////////////
 
-  handleVideo = async data => {
-    const {appointmentId, sessionId, roomId} = data && data;
+  handleVideo = async (appointmentId, sessionId) => {
+    // const {appointmentId, sessionId, roomId} = data && data;
 
     await FastStorage.removeItem(NOTIFICATION);
 
@@ -463,7 +463,7 @@ class HomePage extends React.Component {
       } = res.data.getAppointmentById;
 
       this.setState({
-        roomId: roomId || room,
+        roomId: room,
         sessionId: sessionId || id,
         open: true,
         time,
@@ -1012,11 +1012,13 @@ class HomePage extends React.Component {
 
   async componentDidMount() {
     const {client} = this.props;
+    let that = this;
 
     client.subscribe({query: START_VIDEO_CALL}).subscribe({
       next({data}) {
-        // console.log(data, 'video started');
-        // this.showAlertVideo(title, body, data);
+        const {appointmentId, sessionId} = data && data.videoStarted;
+        console.log(appointmentId, sessionId, 'video started');
+        that.handleVideo(appointmentId, sessionId);
       },
     });
 

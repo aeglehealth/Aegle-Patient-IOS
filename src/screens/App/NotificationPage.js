@@ -175,7 +175,7 @@ class Notification extends React.PureComponent {
             : item.type == 'Appointment'
             ? navigation.navigate('CompletedAction', {
                 title: 'Oops!',
-                subTitle: 'This appointment has expired',
+                subTitle: 'This appointment has been completed or expired',
                 onCompleted: () => {
                   navigation.navigate('Notifications');
                 },
