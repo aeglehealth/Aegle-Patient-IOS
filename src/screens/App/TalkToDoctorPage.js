@@ -143,7 +143,7 @@ export default class TalkToDoctorPage extends React.Component {
       <Query query={APPOINTMENTS} fetchPolicy="network-only">
         {({loading, error, data}) => {
           if (loading) return <ActivityIndicatorPage />;
-          if (error) return <Text>{error}</Text>;
+          if (error) return <Text>an error occured</Text>;
           const {patientAppointments} = data;
           console.log(data, 'data');
           const upComingAppointments = patientAppointments.filter(

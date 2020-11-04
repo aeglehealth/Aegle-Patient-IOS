@@ -36,7 +36,7 @@ import {PRIMARY_COLOR} from './src/shared/Colors';
 import {Provider as PaperProvider, DefaultTheme} from 'react-native-paper';
 import Page from './src/screens/Routes';
 import codePush from 'react-native-code-push';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import messaging from '@react-native-firebase/messaging';
 
 const theme = {
   ...DefaultTheme,
@@ -71,14 +71,15 @@ class App extends React.Component {
   //   AppState.removeEventListener('change', this._handleAppStateChange);
   // }
 
-  // componentDidMount() {
-  //   let that = this;
-  //   PushNotificationIOS.getApplicationIconBadgeNumber(async num => {
-  //     badgeCount = num;
-  //     that.setState({badgeCount});
-  //   });
-  //   AppState.addEventListener('change', this._handleAppStateChange);
-  // }
+  componentDidMount() {
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(remoteMessage, 'App Closed Push Notification opened');
+        }
+      });
+  }
 
   statusBarIOS() {
     if (Platform.OS === 'ios') {

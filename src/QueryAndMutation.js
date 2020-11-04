@@ -1256,6 +1256,10 @@ export const NOTIFICATION = gql`
         date
         status
         meansOfContact
+        session {
+          id
+          room
+        }
       }
       owner {
         id
