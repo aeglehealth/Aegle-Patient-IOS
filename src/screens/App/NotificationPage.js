@@ -237,7 +237,7 @@ class NotificationPage extends React.Component {
       <Query query={NOTIFICATION} fetchPolicy="network-and-cache">
         {({loading, error, data}) => {
           if (loading) return <ActivityIndicatorPage />;
-          if (error) return <Text>{error}</Text>;
+          if (error) return <Text>error occured!</Text>;
           return (
             <View style={styles.container}>
               <FlatList

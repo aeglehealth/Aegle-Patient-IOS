@@ -1,16 +1,43 @@
 import React from 'react';
-import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  AppState,
+} from 'react-native';
 import {Badge} from 'react-native-elements';
 import {UNREAD_NOTIFICATION_COUNT} from '../QueryAndMutation';
 import {Query} from 'react-apollo';
 
 class IconWithBadge extends React.Component {
+  state = {appState: AppState.currentState};
+
+  componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
+  _handleAppStateChange = nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      this.state.refetch();
+    }
+    this.setState({appState: nextAppState});
+  };
+
   render() {
     return (
       <Query query={UNREAD_NOTIFICATION_COUNT} fetchPolicy="network-and-cache">
-        {({loading, error, data}) => {
-          if (loading) return <ActivityIndicator />;
-          if (error) return <Text>{error}</Text>;
+        {({loading, error, data, refetch}) => {
+          this.state.refetch ? null : this.setState({refetch: refetch});
+          if (loading) return <Text>{''}</Text>;
+          if (error) return <Text>{''}</Text>;
           const badgeCount = data.unreadNotificationCount;
           return (
             <>

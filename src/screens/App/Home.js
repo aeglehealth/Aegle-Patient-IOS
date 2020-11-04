@@ -25,6 +25,7 @@ import {
   CANCEL_APPOINTMENT,
   UPDATE_DEVICE,
   START_VIDEO_CALL,
+  NOTIFICATION as NOTIFICATIONS,
 } from '../../QueryAndMutation';
 import AsyncStorage from '@react-native-community/async-storage';
 import Aegle from '../../assets/aegle-black.svg';
@@ -430,10 +431,10 @@ class HomePage extends React.Component {
   // };
   // /////////////////////
 
-  handleVideo = async (appointmentId, sessionId) => {
-    // const {appointmentId, sessionId, roomId} = data && data;
+  handleVideo = async data => {
+    const {appointmentId, sessionId, roomId} = data && data;
 
-    await FastStorage.removeItem(NOTIFICATION);
+    await AsyncStorage.removeItem(NOTIFICATION);
 
     Platform.OS === 'ios'
       ? await this.checkIosPermissions()
@@ -463,7 +464,7 @@ class HomePage extends React.Component {
       } = res.data.getAppointmentById;
 
       this.setState({
-        roomId: room,
+        roomId: roomId || room,
         sessionId: sessionId || id,
         open: true,
         time,
@@ -811,15 +812,14 @@ class HomePage extends React.Component {
         data: {action},
         data,
       } = remoteMessage;
-      // if (action === 'appointment.started') {
-      //   const {appointmentId, sessionId, roomId} = data;
-      //   if (appointmentId && sessionId && roomId) {
-      //     console.log(title, body, data, 'body');
-      //     this.showAlertVideo(title, body, data);
-      //   }
-      //   return;
-      // } else
-      if (action === 'appointment.approved') {
+      if (action === 'appointment.started') {
+        const {appointmentId, sessionId, roomId} = data;
+        if (appointmentId && sessionId && roomId) {
+          console.log(remoteMessage, 'body');
+          this.showAlertVideo(title, body, data);
+        }
+        return;
+      } else if (action === 'appointment.approved') {
         const {date, time} = data;
         const militaryTime = timeConversion(time);
 
@@ -895,8 +895,24 @@ class HomePage extends React.Component {
         {
           text: 'OK',
           onPress: async () => {
+            let notificationIdArray = [];
+
+            if (await AsyncStorage.getItem('NOTIFICATIONID')) {
+              notificationIdArray = await AsyncStorage.getItem(
+                'NOTIFICATIONID',
+              );
+              notificationIdArray = JSON.parse(notificationIdArray);
+            }
+
+            notificationIdArray.push(data.appointmentId);
+            await AsyncStorage.setItem(
+              'NOTIFICATIONID',
+              JSON.stringify(notificationIdArray),
+            );
+
             that.handleVideo(data);
             await AsyncStorage.removeItem(NOTIFICATION);
+            await FastStorage.removeItem(NOTIFICATION);
             this.unsubscribe;
             console.log('OK Pressed');
           },
@@ -938,16 +954,16 @@ class HomePage extends React.Component {
       const {
         notification: {title, body},
         data: {action},
+        data,
       } = payload;
-      // if (action === 'appointment.started') {
-      //   const {data} = payload;
-      //   const {appointmentId, sessionId, roomId} = data;
-      //   if (appointmentId && sessionId && roomId) {
-      //     this.showAlertVideo(title, body, data);
-      //   }
-      //   return;
-      // } else
-      if (action === 'appointment.approved') {
+      if (action === 'appointment.started') {
+        const {data} = payload;
+        const {appointmentId, sessionId, roomId} = data;
+        if (appointmentId && sessionId && roomId) {
+          this.showAlertVideo(title, body, data);
+        }
+        return;
+      } else if (action === 'appointment.approved') {
         const {data} = payload;
         const {date, time} = data;
         const militaryTime = timeConversion(time);
@@ -1010,19 +1026,91 @@ class HomePage extends React.Component {
     this.setState({appState: nextAppState});
   };
 
+  videoFromNotification = async () => {
+    // await AsyncStorage.removeItem('NOTIFICATIONID');
+    const notifications = await this.props.client.query({
+      query: NOTIFICATIONS,
+    });
+    const {getNotifications} = notifications && notifications.data;
+    const latestNotification = getNotifications[0];
+
+    if (await AsyncStorage.getItem(NOTIFICATION)) {
+      console.log('paaser1');
+
+      const notification = await AsyncStorage.getItem(NOTIFICATION);
+      const payload = JSON.parse(notification);
+      const {
+        data: {action},
+      } = payload;
+      if (action === 'appointment.started') {
+        return;
+      }
+    }
+
+    if (latestNotification) {
+      const {
+        appointment: {id: appointmentId, status},
+      } = latestNotification;
+
+      let notificationIdArray = [];
+
+      if (status != 'APPROVED') {
+        return;
+      }
+
+      if ((await AsyncStorage.getItem('NOTIFICATIONID')) == null) {
+        notificationIdArray.push(appointmentId);
+        await AsyncStorage.setItem(
+          'NOTIFICATIONID',
+          JSON.stringify(notificationIdArray),
+        );
+      } else {
+        const idArray = await AsyncStorage.getItem('NOTIFICATIONID');
+        notificationIdArray = JSON.parse(idArray);
+        const idCheck = notificationIdArray.find(n => n == appointmentId);
+
+        if (idCheck != undefined) {
+          return;
+        }
+        notificationIdArray.push(appointmentId);
+        await AsyncStorage.setItem(
+          'NOTIFICATIONID',
+          JSON.stringify(notificationIdArray),
+        );
+      }
+
+      if (
+        latestNotification &&
+        latestNotification.action == 'appointment.started'
+      ) {
+        console.log(latestNotification, 'currentlyy', 'psser7');
+        const {
+          appointment: {
+            // id: appointmentId,
+            session: {id: sessionId, room: roomId},
+          },
+        } = latestNotification;
+        console.log(appointmentId, sessionId, roomId, 'roomer');
+        if (appointmentId && sessionId && roomId) {
+          const data = {
+            appointmentId,
+            sessionId,
+            roomId,
+          };
+          this.handleVideo(data);
+        }
+      }
+    }
+  };
+
   async componentDidMount() {
+    // await FastStorage.removeItem(NOTIFICATION);
+
     const {client} = this.props;
     let that = this;
 
-    client.subscribe({query: START_VIDEO_CALL}).subscribe({
-      next({data}) {
-        const {appointmentId, sessionId} = data && data.videoStarted;
-        console.log(appointmentId, sessionId, 'video started');
-        that.handleVideo(appointmentId, sessionId);
-      },
-    });
-
     PushNotificationIOS.removeAllDeliveredNotifications();
+
     // console.log(await FastStorage.getItem('key'), 'dom');
 
     // this.registerAppWithFCM();
@@ -1098,6 +1186,8 @@ class HomePage extends React.Component {
     if (AsyncStorage.getItem(SYMPTOMS_QUESTIONS)) {
       await AsyncStorage.removeItem(SYMPTOMS_QUESTIONS);
     }
+
+    await this.videoFromNotification();
   }
 
   async componentWillUnmount() {
@@ -1443,7 +1533,8 @@ class HomePage extends React.Component {
                         disabled={
                           this.state.loading || this.state.declineLoading
                         }
-                        onPress={() => {
+                        onPress={async () => {
+                          await AsyncStorage.removeItem('NOTIFICATIONID');
                           const {id, roomId, sessionId} = this.state;
                           this.setState({loading: true});
                           joinVideoCall({
