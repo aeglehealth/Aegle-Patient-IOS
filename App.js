@@ -36,10 +36,6 @@ import {PRIMARY_COLOR} from './src/shared/Colors';
 import {Provider as PaperProvider, DefaultTheme} from 'react-native-paper';
 import Page from './src/screens/Routes';
 import codePush from 'react-native-code-push';
-import messaging from '@react-native-firebase/messaging';
-import FastStorage from 'react-native-fast-storage';
-import AsyncStorage from '@react-native-community/async-storage';
-import {NOTIFICATION} from 'react-native-dotenv';
 
 const theme = {
   ...DefaultTheme,
@@ -53,38 +49,6 @@ class App extends React.Component {
   constructor(properties) {
     super(properties);
   }
-
-  // _handleAppStateChange = nextAppState => {
-  //   let badgeCount,
-  //     that = this;
-  //   if (
-  //     this.state.appState.match(/inactive|background/) &&
-  //     nextAppState === 'active'
-  //   ) {
-  //     console.log(this.state.appState, 'idler');
-  //     PushNotificationIOS.getApplicationIconBadgeNumber(async num => {
-  //       badgeCount = num;
-  //       that.setState({badgeCount});
-  //     });
-  //   }
-  //   this.setState({appState: nextAppState});
-  // };
-
-  // componentWillUnmount() {
-  //   AppState.removeEventListener('change', this._handleAppStateChange);
-  // }
-
-  // componentDidMount() {
-  //   messaging().setBackgroundMessageHandler(async remoteMessage => {
-  //     console.log(remoteMessage, 'Message handled in the background!!');
-  //     if (remoteMessage) {
-  //       const data = JSON.stringify(remoteMessage);
-  //       await AsyncStorage.setItem(NOTIFICATION, data);
-  //       await FastStorage.setItem(NOTIFICATION, data);
-  //       console.log(await FastStorage.getItem(NOTIFICATION), 'dat!!');
-  //     }
-  //   });
-  // }
 
   statusBarIOS() {
     if (Platform.OS === 'ios') {
@@ -123,5 +87,5 @@ console.disableYellowBox = true;
 
 const codePushOptions = {checkFrequency: codePush.CheckFrequency.ON_APP_RESUME};
 
-// export default codePush(codePushOptions)(App);
-export default App;
+export default codePush(codePushOptions)(App);
+// export default App;
