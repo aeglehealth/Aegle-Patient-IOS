@@ -51,6 +51,12 @@ const styles = StyleSheet.create({
     fontFamily: 'muli-regular',
     fontSize: 14,
   },
+  cardBodyText_read: {
+    color: '#C4C4C4',
+    fontFamily: 'muli-regular',
+    fontSize: 14,
+  },
+
   cardTimeText: {
     color: 'rgba(0, 0, 0, 0.38)',
     fontFamily: 'muli-regular',
@@ -58,6 +64,12 @@ const styles = StyleSheet.create({
   },
   cardHeaderText: {
     color: '#000',
+    fontFamily: 'Muli-ExtraBold',
+    fontSize: 18,
+    marginBottom: 5,
+  },
+  cardHeaderText_read: {
+    color: '#C4C4C4',
     fontFamily: 'Muli-ExtraBold',
     fontSize: 18,
     marginBottom: 5,
@@ -76,17 +88,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingHorizontal: 10,
     marginVertical: 10,
-    backgroundColor: '#E1E3F6',
-  },
-  careCard_read: {
-    flex: 1,
-    flexDirection: 'row',
-    borderBottomColor: 'rgba(196, 196, 196, 0.4)',
-    borderBottomWidth: 2,
-    paddingTop: 10,
-    paddingBottom: 20,
-    paddingHorizontal: 10,
-    marginVertical: 10,
+    // backgroundColor: '#E1E3F6',
   },
   cardImageContainer: {
     justifyContent: 'center',
@@ -182,9 +184,7 @@ class Notification extends React.PureComponent {
               })
             : null;
         }}>
-        <View
-          style={item.isRead ? styles.careCard_read : styles.careCard}
-          key={shortid.generate()}>
+        <View style={styles.careCard} key={shortid.generate()}>
           <View
             style={{
               flex: 1,
@@ -202,13 +202,25 @@ class Notification extends React.PureComponent {
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                 }}>
-                <Text style={styles.cardHeaderText}>Appointment</Text>
+                <Text
+                  style={
+                    item.isRead
+                      ? styles.cardHeaderText_read
+                      : styles.cardHeaderText
+                  }>
+                  Appointment
+                </Text>
                 <Text style={styles.cardTimeText}>
                   {moment(item.createdAt).fromNow()}
                 </Text>
               </View>
 
-              <Text style={styles.cardBodyText}>{item.message}</Text>
+              <Text
+                style={
+                  item.isRead ? styles.cardBodyText_read : styles.cardBodyText
+                }>
+                {item.message}
+              </Text>
             </View>
           </View>
         </View>

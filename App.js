@@ -37,6 +37,9 @@ import {Provider as PaperProvider, DefaultTheme} from 'react-native-paper';
 import Page from './src/screens/Routes';
 import codePush from 'react-native-code-push';
 import messaging from '@react-native-firebase/messaging';
+import FastStorage from 'react-native-fast-storage';
+import AsyncStorage from '@react-native-community/async-storage';
+import {NOTIFICATION} from 'react-native-dotenv';
 
 const theme = {
   ...DefaultTheme,
@@ -71,15 +74,17 @@ class App extends React.Component {
   //   AppState.removeEventListener('change', this._handleAppStateChange);
   // }
 
-  componentDidMount() {
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(remoteMessage, 'App Closed Push Notification opened');
-        }
-      });
-  }
+  // componentDidMount() {
+  //   messaging().setBackgroundMessageHandler(async remoteMessage => {
+  //     console.log(remoteMessage, 'Message handled in the background!!');
+  //     if (remoteMessage) {
+  //       const data = JSON.stringify(remoteMessage);
+  //       await AsyncStorage.setItem(NOTIFICATION, data);
+  //       await FastStorage.setItem(NOTIFICATION, data);
+  //       console.log(await FastStorage.getItem(NOTIFICATION), 'dat!!');
+  //     }
+  //   });
+  // }
 
   statusBarIOS() {
     if (Platform.OS === 'ios') {
