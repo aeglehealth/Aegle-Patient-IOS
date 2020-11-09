@@ -946,6 +946,13 @@ class HomePage extends React.Component {
       console.log(await FastStorage.getItem(NOTIFICATION), 'fastStorage');
     }
 
+    if (await AsyncStorage.getItem(NOTIFICATION)) {
+      console.log(
+        await AsyncStorage.getItem(NOTIFICATION),
+        'AsyncStorageeeeee',
+      );
+    }
+
     if (await FastStorage.getItem(NOTIFICATION)) {
       console.log(await FastStorage.getItem(NOTIFICATION), 'aba');
       const notification = await FastStorage.getItem(NOTIFICATION);
@@ -986,42 +993,16 @@ class HomePage extends React.Component {
     }
   };
 
-  onNotificationOpenedApp = async () => {
-    console.log('Message!');
-    this.unsubscribe = messaging().onNotificationOpenedApp(
-      async remoteMessage => {
-        console.log(remoteMessage, 'Message handled in the background!');
-        if (remoteMessage) {
-          const data = JSON.stringify(remoteMessage);
-          await AsyncStorage.setItem(NOTIFICATION, data);
-          await FastStorage.setItem(NOTIFICATION, data);
-          console.log(await FastStorage.getItem(NOTIFICATION), 'dat');
-        }
-      },
-    );
-  };
-
-  getInitialNotification = async () => {
-    console.log('getInitialNotification!');
-    const remoteMessage = await messaging().getInitialNotification();
-
-    if (remoteMessage) {
-      const data = JSON.stringify(remoteMessage);
-      await AsyncStorage.setItem(NOTIFICATION, data);
-      await FastStorage.setItem(NOTIFICATION, data);
-      console.log(await FastStorage.getItem(NOTIFICATION), 'dat');
-    }
-  };
-
   _handleAppStateChange = nextAppState => {
-    // let badgeCount;
     if (
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      console.log(this.state.appState, 'idle');
-      this.handleBackgroundNotifications();
-      PushNotificationIOS.removeAllDeliveredNotifications();
+      setTimeout(() => {
+        this.handleBackgroundNotifications();
+        console.log(this.state.appState, nextAppState, 'app state transition');
+        PushNotificationIOS.removeAllDeliveredNotifications();
+      }, 3000);
     }
     this.setState({appState: nextAppState});
   };
@@ -1104,7 +1085,7 @@ class HomePage extends React.Component {
   };
 
   async componentDidMount() {
-    // await FastStorage.removeItem(NOTIFICATION);
+    await FastStorage.removeItem(NOTIFICATION);
 
     const {client} = this.props;
     let that = this;
@@ -1148,7 +1129,9 @@ class HomePage extends React.Component {
 
     await this.fcmNotifications();
 
-    await this.getInitialNotification();
+    await this.videoFromNotification();
+
+    // await this.getInitialNotification();
 
     AppState.addEventListener('change', this._handleAppStateChange);
 
@@ -1186,8 +1169,6 @@ class HomePage extends React.Component {
     if (AsyncStorage.getItem(SYMPTOMS_QUESTIONS)) {
       await AsyncStorage.removeItem(SYMPTOMS_QUESTIONS);
     }
-
-    await this.videoFromNotification();
   }
 
   async componentWillUnmount() {
