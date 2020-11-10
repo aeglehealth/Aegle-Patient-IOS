@@ -471,10 +471,10 @@ PODS:
     - React
     - SDWebImage (~> 5.0)
     - SDWebImageWebPCoder (~> 0.4.1)
-  - RNFBApp (8.4.6):
+  - RNFBApp (8.4.7):
     - Firebase/CoreOnly (= 6.34.0)
     - React-Core
-  - RNFBMessaging (7.9.1):
+  - RNFBMessaging (7.9.2):
     - Firebase/Messaging (= 6.34.0)
     - React-Core
     - RNFBApp
@@ -504,7 +504,7 @@ PODS:
   - SSZipArchive (2.2.3)
   - toolbar-android (0.1.0-rc.2):
     - React
-  - TwilioVideo (3.7.1)
+  - TwilioVideo (3.7.2)
   - TwilioVoice (2.1.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -856,8 +856,8 @@ SPEC CHECKSUMS:
   RNCPushNotificationIOS: 8025ff0b610d7b28d29ddc1b619cd55814362e4c
   RNDeviceInfo: ab2ab4ca9e7f2bc4f35d62ab6ce2b66f2cbf1e7a
   RNFastImage: 35ae972d6727c84ee3f5c6897e07f84d0a3445e9
-  RNFBApp: e0fc0113eecc07f440f17639c9b7c59ea90bc583
-  RNFBMessaging: 1d2a6a249cf6b93bed1721befc42650c45615112
+  RNFBApp: 636d5ea95f4f8fb237d7efb76e05d5cec67b918a
+  RNFBMessaging: a1845c6644ca2ca0c791f523f95be9f196665222
   RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0
   RNGoogleSignin: 6baed9bb19c9c54614bef63bdc55c381b4e33c44
   RNPermissions: 69dc24ae1a9507576e2e9cf70ceed51065311da8
@@ -870,7 +870,7 @@ SPEC CHECKSUMS:
   SDWebImageWebPCoder: 36f8f47bd9879a8aea6044765c1351120fd8e3a8
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   toolbar-android: 404f4450b203597e7b417f714ff417bed562a1be
-  TwilioVideo: 807526f68043a11f0e17e5c26ef0f0f73d5678e4
+  TwilioVideo: 5257640fab00d1b9f44db060815b03516a9eb0e8
   TwilioVoice: 8a85ce501ce9fe8900b79beb6a87ebf8c2d5dc1a
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a

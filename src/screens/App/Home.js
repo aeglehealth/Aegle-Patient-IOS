@@ -1501,79 +1501,83 @@ class HomePage extends React.Component {
                 }}
                 isVisible={this.state.open}
                 onBackdropPress={this.decline}>
-                <Aegle style={styles.logo} />
-                <Text style={styles.title}>
-                  Dr. {doctorName} is in the consulting room and has started
-                  your appointment scheduled for {this.state.time} today
-                </Text>
+                <>
+                  <Aegle style={styles.logo} />
+                  <Text style={styles.title}>
+                    Dr. {doctorName} is in the consulting room and has started
+                    your appointment scheduled for {this.state.time} today
+                  </Text>
 
-                <View style={styles.buttonDiv}>
-                  <Mutation mutation={JOIN_VIDEO_CALL}>
-                    {joinVideoCall => (
-                      <TouchableOpacity
-                        disabled={
-                          this.state.loading || this.state.declineLoading
-                        }
-                        onPress={async () => {
-                          await AsyncStorage.removeItem('NOTIFICATIONID');
-                          const {id, roomId, sessionId} = this.state;
-                          this.setState({loading: true});
-                          joinVideoCall({
-                            variables: {
-                              data: {
-                                sessionId,
-                                patientId: id,
-                                room: roomId,
+                  <View style={styles.buttonDiv}>
+                    <Mutation mutation={JOIN_VIDEO_CALL}>
+                      {joinVideoCall => (
+                        <TouchableOpacity
+                          disabled={
+                            this.state.loading || this.state.declineLoading
+                          }
+                          onPress={async () => {
+                            await AsyncStorage.removeItem('NOTIFICATIONID');
+                            const {id, roomId, sessionId} = this.state;
+                            this.setState({loading: true});
+                            joinVideoCall({
+                              variables: {
+                                data: {
+                                  sessionId,
+                                  patientId: id,
+                                  room: roomId,
+                                },
                               },
-                            },
-                          })
-                            .then(res => {
-                              if (res) {
-                                const {
-                                  room,
-                                  token,
-                                  // appointmentId,
-                                } = res.data.joinVideoCall;
-                                this.setState({
-                                  open: false,
-                                  token,
-                                  room,
-                                  loading: false,
-                                  // appointmentId,
-                                });
-                                this.openVideo();
-                              }
                             })
-                            .catch(err => this.setState({loading: false}));
-                        }}>
-                        <View style={styles.accept}>
-                          {this.state.loading ? (
-                            <ActivityIndicator
-                              color="white"
-                              style={{paddingHorizontal: 25}}
-                            />
-                          ) : (
-                            <Text style={styles.button}>Join</Text>
-                          )}
-                        </View>
-                      </TouchableOpacity>
-                    )}
-                  </Mutation>
-                  <TouchableOpacity
-                    onPress={() => this.cancelAppointment()}
-                    disabled={this.state.declineLoading || this.state.loading}>
-                    <View style={styles.decline}>
-                      {this.state.declineLoading ? (
-                        <ActivityIndicator
-                          color="white"
-                          style={{paddingHorizontal: 33}}
-                        />
-                      ) : (
-                        <Text style={styles.button}>Decline</Text>
+                              .then(res => {
+                                if (res) {
+                                  const {
+                                    room,
+                                    token,
+                                    // appointmentId,
+                                  } = res.data.joinVideoCall;
+                                  this.setState({
+                                    open: false,
+                                    token,
+                                    room,
+                                    loading: false,
+                                    // appointmentId,
+                                  });
+                                  this.openVideo();
+                                }
+                              })
+                              .catch(err => this.setState({loading: false}));
+                          }}>
+                          <View style={styles.accept}>
+                            {this.state.loading ? (
+                              <ActivityIndicator
+                                color="white"
+                                style={{paddingHorizontal: 25}}
+                              />
+                            ) : (
+                              <Text style={styles.button}>Join</Text>
+                            )}
+                          </View>
+                        </TouchableOpacity>
                       )}
-                    </View>
-                  </TouchableOpacity>
-                </View>
+                    </Mutation>
+                    <TouchableOpacity
+                      onPress={() => this.cancelAppointment()}
+                      disabled={
+                        this.state.declineLoading || this.state.loading
+                      }>
+                      <View style={styles.decline}>
+                        {this.state.declineLoading ? (
+                          <ActivityIndicator
+                            color="white"
+                            style={{paddingHorizontal: 33}}
+                          />
+                        ) : (
+                          <Text style={styles.button}>Decline</Text>
+                        )}
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </>
               </Overlay>
             </View>
           );
