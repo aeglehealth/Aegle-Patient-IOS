@@ -126,8 +126,8 @@ const AppStack = createStackNavigator(
     ShowImage: {
       screen: ShowImage,
       navigationOptions: {
-        header: null
-      }
+        header: null,
+      },
     },
     AllergyList,
     AllergyEdit,

@@ -36,6 +36,7 @@ export default class Verify extends React.Component {
 
   render() {
     const item = this.props.navigation.state.params;
+    console.log(item.phone, 'phone');
     return (
       <KeyboardAvoidingView style={{flex: 1, backgroundColor: '#fff'}}>
         <ScrollView
