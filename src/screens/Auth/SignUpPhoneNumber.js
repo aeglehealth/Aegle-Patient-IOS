@@ -14,17 +14,30 @@ import {
 } from 'react-native';
 import * as yup from 'yup';
 import {Formik} from 'formik';
+import {Icon} from 'react-native-elements';
 import {Mutation} from 'react-apollo';
 import {SIGN_IN, PHONENUMBER_VERIFICATION} from '../../QueryAndMutation';
 import AsyncStorage from '@react-native-community/async-storage';
 import ShowMessage, {type} from '../../Components/toster/ShowMessage';
 import {HeaderLeft} from '../../Components/HeaderLeft';
 import {EMAIL, FIRST_NAME, AUTH_TOKEN} from 'react-native-dotenv';
+import PhoneInput from 'react-native-phone-number-input';
+import {debounce} from 'throttle-debounce';
 
 export default class Phone extends React.Component {
-  state = {
-    loading: false,
-  };
+  constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
+    this.state = {
+      loading: false,
+      valid: false,
+      ShowMessage: false,
+      formattedValue: '',
+      value: '',
+      country: 'NG',
+    };
+    this.validNumber = debounce(1000, this.checkValidNumber);
+  }
 
   static navigationOptions = ({navigation}) => {
     return {
@@ -43,10 +56,36 @@ export default class Phone extends React.Component {
     await AsyncStorage.removeItem(AUTH_TOKEN);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.formattedValue != this.state.formattedValue) {
+      this.setState({showMessage: false});
+    }
+  }
+
+  handleTextChange = value => {
+    this.setState({value}, () => this.validNumber(this.state.value));
+  };
+
+  checkValidNumber = value => {
+    const valid = this.myRef.current?.isValidNumber(value);
+    this.setState({showMessage: true});
+    this.setState({valid: valid ? valid : false});
+  };
+
+  numberFormatter = () => {
+    const {formattedValue, country} = this.state;
+    const arr = [...formattedValue];
+    if (arr[4] == 0 && country == 'NG') {
+      arr.splice(4, 1);
+      return arr.join('');
+    }
+    return formattedValue;
+  };
+
   render() {
     const item = this.props.navigation.state.params;
     const validationSchema = yup.object().shape({
-      phone: yup.string().required(),
+      phone: yup.string(),
     });
     return (
       <Mutation
@@ -63,9 +102,10 @@ export default class Phone extends React.Component {
                 initialValues={{
                   phone: '',
                 }}
-                onSubmit={values => {
+                onSubmit={async values => {
                   this.setState({loading: true});
-                  registerPatient({
+
+                  await registerPatient({
                     variables: {
                       firstName:
                         item.item.firstName.charAt(0).toUpperCase() +
@@ -73,7 +113,7 @@ export default class Phone extends React.Component {
                       lastName:
                         item.item.lastName.charAt(0).toUpperCase() +
                         item.item.lastName.toLowerCase().substring(1),
-                      phoneNumber: '+234' + values.phone.substr(1),
+                      phoneNumber: this.numberFormatter(),
                       password: item.password.trim(),
                       email: item.item.email.toLowerCase().trim(),
                     },
@@ -132,7 +172,8 @@ export default class Phone extends React.Component {
                       return err;
                     });
                 }}
-                validationSchema={validationSchema}>
+                // validationSchema={validationSchema}
+              >
                 {({
                   values,
                   handleChange,
@@ -171,7 +212,7 @@ export default class Phone extends React.Component {
                                 borderBottomColor: '#B4B4B4',
                                 alignItems: 'center',
                               }}>
-                              {values.phone ? (
+                              {/* {values.phone ? (
                                 <FontAwesome
                                   name="phone"
                                   color="#A7A6A6"
@@ -183,8 +224,48 @@ export default class Phone extends React.Component {
                                   color="#A7A6A6"
                                   size={20}
                                 />
+                              )} */}
+                              <PhoneInput
+                                ref={this.myRef}
+                                defaultValue={this.state.value}
+                                defaultCode={this.state.country}
+                                onChangeText={text =>
+                                  this.handleTextChange(text)
+                                }
+                                onChangeFormattedText={text => {
+                                  this.setState({formattedValue: text});
+                                }}
+                                name="valid"
+                                autoFocus
+                                containerStyle={{
+                                  flex: 1,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                                textContainerStyle={{
+                                  backgroundColor: 'white',
+                                }}
+                              />
+                              {this.state.showMessage ? (
+                                this.state.valid && this.state.value != '' ? (
+                                  <>
+                                    <Icon
+                                      name="check-circle"
+                                      type="font-awesome-5"
+                                      color="green"
+                                    />
+                                  </>
+                                ) : (
+                                  <Icon
+                                    name="x-circle"
+                                    type="feather"
+                                    color="red"
+                                  />
+                                )
+                              ) : (
+                                <Text>{''}</Text>
                               )}
-                              <TextInput
+                              {/* <TextInput
                                 style={styles.input}
                                 placeholderTextColor="#B4B4B4"
                                 value={values.phone}
@@ -194,7 +275,7 @@ export default class Phone extends React.Component {
                                 name="phone"
                                 keyboardType="number-pad"
                                 maxLength={11}
-                              />
+                              /> */}
                             </View>
                             {touched.phone && errors.phone && (
                               <Text style={{fontSize: 10, color: 'red'}}>
@@ -209,8 +290,15 @@ export default class Phone extends React.Component {
                             </View>
                             <TouchableOpacity
                               onPress={handleSubmit}
-                              disabled={this.state.loading}>
-                              <View style={styles.signupbox}>
+                              disabled={
+                                this.state.loading || !this.state.valid
+                              }>
+                              <View
+                                style={
+                                  !this.state.valid
+                                    ? styles.signupboxDisabled
+                                    : styles.signupbox
+                                }>
                                 {this.state.loading ? (
                                   <ActivityIndicator color="#E5E5E5" />
                                 ) : (
@@ -289,6 +377,17 @@ const styles = StyleSheet.create({
     marginTop: 56.9,
     marginBottom: 39,
   },
+  signupboxDisabled: {
+    backgroundColor: '#cccccc',
+    height: 48,
+    width: '100%',
+    alignSelf: 'center',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 56.9,
+    marginBottom: 39,
+  },
   signuptext: {
     color: 'white',
     fontWeight: 'bold',
@@ -296,6 +395,7 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === 'ios' ? 'Muli-Regular' : 'Proxima Nova',
     alignSelf: 'center',
   },
+
   alreadyhaveanaccount: {
     flexDirection: 'row',
     justifyContent: 'center',
