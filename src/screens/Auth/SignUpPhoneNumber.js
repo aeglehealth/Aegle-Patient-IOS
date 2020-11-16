@@ -395,7 +395,6 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === 'ios' ? 'Muli-Regular' : 'Proxima Nova',
     alignSelf: 'center',
   },
-
   alreadyhaveanaccount: {
     flexDirection: 'row',
     justifyContent: 'center',
