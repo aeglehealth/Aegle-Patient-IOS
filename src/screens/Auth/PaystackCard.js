@@ -9,6 +9,7 @@ import {
   ScrollView,
   Image,
   Linking,
+  AppState,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Divider} from 'react-native-elements';
@@ -19,6 +20,8 @@ import {
   PAY,
   SUBMIT_OTP,
   ACTIVE_SUBSCRIPTION,
+  CHECK_SUBSCRIPTION_STATUS,
+  UPDATE_PROFILE,
 } from '../../QueryAndMutation';
 import {Formik} from 'formik';
 import * as yup from 'yup';
@@ -44,6 +47,7 @@ class Paystack extends React.Component {
     isDialogVisible3: false,
     reference: '',
     url: '',
+    appState: AppState.currentState,
   };
 
   static navigationOptions = ({navigation}) => {
@@ -207,6 +211,70 @@ class Paystack extends React.Component {
     await Linking.openURL(url);
   };
 
+  checkStatus = async () => {
+    const {route} = this.state;
+    const {client} = this.props;
+
+    try {
+      const res = await client.query({
+        query: CHECK_SUBSCRIPTION_STATUS,
+        variables: {ref: this.state.reference},
+      });
+      console.log(res);
+      if (res) {
+        const {
+          data: {
+            checkStatus: {status},
+          },
+        } = res;
+        if (status == 'success') {
+          await client.mutate({
+            mutation: UPDATE_PROFILE,
+            variables: {cv: ''},
+            awaitRefetchQueries: true,
+            refetchQueries: [
+              {
+                query: ACTIVE_SUBSCRIPTION,
+              },
+            ],
+          });
+          ShowMessage(type.DONE, 'Transaction Successful');
+          setTimeout(
+            () =>
+              this.props.navigation.navigate(
+                `${route == 'app' ? 'Subscription' : 'Home'}`,
+              ),
+            3000,
+          );
+        }
+      }
+    } catch (err) {
+      this.setState({
+        isDialogVisible: false,
+        isDialogVisible2: false,
+        isDialogVisible3: false,
+      });
+    }
+  };
+
+  _handleAppStateChange = nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      this.checkStatus();
+    }
+    this.setState({appState: nextAppState});
+  };
+
+  componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
   render() {
     const validationSchema = yup.object().shape({
       cardNum: yup.string().required('Enter Card Number'),
@@ -228,7 +296,6 @@ class Paystack extends React.Component {
             }}
             onSubmit={values => {
               this.setState({loading: true});
-              console.log('start');
               pay({
                 variables: {
                   pay: {
@@ -268,6 +335,8 @@ class Paystack extends React.Component {
                   } else if (status === 'open_url') {
                     this.setState({reference, url});
                     this.openUrl(url);
+                  } else if (status === 'send_otp') {
+                    this.setState({isDialogVisible2: true, reference});
                   }
                 })
                 .catch(error => {

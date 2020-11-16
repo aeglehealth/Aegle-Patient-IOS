@@ -138,6 +138,7 @@ class SubscriptionPage extends React.Component {
             local: {email},
           } = me;
           const {activeUserSubscriptions} = data;
+          console.log(activeUserSubscriptions[0].renew, 'length');
           return (
             <View style={styles.container}>
               <ScrollView
@@ -203,7 +204,9 @@ class SubscriptionPage extends React.Component {
                     <Text style={styles.cardHeaderText}>
                       {me.profile.lastName + ' ' + me.profile.firstName}
                     </Text>
-                    {activeUserSubscriptions.length == 0 ? (
+                    {activeUserSubscriptions.length == 0 ||
+                    (activeUserSubscriptions &&
+                      !activeUserSubscriptions[0].renew) ? (
                       <Text style={styles.cardBodyText}>No Subscription</Text>
                     ) : (
                       activeUserSubscriptions.map((subscription, i) => (

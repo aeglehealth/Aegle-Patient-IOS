@@ -1441,3 +1441,17 @@ export const START_VIDEO_CALL = gql`
     }
   }
 `;
+
+export const CHECK_SUBSCRIPTION_STATUS = gql`
+  query($ref: String!) {
+    checkStatus(reference: $ref) {
+      statusCode
+      status
+      message
+      data {
+        status
+        message
+      }
+    }
+  }
+`;
