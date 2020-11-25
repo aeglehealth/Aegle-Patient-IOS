@@ -19,12 +19,26 @@ function elevationShadowStyle(elevation) {
 }
 
 const styles = StyleSheet.create({
+  headerStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  headerListStyle: {
+    width: '80%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+  },
   headerText: {
     color: '#000',
     fontFamily: 'Muli-Bold',
     fontSize: 16,
   },
-  symptomBody: {
+  headerListText: {
+    color: '#1B2CC1',
+    fontFamily: 'Muli-Bold',
+    fontSize: 16,
+  },
+  textStyle: {
     color: '#555',
     fontFamily: 'Muli-Regular',
     fontSize: 14,
@@ -41,6 +55,13 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     ...elevationShadowStyle(1),
   },
+  collapseListStyle: {
+    backgroundColor: '#fff',
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    marginBottom: 0,
+    ...elevationShadowStyle(1),
+  },
 });
 
 export default class Accordion extends React.Component {
@@ -52,6 +73,17 @@ export default class Accordion extends React.Component {
   }
 
   render() {
+    const {collapseIcon} = this.state;
+    const {list, title, description} = this.props;
+    const {
+      textStyle,
+      headerText,
+      headerStyle,
+      collapseStyle,
+      headerListText,
+      headerListStyle,
+      collapseListStyle,
+    } = styles;
     return (
       <Collapse
         onToggle={isCollapsed => {
@@ -59,19 +91,21 @@ export default class Accordion extends React.Component {
             collapseIcon: isCollapsed ? 'chevron-up' : 'chevron-down',
           });
         }}
-        style={styles.collapseStyle}>
+        style={list ? collapseListStyle : collapseStyle}>
         <CollapseHeader>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style={styles.headerText}>{this.props.title}</Text>
+          <View style={list ? headerListStyle : headerStyle}>
+            <Text style={list ? headerListText : headerText}>
+              {list && collapseIcon == 'chevron-up' ? 'Collapse' : title}
+            </Text>
             <Icon
               type="material-community"
-              name={this.state.collapseIcon}
-              color="#DADADA"
+              name={collapseIcon}
+              color={list ? '#1B2CC1' : '#DADADA'}
             />
           </View>
         </CollapseHeader>
         <CollapseBody>
-          <Text style={styles.symptomBody}>{this.props.description}</Text>
+          {list ? description : <Text style={textStyle}>{description}</Text>}
         </CollapseBody>
       </Collapse>
     );

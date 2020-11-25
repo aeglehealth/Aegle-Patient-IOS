@@ -163,7 +163,7 @@ class SettingsPage extends React.Component {
               onPress={() => {
                 this.props.client.resetStore() &&
                   AsyncStorage.removeItem(AUTH_TOKEN) &&
-                  this.props.navigation.navigate('SignInChoices');
+                  this.props.navigation.navigate('SignInEmail');
               }}
             />
           }

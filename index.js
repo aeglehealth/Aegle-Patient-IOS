@@ -107,16 +107,16 @@ const httpLink = ApolloLink.from([
     cache,
   }),
   createUploadLink({
-    uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
-    // uri: 'https://api.aeglehealth.io/graphql',
+    // uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
+    uri: 'https://api.aeglehealth.io/graphql',
     credentials: 'include',
   }),
 ]);
 
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
-  // uri: 'wss://api.aeglehealth.io/graphql',
-  uri: 'ws://aegle-mongodb-api.herokuapp.com/graphql',
+  uri: 'wss://api.aeglehealth.io/graphql',
+  // uri: 'ws://aegle-mongodb-api.herokuapp.com/graphql',
   options: {
     reconnect: true,
   },

@@ -68,8 +68,7 @@ export default class Phone extends React.Component {
 
   checkValidNumber = value => {
     const valid = this.myRef.current?.isValidNumber(value);
-    this.setState({showMessage: true});
-    this.setState({valid: valid ? valid : false});
+    this.setState({showMessage: true, valid: valid ? valid : false});
   };
 
   numberFormatter = () => {

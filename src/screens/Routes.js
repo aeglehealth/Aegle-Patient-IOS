@@ -52,6 +52,7 @@ import AllergyEdit from './App/AllergyEditPage';
 import FamilyList from './App/FamilyListPage';
 import Subscription from './App/SubscriptionPage';
 import SubscriptionPlans from './App/SubscriptionPlansPage';
+import CodeInput from './App/SubscriptionPlansPage/CodeInput';
 import SubscriptionOrderDetail from './App/SubscriptionOrderDetailPage';
 import Membership from './App/MembershipPage';
 import MembershipType from './App/MembershipTypePage';
@@ -165,6 +166,7 @@ const AppStack = createStackNavigator(
     PrescriptionDetail,
     Question,
     Question2,
+    CodeInput,
     SubscriptionOrderDetail,
     TalkToDoctor,
     AssessmentReport: {
