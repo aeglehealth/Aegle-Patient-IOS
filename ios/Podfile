@@ -109,6 +109,8 @@ target 'medical_new' do
 
   pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
 
+  pod 'RNSentry', :path => '../node_modules/@sentry/react-native'
+
   target 'medical_newTests' do
     inherit! :complete
     # Pods for testing

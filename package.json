@@ -20,6 +20,7 @@
     "@react-native-community/viewpager": "^3.3.0",
     "@react-native-firebase/app": "^8.4.7",
     "@react-native-firebase/messaging": "^7.9.2",
+    "@sentry/react-native": "^2.0.2",
     "accordion-collapse-react-native": "^0.1.11",
     "apollo-boost": "^0.4.7",
     "apollo-cache-inmemory": "^1.6.5",
@@ -119,10 +120,12 @@
   },
   "jest": {
     "preset": "react-native",
-    "verbose": true,
-    "transformIgnorePatterns": [
-      "/node_modules/(?!react-navigation)"
-    ]
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "verbose": true
   },
   "rnpm": {
     "assets": [

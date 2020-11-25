@@ -55,4 +55,13 @@ const Phone = () => {
   );
 };
 
+export const numberFormatter = (formattedValue, country) => {
+  const arr = [...formattedValue];
+  if (arr[4] == 0 && country == 'NG') {
+    arr.splice(4, 1);
+    return arr.join('');
+  }
+  return formattedValue;
+};
+
 export default Phone;

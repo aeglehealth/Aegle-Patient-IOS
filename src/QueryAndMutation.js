@@ -1442,6 +1442,16 @@ export const START_VIDEO_CALL = gql`
   }
 `;
 
+export const APPLY_PROMOTION = gql`
+  mutation($code: String!) {
+    applyPromotion(code: $code) {
+      statusCode
+      status
+      message
+    }
+  }
+`;
+
 export const CHECK_SUBSCRIPTION_STATUS = gql`
   query($ref: String!) {
     checkStatus(reference: $ref) {

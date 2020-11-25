@@ -489,6 +489,9 @@ PODS:
     - React
   - RNScreens (2.9.0):
     - React
+  - RNSentry (2.0.2):
+    - React-Core
+    - Sentry (= 6.0.9)
   - RNShare (3.7.0):
     - React
   - RNSVG (12.1.0):
@@ -501,6 +504,9 @@ PODS:
   - SDWebImageWebPCoder (0.4.1):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.5)
+  - Sentry (6.0.9):
+    - Sentry/Core (= 6.0.9)
+  - Sentry/Core (6.0.9)
   - SSZipArchive (2.2.3)
   - toolbar-android (0.1.0-rc.2):
     - React
@@ -592,6 +598,7 @@ DEPENDENCIES:
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -640,6 +647,7 @@ SPEC REPOS:
     - Protobuf
     - SDWebImage
     - SDWebImageWebPCoder
+    - Sentry
     - SSZipArchive
     - TwilioVideo
     - TwilioVoice
@@ -758,6 +766,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
   RNShare:
     :path: "../node_modules/react-native-share"
   RNSVG:
@@ -863,11 +873,13 @@ SPEC CHECKSUMS:
   RNPermissions: 69dc24ae1a9507576e2e9cf70ceed51065311da8
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
   RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
+  RNSentry: 5ebc2926dbcbb9b77857ba6df0754a869037123d
   RNShare: a1d5064df7a0ebe778d001869b3f0a124bf0a491
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: 368d6d8b8301224e5ffb6254191f4f8876c2be0d
   SDWebImage: b69257f4ab14e9b6a2ef53e910fdf914d8f757c1
   SDWebImageWebPCoder: 36f8f47bd9879a8aea6044765c1351120fd8e3a8
+  Sentry: 388c9dc093b2fd3a264466a5c5b21e25959610a9
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   toolbar-android: 404f4450b203597e7b417f714ff417bed562a1be
   TwilioVideo: 5257640fab00d1b9f44db060815b03516a9eb0e8
@@ -875,6 +887,6 @@ SPEC CHECKSUMS:
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: aefac0ed744276e561a5652bf7035816b2b34cb4
+PODFILE CHECKSUM: 956a650ff31ffc3f8bf8f720f4c2305b8f1f13ab
 
 COCOAPODS: 1.9.1

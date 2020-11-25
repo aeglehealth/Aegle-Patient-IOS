@@ -11,6 +11,19 @@ import DoctorSubscription from './doctorSubscription';
 import SpecialistSubscription from './specialistSubscription';
 import TherapistSubscription from './therapistSubscription';
 import HasPlan from './hasPlan';
+import Gift from '../../../assets/gift.svg';
+import BriefCase from '../../../assets/briefcase.svg';
+import Chevron from '../../../assets/chevron.svg';
+
+const Card = ({onPress, children, title}) => (
+  <TouchableOpacity style={styles.cardStyle} onPress={onPress}>
+    <View style={styles.innerCard}>
+      {children}
+      <Text style={styles.cardTitle}>{title}</Text>
+    </View>
+    <Chevron />
+  </TouchableOpacity>
+);
 
 class SubscriptionPlansPage extends React.Component {
   static navigationOptions = ({navigation}) => {
@@ -120,6 +133,26 @@ class SubscriptionPlansPage extends React.Component {
           <Text style={styles.headerText}>
             {route === 'app' ? 'Subscription Plans' : 'Select a Plan'}
           </Text>
+          <Card
+            onPress={() =>
+              this.props.navigation.navigate('CodeInput', {
+                title: 'Promo Code',
+                route,
+              })
+            }
+            title="Enter promo code">
+            <Gift />
+          </Card>
+          <Card
+            onPress={() =>
+              this.props.navigation.navigate('CodeInput', {
+                title: 'Membership Code',
+                route,
+              })
+            }
+            title="Membership code">
+            <BriefCase />
+          </Card>
           {activeUserSubscriptions.length > 0 ? (
             <>
               <Text style={{...styles.bodyText, fontWeight: 'bold'}}>

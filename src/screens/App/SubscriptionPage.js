@@ -138,7 +138,6 @@ class SubscriptionPage extends React.Component {
             local: {email},
           } = me;
           const {activeUserSubscriptions} = data;
-          console.log(activeUserSubscriptions[0].renew, 'length');
           return (
             <View style={styles.container}>
               <ScrollView

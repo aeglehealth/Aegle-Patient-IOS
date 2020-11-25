@@ -15,6 +15,7 @@ import {
 } from '../../../../QueryAndMutation';
 import ShowMessage, {type} from '../../../../Components/toster/ShowMessage';
 import {therapistPlans} from './therapistPlans';
+import Accordion from '../../../../Components/Accordion';
 
 class SubscriptionPlansPage extends React.Component {
   static navigationOptions = ({navigation}) => {
@@ -101,7 +102,7 @@ class SubscriptionPlansPage extends React.Component {
                   alignItems: 'center',
                   // backgroundColor: 'pink',
                 }}>
-                <View style={{position: 'absolute', left: 20}}>
+                <View style={{position: 'absolute', left: 40}}>
                   <EvilIcons name="close" size={56} color="red" />
                 </View>
                 <Text style={{fontSize: 20, marginRight: 15}}>
@@ -117,9 +118,8 @@ class SubscriptionPlansPage extends React.Component {
               <Text style={styles.smallHeaderSubText}>{d.per}</Text>
             </View>
           }>
-          <View style={{marginHorizontal: 10, paddingHorizontal: 10}}>
-            {features}
-          </View>
+          <Accordion title={'Learn More'} description={features} list />
+
           <TouchableOpacity
             disabled={loading}
             style={

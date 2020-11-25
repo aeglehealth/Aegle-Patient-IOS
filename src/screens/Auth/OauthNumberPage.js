@@ -1,6 +1,4 @@
 import React from 'react';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Feather from 'react-native-vector-icons/Feather';
 import {
   StyleSheet,
   Text,
@@ -59,8 +57,7 @@ export default class OauthPhone extends React.Component {
 
   checkValidNumber = value => {
     const valid = this.myRef.current?.isValidNumber(value);
-    this.setState({showMessage: true});
-    this.setState({valid: valid ? valid : false});
+    this.setState({showMessage: true, valid: valid ? valid : false});
   };
 
   numberFormatter = () => {

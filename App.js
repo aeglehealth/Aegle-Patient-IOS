@@ -37,6 +37,14 @@ import {Provider as PaperProvider, DefaultTheme} from 'react-native-paper';
 import Page from './src/screens/Routes';
 import codePush from 'react-native-code-push';
 
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn:
+    'https://12cb2ba41c58428a9a58e48f5bd574b8@o481668.ingest.sentry.io/5530671',
+  enableAutoSessionTracking: true,
+});
+
 const theme = {
   ...DefaultTheme,
   colors: {

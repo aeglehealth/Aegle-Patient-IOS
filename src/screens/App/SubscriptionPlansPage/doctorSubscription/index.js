@@ -15,7 +15,7 @@ import {
   ACTIVE_SUBSCRIPTION,
 } from '../../../../QueryAndMutation';
 import ShowMessage, {type} from '../../../../Components/toster/ShowMessage';
-import {sub} from 'date-fns';
+import Accordion from '../../../../Components/Accordion';
 
 class SubscriptionPlansPage extends React.Component {
   static navigationOptions = ({navigation}) => {
@@ -35,6 +35,8 @@ class SubscriptionPlansPage extends React.Component {
     name: this.props.name,
     isActive: this.props.isActive,
     route: this.props.route,
+    collapseIcon: 'chevron-down',
+    collapsed: true,
   };
 
   async componentDidMount() {
@@ -120,7 +122,7 @@ class SubscriptionPlansPage extends React.Component {
                   alignItems: 'center',
                   // backgroundColor: 'pink',
                 }}>
-                <View style={{position: 'absolute', left: 20}}>
+                <View style={{position: 'absolute', left: 40}}>
                   <EvilIcons name="close" size={56} color="red" />
                 </View>
                 <Text
@@ -151,9 +153,7 @@ class SubscriptionPlansPage extends React.Component {
               </Text>
             </View>
           }>
-          <View style={{marginHorizontal: 10, paddingHorizontal: 10}}>
-            {features}
-          </View>
+          <Accordion title={'Learn More'} description={features} list />
           <TouchableOpacity
             disabled={loading}
             style={
