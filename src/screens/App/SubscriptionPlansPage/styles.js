@@ -1,4 +1,6 @@
 import {StyleSheet} from 'react-native';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+
 function elevationShadowStyle(elevation) {
   return {
     elevation,
@@ -13,10 +15,12 @@ function elevationShadowStyle(elevation) {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E5E5E5',
-    paddingLeft: 10,
-    paddingEnd: 10,
+    backgroundColor: '#fff',
+    // paddingLeft: 10,
+    // paddingEnd: 10,
     justifyContent: 'flex-start',
+    alignSelf: 'center',
+    width: '99%',
   },
   bodyText: {
     color: '#000',
@@ -26,10 +30,10 @@ export const styles = StyleSheet.create({
     // fontWeight: 'bold',
   },
   headerStyle: {
-    backgroundColor: '#E5E5E5',
-    shadowColor: '#E5E5E5',
+    backgroundColor: '#fff',
+    shadowColor: '#fff',
     elevation: 0,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: '#fff',
     shadowOpacity: 0,
   },
   headerText: {
@@ -101,7 +105,9 @@ export const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginBottom: 20,
     padding: 0,
-    // ...elevationShadowStyle(2),
+    alignSelf: 'center',
+    width: '100%',
+    ...elevationShadowStyle(2),
   },
   cardSubHeaderView: {
     justifyContent: 'center',
@@ -147,7 +153,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     marginBottom: 10,
-    // backgroundColor: 'pink'
   },
   eachTab: {
     backgroundColor: '#EEF3F7',
@@ -192,7 +197,11 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  img: {width: 80, height: 50, resizeMode: 'contain'},
+  img: {
+    width: 80,
+    height: 50,
+    resizeMode: 'contain',
+  },
   img2: {
     width: 80,
     height: 32,
@@ -217,25 +226,21 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     justifyContent: 'space-between',
-    width: '100%',
+    width: '99%',
     paddingHorizontal: 20,
     paddingVertical: 15,
     alignItems: 'center',
-    borderRadius: 5,
-    marginBottom: 2,
+    borderRadius: 4,
+    marginBottom: 1,
+    alignSelf: 'center',
+    ...elevationShadowStyle(2),
   },
   innerCard: {
     flexDirection: 'row',
-    width: '65%',
-    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   cardTitle: {
     fontSize: 16,
+    marginLeft: 20.27,
   },
-  // collapseStyle: {
-  //   borderBottomColor: 'rgba(196, 196, 196, 0.5)',
-  //   borderBottomWidth: 1,
-  //   paddingBottom: 35,
-  //   marginBottom: 30,
-  // },
 });

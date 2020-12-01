@@ -125,6 +125,7 @@ class CardPaymentPage extends React.Component {
         </View>
         <View style={{width: '80%', alignSelf: 'center', marginTop: 50}}>
           <TextInput
+            autoCorrect={false}
             value={this.state.code}
             onChangeText={text => {
               this.setState({

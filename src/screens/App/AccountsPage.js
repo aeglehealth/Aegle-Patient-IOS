@@ -136,13 +136,14 @@ export default class AccountsPage extends React.Component {
 
                 <View style={styles.profileCard}>
                   <TouchableWithoutFeedback
-                    onPress={() => {
-                      this.props.navigation.navigate('ShowImage', {
-                        image: photo.thumbnail,
-                      });
-                    }}>
+                  // onPress={() => {
+                  //   this.props.navigation.navigate('ShowImage', {
+                  //     image: photo.thumbnail,
+                  //   });
+                  // }}
+                  >
                     <View>
-                      {photo && photo.original ? (
+                      {photo && photo.thumbnail ? (
                         <FastImage
                           style={styles.headerImageIcon}
                           source={{

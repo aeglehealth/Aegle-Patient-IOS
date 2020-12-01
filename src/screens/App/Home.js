@@ -1245,7 +1245,7 @@ class HomePage extends React.Component {
           if (error)
             return (
               AsyncStorage.removeItem(AUTH_TOKEN) &&
-              this.props.navigation.navigate('SignInChoices')
+              this.props.navigation.navigate('SignInEmail')
             );
           const me = data.me ? data.me : null;
           const {
