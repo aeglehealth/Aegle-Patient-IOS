@@ -10,6 +10,7 @@ import {
   Image,
   Linking,
   AppState,
+  Appearance,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Divider} from 'react-native-elements';
@@ -276,6 +277,8 @@ class Paystack extends React.Component {
   }
 
   render() {
+    const colorScheme = Appearance.getColorScheme();
+    const darkmode = colorScheme === 'dark' ? true : false;
     const validationSchema = yup.object().shape({
       cardNum: yup.string().required('Enter Card Number'),
       cardExpiryMonth: yup.number().required('Enter Card Expiry Month'),
@@ -283,7 +286,6 @@ class Paystack extends React.Component {
       cardCvc: yup.number().required('Enter Card CVC Number'),
     });
     const {route, amount, email, code, loading} = this.state;
-    console.log('mount');
     return (
       <Mutation mutation={PAY}>
         {pay => (
@@ -415,7 +417,10 @@ class Paystack extends React.Component {
                       name="cardNum"
                       keyboardType="number-pad"
                       placeholder="0000 0000 0000 0000"
-                      style={{paddingTop: 5}}
+                      style={{
+                        paddingTop: 5,
+                        color: darkmode ? '#878787' : '#000',
+                      }}
                     />
                     {touched.cardNum && errors.cardNum && (
                       <Text style={styles.errorText}>{errors.cardNum}</Text>
@@ -437,6 +442,9 @@ class Paystack extends React.Component {
                           onSubmitEditing={event => {
                             this.refs.cardExpiryYear.focus();
                           }}
+                          style={{
+                            color: darkmode ? '#878787' : '#000',
+                          }}
                         />
                         <Text style={{color: '#A5A5A5', margin: 5}}>/</Text>
                         <TextInput
@@ -448,6 +456,9 @@ class Paystack extends React.Component {
                           keyboardType="number-pad"
                           placeholder="YY"
                           maxLength={2}
+                          style={{
+                            color: darkmode ? '#878787' : '#000',
+                          }}
                         />
                       </View>
                       {touched.cardExpiryYear && errors.cardExpiryYear && (
@@ -470,7 +481,10 @@ class Paystack extends React.Component {
                         name="cardCvc"
                         keyboardType="number-pad"
                         placeholder="123"
-                        style={{paddingTop: 12}}
+                        style={{
+                          paddingTop: 12,
+                          color: darkmode ? '#878787' : '#000',
+                        }}
                         maxLength={3}
                       />
                       {touched.cardCvc && errors.cardCvc && (

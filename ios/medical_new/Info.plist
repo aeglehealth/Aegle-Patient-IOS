@@ -78,9 +78,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This allows you to make video calls with a doctor</string>
 	<key>NSHumanReadableCopyright</key>
-	<string></string>
+	<string/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This allows you to talk with a doctor</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

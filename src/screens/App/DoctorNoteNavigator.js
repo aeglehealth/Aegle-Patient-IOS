@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 /* eslint-disable global-require */
 import React from 'react';
 import {createAppContainer} from 'react-navigation';

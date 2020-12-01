@@ -1,10 +1,10 @@
+import 'react-native-gesture-handler';
 /* eslint-disable react/prop-types */
 /* eslint-disable global-require */
 import React from 'react';
 import {Image} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
-// import {Badge, Icon} from 'react-native-elements';
 import Badge from '../../Components/Badge';
 
 import Home from './Home';

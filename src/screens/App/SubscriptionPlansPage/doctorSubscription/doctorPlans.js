@@ -30,7 +30,7 @@ export const doctorPlans = [
     name: 'Billed Every 3 Months',
     code: '',
     per: '(Save \u20A63,000)',
-    type: 'Most popular plan',
+    type: '',
     features: [
       'Free Aegle Account',
       'Access to handpicked doctors 24/7',

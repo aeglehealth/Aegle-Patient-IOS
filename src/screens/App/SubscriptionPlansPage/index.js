@@ -38,8 +38,8 @@ class SubscriptionPlansPage extends React.Component {
               navigation.navigate('Home');
             }}
             title="SKIP"
-            buttonStyle={{backgroundColor: '#fff'}}
-            titleStyle={{color: '#000', marginEnd: 20}}
+            buttonStyle={{backgroundColor: '#fff', marginEnd: 20}}
+            titleStyle={{color: '#000'}}
           />
         ) : null,
     };
