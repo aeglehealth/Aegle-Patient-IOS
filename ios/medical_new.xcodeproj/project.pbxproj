@@ -1056,7 +1056,7 @@
 				CODE_SIGN_ENTITLEMENTS = medical_new/medical_new.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = W272MZSBQM;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1096,7 +1096,7 @@
 				CODE_SIGN_ENTITLEMENTS = medical_new/medical_new.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = W272MZSBQM;
 				INFOPLIST_FILE = medical_new/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
