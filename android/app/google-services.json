@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "756985957982",
+    "firebase_url": "https://aegle-healthcare.firebaseio.com",
+    "project_id": "aegle-healthcare",
+    "storage_bucket": "aegle-healthcare.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756985957982:android:4ce96654581b853e072ecf",
+        "android_client_info": {
+          "package_name": "com.medical_new"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756985957982-7k57uai03fjnghs49a2dceok9bsnjij7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXH8fdocDVpEivq4k2Rr1OA7E9o5g3UyA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756985957982-7k57uai03fjnghs49a2dceok9bsnjij7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "756985957982-6csirifs3us8f7jpprg60p4rjoh5mra0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.medical-new"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

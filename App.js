@@ -36,7 +36,7 @@ import {
 import {PRIMARY_COLOR} from './src/shared/Colors';
 import {Provider as PaperProvider, DefaultTheme} from 'react-native-paper';
 import Page from './src/screens/Routes';
-import codePush from 'react-native-code-push';
+// import codePush from 'react-native-code-push';
 
 import * as Sentry from '@sentry/react-native';
 
@@ -94,7 +94,7 @@ class App extends React.Component {
 
 console.disableYellowBox = true;
 
-const codePushOptions = {checkFrequency: codePush.CheckFrequency.ON_APP_RESUME};
+// const codePushOptions = {checkFrequency: codePush.CheckFrequency.ON_APP_RESUME};
 
 // export default codePush(codePushOptions)(App);
 export default App;

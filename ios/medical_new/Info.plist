@@ -43,8 +43,6 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>CodePushDeploymentKey</key>
-	<string>k895yzwOwnhA_jHxeEcfQ-nHi7d1suAOzI0UK</string>
 	<key>FacebookAppID</key>
 	<string>591380118469951</string>
 	<key>FacebookDisplayName</key>
@@ -78,9 +76,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This allows you to make video calls with a doctor</string>
 	<key>NSHumanReadableCopyright</key>
-	<string/>
+	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This allows you to talk with a doctor</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

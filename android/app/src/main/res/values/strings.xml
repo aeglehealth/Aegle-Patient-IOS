@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Aegle</string>
+    <string name="facebook_app_id">591380118469951</string>
+    <string name="appCenterCrashes_whenToSendCrashes" moduleConfig="true" translatable="false">DO_NOT_ASK_JAVASCRIPT</string>
+    <string name="appCenterAnalytics_whenToEnableAnalytics" moduleConfig="true" translatable="false">ALWAYS_SEND</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">5e3ggBvrkQYif0W-FU3_AXK_bY8BZlAuoeH2U</string>
+</resources>
