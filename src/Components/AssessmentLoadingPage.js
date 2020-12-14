@@ -28,7 +28,6 @@ class ActivityIndicatorPage extends React.Component {
   }
 
   render() {
-    console.log(this.state.position, 'possvyhver');
     return (
       <View style={styles.main}>
         <ActivityIndicator size={this.props.size || 'large'} color="#1B2CC1" />

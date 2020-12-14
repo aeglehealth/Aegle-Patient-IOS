@@ -1,32 +1,84 @@
 import React, {Component} from 'react';
 import {
+  StyleSheet,
   View,
   TouchableOpacity,
-  StyleSheet,
-  Text,
   BackHandler,
-  Platform,
-  ActivityIndicator,
+  AppState,
+  Dimensions,
+  Image,
+  Text,
 } from 'react-native';
-// import TwilioVoice from 'react-native-twilio-programmable-voice';
+import {
+  TwilioVideoLocalView,
+  TwilioVideoParticipantView,
+  TwilioVideo,
+} from 'react-native-twilio-video-webrtc';
 import Call from '../../assets/telephone.svg';
-import Speaker from '../../assets/speaker.svg';
+import Camera from '../../assets/camera.svg';
 import Mute from '../../assets/mute.svg';
-import {Mutation, Query} from 'react-apollo';
-import {JOIN_VOICE_CALL, ME, GetAppointmentById} from '../../QueryAndMutation';
+import Toast from '../../Components/toster/Alert';
+import {
+  COMPLETE_APPOINTMENT,
+  MEPOST,
+  GetAppointmentById,
+} from '../../QueryAndMutation';
+import {withApollo, Query} from 'react-apollo';
+import KeepAwake from 'react-native-keep-awake';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
   },
-  topBar: {
+  callContainer: {
+    flex: 1,
+    position: 'absolute',
+    bottom: 0,
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  welcome: {
+    fontSize: 30,
+    textAlign: 'center',
+    paddingTop: 40,
+    fontFamily: 'Muli',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  input: {
+    height: 50,
+    borderWidth: 1,
+    marginRight: 70,
+    marginLeft: 70,
+    marginTop: 50,
+    textAlign: 'center',
+    backgroundColor: 'white',
+  },
+  button: {
+    marginTop: 100,
+  },
+  localVideo: {
+    flex: 1,
+    width: '25%',
+    height: '25%',
+    position: 'absolute',
+    left: 10,
+    bottom: 100,
+  },
+  remoteGrid: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  remoteVideo: {
+    flex: 1,
     position: 'absolute',
     left: 0,
-    top: 0,
+    bottom: 0,
     right: 0,
-    backgroundColor: '#1B2CC1',
-    height: 150,
+    top: 0,
   },
   optionsContainer: {
     position: 'absolute',
@@ -38,8 +90,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#1B2CC1',
-    padding: 13,
+    marginBottom: 20,
   },
   optionButton: {
     width: 50,
@@ -50,258 +101,207 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  welcome: {
-    fontSize: 30,
-    textAlign: 'center',
-    paddingTop: 40,
-    fontFamily: 'Muli-Regular',
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: 'white',
+  titleBar: {
+    position: 'absolute',
+    top: 50,
+    alignSelf: 'center',
+  },
+  toggle: {
+    backgroundColor: 'white',
+    height: 50,
+    width: 50,
+    borderRadius: 50 / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
-export default class VoiceChat extends Component {
-  static navigationOptions = {headerShown: false};
-
+class VideoChat extends Component {
   state = {
     isAudioEnabled: true,
-    isSpeakerEnabled: false,
-    callInit: 'connect',
-    incomingCall: false,
+    isVideoEnabled: true,
+    status: 'disconnected',
+    participants: new Map(),
+    videoTracks: new Map(),
+    roomName: this.props.navigation.state.params.roomName,
+    token: this.props.navigation.state.params.token,
+    appointmentId: this.props.navigation.state.params.appointmentId,
+    // roomName: 'this.props.navigation.state.params.roomName',
+    // token: 'this.props.navigation.state.params.token',
+    // appointmentId: 'this.props.navigation.state.params.appointmentId',
+    appState: AppState.currentState,
+    status: true,
   };
 
-  _deviceDidReceiveIncoming = data => {
-    TwilioVoice.addEventListener('deviceDidReceiveIncoming', function(data) {
-      // {
-      //     call_sid: string,  // Twilio call sid
-      //     call_state: 'PENDING' | 'CONNECTED' | 'ACCEPTED' | 'CONNECTING' 'DISCONNECTED' | 'CANCELLED',
-      //     call_from: string, // "+441234567890"
-      //     call_to: string,   // "client:bob"
-      // }
+  static navigationOptions = {headerShown: false};
+
+  _onConnectButtonPress = () => {
+    this.refs.twilioVideo.connect({
+      roomName: this.state.roomName,
+      accessToken: this.state.token,
     });
+    this.setState({status: 'connecting'});
   };
 
-  initTelephony = async token => {
+  _onEndButtonPress = async () => {
+    const {appointmentId} = this.state;
+    const {client} = this.props;
+
+    this.refs.twilioVideo.disconnect();
+
     try {
-      // const accessToken = await getAccessTokenFromServer();
-      const success = await TwilioVoice.initWithToken(token);
-      console.log(success, 'susgfdv');
-      TwilioVoice.addEventListener('deviceReady', () => {
-        console.log('good');
-        this.setState({callInit: 'connected', incomingCall: false});
+      const res = await client.mutate({
+        mutation: COMPLETE_APPOINTMENT,
+        variables: {appointmentId},
+        refetchQueries: [
+          {
+            query: MEPOST,
+          },
+        ],
       });
-      TwilioVoice.addEventListener('deviceNotReady', function(err) {
-        console.log(err);
-      });
-      TwilioVoice.addEventListener('connectionDidConnect', data => {
-        console.log('connected', data);
-        this.setState({callInit: 'connecteds', incomingCall: false});
-      });
-      TwilioVoice.addEventListener('connectionDidDisconnect', data => {
-        console.log('disconnected', data);
-        this.setState({callInit: 'connected', incomingCall: false});
-      });
-      TwilioVoice.addEventListener('deviceDidReceiveIncoming', data => {
-        // {
-        //     call_sid: string,  // Twilio call sid
-        //     call_state: 'PENDING' | 'CONNECTED' | 'ACCEPTED' | 'CONNECTING' 'DISCONNECTED' | 'CANCELLED',
-        //     call_from: string, // "+441234567890"
-        //     call_to: string,   // "client:bob"
-        // }
-        console.log('did you connect');
-        this.setState({incomingCall: true});
-      });
-    } catch (err) {
-      console.err(err);
-    }
-  };
-
-  initTelephonyWithUrl = token => {
-    TwilioVoice.initWithTokenUrl(token);
-    try {
-      TwilioVoice.configureCallKit({
-        appName: 'Aegle', // Required param
-        imageName: 'my_image_name_in_bundle', // OPTIONAL
-        ringtoneSound: 'my_ringtone_sound_filename_in_bundle', // OPTIONAL
-      });
-    } catch (err) {
-      console.err(err);
-    }
-  };
-
-  connect = () => {
-    TwilioVoice.connect({To: '+61234567890'});
-  };
-
-  disconnect = () => {
-    TwilioVoice.disconnect();
-
-    this.props.navigation.goBack();
-  };
-
-  accept = () => {
-    TwilioVoice.accept();
-  };
-
-  reject = () => {
-    TwilioVoice.reject();
-  };
-
-  ignore = () => {
-    TwilioVoice.ignore();
-  };
-
-  speaker = () => {
-    this.setState({
-      isSpeakerEnabled: !this.state.isSpeakerEnabled,
-    });
-    TwilioVoice.setSpeakerPhone(!this.state.isSpeakerEnabled);
-  };
-
-  mute = () => {
-    this.setState(prevState => ({
-      isAudioEnabled: !prevState.isAudioEnabled,
-    })) && TwilioVoice.setMuted(this.state.isAudioEnabled);
-  };
-
-  getActiveCall() {
-    return TwilioVoice.getActiveCall().then(incomingCall => {
-      if (incomingCall) {
-        _deviceDidReceiveIncoming(incomingCall);
+      console.log(res, 'res1');
+      if (res.data.completeAppointment) {
+        console.log(res, 'res2');
+        this.props.navigation.navigate('Ratings', {appointmentId});
+      } else {
+        this.props.navigation.navigate('Home');
       }
-    });
-  }
+      return;
+    } catch (err) {
+      this.props.navigation.navigate('Home');
+    }
+  };
+
+  _handleAppStateChange = nextAppState => {
+    if (
+      (this.state.appState.match('active') && nextAppState === 'inactive') ||
+      (this.state.appState.match('active') && nextAppState === 'background')
+    ) {
+      console.log('App has exited the foreground!');
+      this._onEndButtonPress();
+    }
+    this.setState({appState: nextAppState});
+  };
+
+  _onMuteButtonPress = () => {
+    this.refs.twilioVideo
+      .setLocalAudioEnabled(!this.state.isAudioEnabled)
+      .then(isEnabled => this.setState({isAudioEnabled: isEnabled}));
+  };
+
+  _onFlipButtonPress = () => {
+    this.refs.twilioVideo.flipCamera();
+  };
+
+  _onRoomDidConnect = () => {
+    this.setState({status: 'connected'});
+  };
+
+  _onRoomDidDisconnect = ({roomName, error}) => {
+    console.log('this call has endedddd!');
+    const {appointmentId} = this.state;
+    Toast('The call has ended!');
+    this.setState({status: 'disconnected'});
+    this.props.navigation.navigate('Ratings', {appointmentId});
+  };
+
+  _onRoomDidFailToConnect = error => {
+    console.log('ERROR: ', error);
+
+    this.setState({status: 'disconnected'});
+    Toast('Connection failure.');
+    this.props.navigation.navigate('Home');
+  };
 
   componentDidMount() {
-    this.initialize('eee');
+    this._onConnectButtonPress();
+    AppState.addEventListener('change', this._handleAppStateChange);
+    BackHandler.addEventListener('hardwareBackPress', this._onEndButtonPress);
   }
 
-  initialize(token) {
-    if (Platform.OS === 'ios') {
-      this.initTelephonyWithUrl(token);
-    } else {
-      this.initTelephony(token);
-    }
-    this.getActiveCall();
-    BackHandler.addEventListener('hardwareBackPress', this.disconnect);
-  }
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this._onEndButtonPress,
+    );
+  };
 
   render() {
+    const {appointmentId} = this.state;
+    if (this.state.status === 'connected') {
+      KeepAwake.activate();
+    } else {
+      KeepAwake.deactivate();
+    }
     return (
-      <Query query={ME}>
-        {({loading, data}) => {
-          let User_Data = loading ? null : data;
-
-          return loading ? (
-            <ActivityIndicator />
-          ) : (
-            <Mutation
-              mutation={JOIN_VOICE_CALL}
-              onCompleted={data => this.initialize(data.joinVoiceCall.token)}>
-              {(joinVoiceCall, {loading, data, error}) => {
-                let Mutation_Loading = loading;
-                return (
-                  <View style={[styles.container, {justifyContent: 'center'}]}>
-                    <View style={styles.topBar}>
-                      <Text style={styles.welcome}>AEGLE VOICE CALL</Text>
-                    </View>
-                    {this.state.incomingCall ? (
-                      <View>
-                        <Text style={{textAlign: 'center'}}>
-                          Accept Incoming Call
-                        </Text>
-                        <TouchableOpacity
-                          style={{height: 100}}
-                          onPress={() => this.accept()}>
-                          <Call />
-                        </TouchableOpacity>
-                      </View>
-                    ) : null}
-                    <View style={styles.optionsContainer}>
-                      <TouchableOpacity
-                        style={[
-                          styles.optionButton,
-                          {
-                            backgroundColor: this.state.isSpeakerEnabled
-                              ? 'green'
-                              : null,
-                          },
-                        ]}
-                        onPress={this.speaker}>
-                        <Speaker style={{width: 40, height: 40}} />
-                      </TouchableOpacity>
-                      <Query
-                        query={GetAppointmentById}
-                        variables={{
-                          appointmentId: this.props.navigation.getParam('id'),
-                        }}>
-                        {({loading, data}) =>
-                          loading ? (
-                            <ActivityIndicator />
-                          ) : (
-                            <TouchableOpacity
-                              style={styles.optionButton}
-                              onPress={() =>
-                                !data.getAppointmentById.session
-                                  ? null
-                                  : this.state.callInit == 'connected'
-                                  ? null
-                                  : this.state.callInit == 'connect'
-                                  ? joinVoiceCall({
-                                      variables: {
-                                        data: {
-                                          sessionId:
-                                            data.getAppointmentById.session.id,
-                                          patientId: User_Data.me.id,
-                                        },
-                                      },
-                                    })
-                                  : this.disconnect()
-                              }>
-                              {!data.getAppointmentById.session ? (
-                                <Text style={{color: 'white', fontSize: 11}}>
-                                  Wait
-                                </Text>
-                              ) : Mutation_Loading ? (
-                                <ActivityIndicator />
-                              ) : this.state.callInit == 'connect' ? (
-                                <Text style={{color: 'white', fontSize: 11}}>
-                                  Connect
-                                </Text>
-                              ) : this.state.callInit == 'connected' ? (
-                                <Text style={{color: 'white', fontSize: 11}}>
-                                  Connected
-                                </Text>
-                              ) : (
-                                <Text style={{color: 'white', fontSize: 18}}>
-                                  End
-                                </Text>
-                              )}
-                            </TouchableOpacity>
-                          )
-                        }
-                      </Query>
-                      <TouchableOpacity
-                        style={[
-                          styles.optionButton,
-                          {
-                            backgroundColor: !this.state.isAudioEnabled
-                              ? 'green'
-                              : null,
-                          },
-                        ]}
-                        onPress={this.mute}>
-                        <Mute style={{width: 40, height: 40}} />
-                      </TouchableOpacity>
-                    </View>
+      <>
+        <Query
+          query={GetAppointmentById}
+          fetchPolicy="network-only"
+          variables={{appointmentId}}
+          pollInterval={5000}>
+          {({loading, error, data}) => {
+            if (loading) return <Text> </Text>;
+            if (error) return <Text>{error}</Text>;
+            const {status} = data.getAppointmentById;
+            if (status === 'CANCELLED' || status === 'COMPLETED') {
+              this.props.navigation.navigate('Ratings', {appointmentId});
+            }
+            return (
+              <View style={styles.container}>
+                <View style={styles.callContainer}>
+                  <View
+                    style={{
+                      alignSelf: 'center',
+                      position: 'absolute',
+                      top: 200,
+                    }}>
+                    <Image
+                      source={require('../../assets/logo-black.png')}
+                      style={{width: 250, height: 250}}
+                    />
                   </View>
-                );
-              }}
-            </Mutation>
-          );
-        }}
-      </Query>
+
+                  <View style={styles.optionsContainer}>
+                    <TouchableOpacity
+                      style={styles.optionButton}
+                      onPress={this._onEndButtonPress}>
+                      <Call />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.optionButton}
+                      onPress={this._onMuteButtonPress}>
+                      {this.state.isAudioEnabled ? (
+                        <Mute style={{width: 40, height: 40}} />
+                      ) : (
+                        <View style={styles.toggle}>
+                          <Mute style={{width: 40, height: 40}} />
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                  {/* <TwilioVideoLocalView enabled={false} style={styles.localVideo} /> */}
+                </View>
+              </View>
+            );
+          }}
+        </Query>
+        <TwilioVideo
+          ref="twilioVideo"
+          onRoomDidConnect={this._onRoomDidConnect}
+          onRoomDidDisconnect={this._onRoomDidDisconnect}
+          onRoomDidFailToConnect={this._onRoomDidFailToConnect}
+          // onParticipantAddedVideoTrack={
+          //   this._onParticipantAddedVideoTrack
+          // }
+          // onParticipantRemovedVideoTrack={
+          //   this._onParticipantRemovedVideoTrack
+          // }
+        />
+      </>
     );
   }
 }
+
+export default withApollo(VideoChat);

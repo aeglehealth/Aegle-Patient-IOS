@@ -796,6 +796,18 @@ export const JOIN_VIDEO_CALL = gql`
   }
 `;
 
+export const JOIN_VOICE_CALL = gql`
+  mutation($data: joinVideoCallDTO!) {
+    joinVoiceCallAsVideo(data: $data) {
+      room
+      token
+      sessionId
+      appointmentId
+      subject
+    }
+  }
+`;
+
 export const JoinChatMutation = gql`
   mutation($data: joinChatDTO!) {
     joinChat(data: $data) {

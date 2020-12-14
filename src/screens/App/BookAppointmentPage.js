@@ -505,7 +505,7 @@ export default class BookAppointmentPage extends React.Component {
                           Appointment Type
                         </Text>
                         <View style={{flexDirection: 'row', marginTop: 15}}>
-                          {/* <View style={{flex: 1, marginRight: 5}}>
+                          <View style={{flex: 1, marginRight: 5}}>
                             <BookButton
                               icon="phone"
                               title="Voice call"
@@ -520,12 +520,12 @@ export default class BookAppointmentPage extends React.Component {
                                 });
                               }}
                             />
-                          </View> */}
+                          </View>
 
                           <View style={{flex: 1, marginLeft: 5}}>
                             <BookButton
                               icon="video"
-                              title="Online"
+                              title="Video call"
                               selected={
                                 this.state.meansOfContact === 'VIDEO_CALL'
                               }

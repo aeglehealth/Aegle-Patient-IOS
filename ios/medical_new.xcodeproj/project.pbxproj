@@ -49,6 +49,7 @@
 		CD60810FB3BF494799E194AE /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B0E117542D66413598643707 /* Zocial.ttf */; };
 		CE0F1D6F245B1ACB0069502E /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE0F1D6E245B1ACB0069502E /* AuthenticationServices.framework */; };
 		CE1937BE2471836900F4526E /* swift_file.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1937BD2471836900F4526E /* swift_file.swift */; };
+		CE2EE68B2576B5840086684F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE2EE68A2576B5840086684F /* Default-568h@2x.png */; };
 		CE36993E25124DD40068EEEB /* Muli-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE36993D251248E10068EEEB /* Muli-SemiBold.ttf */; };
 		CE36993F25124DD40068EEEB /* Muli-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE36993C251248B90068EEEB /* Muli-Bold.ttf */; };
 		CE36994025124DD40068EEEB /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE36993B251248B00068EEEB /* Muli-Regular.ttf */; };
@@ -147,6 +148,7 @@
 		CE0F1D6D245B1ACB0069502E /* medical_new.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = medical_new.entitlements; path = medical_new/medical_new.entitlements; sourceTree = "<group>"; };
 		CE0F1D6E245B1ACB0069502E /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		CE1937BD2471836900F4526E /* swift_file.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swift_file.swift; sourceTree = "<group>"; };
+		CE2EE68A2576B5840086684F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		CE36993A251248A00068EEEB /* Muli-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Muli-Black.ttf"; path = "../src/assets/fonts/Muli-Black.ttf"; sourceTree = "<group>"; };
 		CE36993B251248B00068EEEB /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Muli-Regular.ttf"; path = "../src/assets/fonts/Muli-Regular.ttf"; sourceTree = "<group>"; };
 		CE36993C251248B90068EEEB /* Muli-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Muli-Bold.ttf"; path = "../src/assets/fonts/Muli-Bold.ttf"; sourceTree = "<group>"; };
@@ -288,6 +290,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				CE2EE68A2576B5840086684F /* Default-568h@2x.png */,
 				CE7C7D532538746700886837 /* GoogleService-Info.plist */,
 				CEA590A72521018A00357E62 /* medical_new-Bridging-Header.h */,
 				CEE04522251E305500C04A78 /* AppCenter-Config.plist */,
@@ -568,6 +571,7 @@
 				9F29F3C70FDD4084AF8C0458 /* Proxima Nova.otf in Resources */,
 				A51FBF2BA34A4B2FB4D99728 /* AntDesign.ttf in Resources */,
 				3082A594CFD5447AB5D040E8 /* Entypo.ttf in Resources */,
+				CE2EE68B2576B5840086684F /* Default-568h@2x.png in Resources */,
 				F6A8DDE17A544E5DBDD7375F /* EvilIcons.ttf in Resources */,
 				FE4A295136D34396949BBDE5 /* Feather.ttf in Resources */,
 				29F463B2573B434BB4190007 /* FontAwesome.ttf in Resources */,
@@ -1066,7 +1070,7 @@
 				INFOPLIST_FILE = medical_new/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.63;
+				MARKETING_VERSION = 1.64;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DFB_SONARKIT_ENABLED=1",
@@ -1101,7 +1105,7 @@
 				INFOPLIST_FILE = medical_new/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.63;
+				MARKETING_VERSION = 1.64;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DFB_SONARKIT_ENABLED=1",
