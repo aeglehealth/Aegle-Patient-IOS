@@ -19,6 +19,7 @@ import {Query, Mutation, withApollo} from 'react-apollo';
 import {
   MEPOST,
   JOIN_VIDEO_CALL,
+  JOIN_VOICE_CALL,
   JoinChatMutation,
   GetAppointmentById,
   ADD_DEVICE,
@@ -253,6 +254,8 @@ class HomePage extends React.Component {
     sessionId: '2',
     open: false,
     openChat: false,
+    openVoice: false,
+    openVoice: false,
     id: '',
     token: '',
     appointmentId: '',
@@ -446,6 +449,7 @@ class HomePage extends React.Component {
     ) {
       return;
     }
+    console.log('video reach');
 
     try {
       const {client} = this.props;
@@ -475,6 +479,47 @@ class HomePage extends React.Component {
       ShowMessage(type.ERROR, 'Error');
       this.setState({
         open: false,
+      });
+    }
+  };
+
+  handleVoice = async data => {
+    const {appointmentId, sessionId, roomId} = data && data;
+
+    await AsyncStorage.removeItem(NOTIFICATION);
+    Platform.OS === 'ios'
+      ? await this.checkIosPermissions()
+      : await this.confirmRequestPermissions();
+
+    try {
+      const {client} = this.props;
+      const res = await client.query({
+        query: GetAppointmentById,
+        variables: {appointmentId},
+        fetchPolicy: 'network-only',
+      });
+
+      const {
+        time,
+        approvedBy: {
+          profile: {firstName, lastName},
+        },
+        session: {id, room},
+      } = res.data.getAppointmentById;
+
+      console.log('hurray voice');
+      this.setState({
+        roomId: roomId || room,
+        sessionId: sessionId || id,
+        openVoice: true,
+        time,
+        doctorName: `${firstName} ${lastName}`,
+        appointmentId,
+      });
+    } catch (err) {
+      ShowMessage(type.ERROR, 'Error');
+      this.setState({
+        openVoice: false,
       });
     }
   };
@@ -809,14 +854,27 @@ class HomePage extends React.Component {
     this.unsubscribe = messaging().onMessage(async remoteMessage => {
       const {
         notification: {title, body},
-        data: {action},
+        data: {action, type},
         data,
       } = remoteMessage;
-      if (action === 'appointment.started') {
+      console.log(data, 'data');
+      if (action === 'appointment.started' && type === 'videoCall') {
         const {appointmentId, sessionId, roomId} = data;
         if (appointmentId && sessionId && roomId) {
-          console.log(remoteMessage, 'body');
           this.showAlertVideo(title, body, data);
+        }
+        return;
+      } else if (action === 'appointment.started' && type === 'chat') {
+        const {appointmentId, sessionId, roomId} = data;
+        if (appointmentId && sessionId && roomId) {
+          this.showAlertChat(title, body, data);
+        }
+        return;
+      } else if (action === 'appointment.started' && type === 'voiceCall') {
+        const {appointmentId, sessionId, roomId} = data;
+        if (appointmentId && sessionId && roomId) {
+          console.log('shhshsh');
+          this.showAlertVoice(title, body, data);
         }
         return;
       } else if (action === 'appointment.approved') {
@@ -909,11 +967,30 @@ class HomePage extends React.Component {
               'NOTIFICATIONID',
               JSON.stringify(notificationIdArray),
             );
-
+            console.log('reach');
             that.handleVideo(data);
             await AsyncStorage.removeItem(NOTIFICATION);
             await FastStorage.removeItem(NOTIFICATION);
             this.unsubscribe;
+            console.log('OK Pressed');
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  showAlertVoice = (title, message, data) => {
+    let that = this;
+    Alert.alert(
+      title,
+      message,
+      [
+        {
+          text: 'OK',
+          onPress: async () => {
+            that.handleVoice(data);
+            await AsyncStorage.removeItem(NOTIFICATION);
             console.log('OK Pressed');
           },
         },
@@ -960,18 +1037,29 @@ class HomePage extends React.Component {
       const payload = JSON.parse(notification);
       const {
         notification: {title, body},
-        data: {action},
+        data: {action, type},
         data,
       } = payload;
-      if (action === 'appointment.started') {
-        const {data} = payload;
+      if (action === 'appointment.started' && type === 'videoCall') {
         const {appointmentId, sessionId, roomId} = data;
         if (appointmentId && sessionId && roomId) {
           this.showAlertVideo(title, body, data);
         }
         return;
+      } else if (action === 'appointment.started' && type === 'chat') {
+        const {appointmentId, sessionId, roomId} = data;
+        if (appointmentId && sessionId && roomId) {
+          this.showAlertChat(title, body, data);
+        }
+        return;
+      } else if (action === 'appointment.started' && type === 'voiceChat') {
+        const {appointmentId, sessionId, roomId} = data;
+        if (appointmentId && sessionId && roomId) {
+          console.log('shhshsh');
+          this.showAlertVoice(title, body, data);
+        }
+        return;
       } else if (action === 'appointment.approved') {
-        const {data} = payload;
         const {date, time} = data;
         const militaryTime = timeConversion(time);
 
@@ -1196,13 +1284,26 @@ class HomePage extends React.Component {
     });
   };
 
-  openChat = () => {
-    const {identity, token, appointmentId, sessionId, id} = this.state;
-    this.props.navigation.navigate('Chat', {
-      identity,
+  openVoice = () => {
+    const {room, token, appointmentId} = this.state;
+    this.props.navigation.navigate('VoiceChat', {
+      roomName: room,
       token,
       appointmentId,
-      sessionId,
+    });
+  };
+
+  openChat = () => {
+    this.setState({
+      openChat: false,
+    });
+    const {identity, token, appointmentId, sessionId, id} = this.state;
+    console.log(identity, token, appointmentId, sessionId, id, 'asfdgf');
+    this.props.navigation.navigate('Chat', {
+      // identity,
+      // token,
+      appointmentId,
+      // sessionId,
       patientId: id,
     });
   };
@@ -1543,6 +1644,94 @@ class HomePage extends React.Component {
                                     // appointmentId,
                                   });
                                   this.openVideo();
+                                }
+                              })
+                              .catch(err => this.setState({loading: false}));
+                          }}>
+                          <View style={styles.accept}>
+                            {this.state.loading ? (
+                              <ActivityIndicator
+                                color="white"
+                                style={{paddingHorizontal: 25}}
+                              />
+                            ) : (
+                              <Text style={styles.button}>Join</Text>
+                            )}
+                          </View>
+                        </TouchableOpacity>
+                      )}
+                    </Mutation>
+                    <TouchableOpacity
+                      onPress={() => this.cancelAppointment()}
+                      disabled={
+                        this.state.declineLoading || this.state.loading
+                      }>
+                      <View style={styles.decline}>
+                        {this.state.declineLoading ? (
+                          <ActivityIndicator
+                            color="white"
+                            style={{paddingHorizontal: 33}}
+                          />
+                        ) : (
+                          <Text style={styles.button}>Decline</Text>
+                        )}
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              </Overlay>
+
+              <Overlay
+                width={(deviceWidth / 4) * 3}
+                height={(deviceHeight / 3) * 2}
+                overlayStyle={{
+                  borderColor: '#1B2CC1',
+                  borderWidth: 1.5,
+                  justifyContent: 'space-around',
+                }}
+                isVisible={this.state.openVoice}
+                onBackdropPress={this.decline}>
+                <>
+                  <Aegle style={styles.logo} />
+                  <Text style={styles.title}>
+                    Dr. {doctorName} is in the consulting room and has started
+                    your appointment scheduled for {this.state.time} today
+                  </Text>
+
+                  <View style={styles.buttonDiv}>
+                    <Mutation mutation={JOIN_VOICE_CALL}>
+                      {joinVoiceCallAsVideo => (
+                        <TouchableOpacity
+                          disabled={
+                            this.state.loading || this.state.declineLoading
+                          }
+                          onPress={() => {
+                            const {id, roomId, sessionId} = this.state;
+                            this.setState({loading: true});
+                            joinVoiceCallAsVideo({
+                              variables: {
+                                data: {
+                                  sessionId,
+                                  patientId: id,
+                                  room: roomId,
+                                },
+                              },
+                            })
+                              .then(res => {
+                                if (res) {
+                                  const {
+                                    room,
+                                    token,
+                                    // appointmentId,
+                                  } = res.data.joinVoiceCallAsVideo;
+                                  this.setState({
+                                    openVoice: false,
+                                    token,
+                                    room,
+                                    loading: false,
+                                    // appointmentId,
+                                  });
+                                  this.openVoice();
                                 }
                               })
                               .catch(err => this.setState({loading: false}));

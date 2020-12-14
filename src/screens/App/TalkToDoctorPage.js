@@ -12,7 +12,11 @@ import {
 } from 'react-native';
 import shortid from 'shortid';
 import {Query} from 'react-apollo';
-import {APPOINTMENTS, MEPOST} from '../../QueryAndMutation';
+import {
+  APPOINTMENTS,
+  MEPOST,
+  ACTIVE_SUBSCRIPTION,
+} from '../../QueryAndMutation';
 import ActivityIndicatorPage from '../App/ActivityIndicatorPage';
 import CommonListItem from '../../Components/CommonListItem';
 import EmptyContent from '../../Components/EmptyContent';
@@ -20,6 +24,8 @@ import {date2} from '../../Utils/dateFormater';
 import {disabled} from '../../Utils/disableAppointment';
 import {HeaderLeft} from '../../Components/HeaderLeft';
 import moment from 'moment';
+import ShowMessage, {type} from '../../Components/toster/ShowMessage';
+
 function elevationShadowStyle(elevation) {
   if (Platform.OS === 'ios') {
     return {
@@ -143,7 +149,7 @@ export default class TalkToDoctorPage extends React.Component {
       <Query query={APPOINTMENTS} fetchPolicy="network-only">
         {({loading, error, data}) => {
           if (loading) return <ActivityIndicatorPage />;
-          if (error) return <Text>an error occured</Text>;
+          if (error) return <Text>{error}</Text>;
           const {patientAppointments} = data;
           console.log(data, 'data');
           const upComingAppointments = patientAppointments.filter(
@@ -181,24 +187,52 @@ export default class TalkToDoctorPage extends React.Component {
                             </Text>
                           </View>
                           <View>
-                            <ImageBackground
-                              source={require('../../assets/btn-bg-doctor.jpg')}
-                              style={styles.buttonBigStyle}>
-                              <TouchableHighlight
-                                onPress={() => {
-                                  this.props.navigation.navigate(
-                                    // 'AppointmentSchedule',
-                                    'BookAppointment',
-                                  );
-                                }}
-                                underlayColor="rgba(0,0,0,0.01)">
-                                <View>
-                                  <Text style={styles.buttonTextStyle}>
-                                    Tap here to book an appointment
-                                  </Text>
-                                </View>
-                              </TouchableHighlight>
-                            </ImageBackground>
+                            <Query
+                              query={ACTIVE_SUBSCRIPTION}
+                              fetchPolicy="cache-and-network">
+                              {({loading, error, data}) => {
+                                if (loading) return <ActivityIndicatorPage />;
+                                if (error) return console.log('error');
+                                const me = data.me ? data.me : null;
+                                const {
+                                  profile: {photo},
+                                  local: {email},
+                                } = me;
+                                const {activeUserSubscriptions} = data;
+                                return (
+                                  <ImageBackground
+                                    source={require('../../assets/btn-bg-doctor.jpg')}
+                                    style={styles.buttonBigStyle}>
+                                    <TouchableHighlight
+                                      onPress={() => {
+                                        if (
+                                          activeUserSubscriptions.length == 0 ||
+                                          (activeUserSubscriptions &&
+                                            !activeUserSubscriptions[0].renew)
+                                        ) {
+                                          ShowMessage(
+                                            type.ERROR,
+                                            'Oops! You do not have Subscription plan. Please Subscribe to proceed.',
+                                          );
+                                          return;
+                                        }
+
+                                        this.props.navigation.navigate(
+                                          // 'AppointmentSchedule',
+                                          'BookAppointment',
+                                        );
+                                      }}
+                                      underlayColor="rgba(0,0,0,0.01)">
+                                      <View>
+                                        <Text style={styles.buttonTextStyle}>
+                                          Tap here to book an appointment
+                                        </Text>
+                                      </View>
+                                    </TouchableHighlight>
+                                  </ImageBackground>
+                                );
+                              }}
+                            </Query>
                           </View>
                           <Text style={styles.sectionTitle}>
                             RECENT APPOINTMENT
