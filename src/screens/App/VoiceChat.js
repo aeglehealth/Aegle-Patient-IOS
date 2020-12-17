@@ -25,6 +25,7 @@ import {
 } from '../../QueryAndMutation';
 import {withApollo, Query} from 'react-apollo';
 import KeepAwake from 'react-native-keep-awake';
+import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   container: {
@@ -126,6 +127,7 @@ class VideoChat extends Component {
     roomName: this.props.navigation.state.params.roomName,
     token: this.props.navigation.state.params.token,
     appointmentId: this.props.navigation.state.params.appointmentId,
+    photo: this.props.navigation.state.params.photo,
     // roomName: 'this.props.navigation.state.params.roomName',
     // token: 'this.props.navigation.state.params.token',
     // appointmentId: 'this.props.navigation.state.params.appointmentId',
@@ -202,6 +204,7 @@ class VideoChat extends Component {
     const {appointmentId} = this.state;
     Toast('The call has ended!');
     this.setState({status: 'disconnected'});
+    this.refs.twilioVideo.disconnect();
     this.props.navigation.navigate('Ratings', {appointmentId});
   };
 
@@ -215,12 +218,12 @@ class VideoChat extends Component {
 
   componentDidMount() {
     this._onConnectButtonPress();
-    AppState.addEventListener('change', this._handleAppStateChange);
+    // AppState.addEventListener('change', this._handleAppStateChange);
     BackHandler.addEventListener('hardwareBackPress', this._onEndButtonPress);
   }
 
   componentWillUnmount = () => {
-    AppState.removeEventListener('change', this._handleAppStateChange);
+    // AppState.removeEventListener('change', this._handleAppStateChange);
     BackHandler.removeEventListener(
       'hardwareBackPress',
       this._onEndButtonPress,
@@ -234,6 +237,10 @@ class VideoChat extends Component {
     } else {
       KeepAwake.deactivate();
     }
+
+    const {photo} = this.state;
+    const windowHeight = Dimensions.get('window').height;
+    const windowWidth = Dimensions.get('window').width;
     return (
       <>
         <Query
@@ -246,6 +253,7 @@ class VideoChat extends Component {
             if (error) return <Text>{error}</Text>;
             const {status} = data.getAppointmentById;
             if (status === 'CANCELLED' || status === 'COMPLETED') {
+              this.refs.twilioVideo.disconnect();
               this.props.navigation.navigate('Ratings', {appointmentId});
             }
             return (
@@ -257,10 +265,23 @@ class VideoChat extends Component {
                       position: 'absolute',
                       top: 200,
                     }}>
-                    <Image
-                      source={require('../../assets/logo-black.png')}
-                      style={{width: 250, height: 250}}
-                    />
+                    {photo ? (
+                      <FastImage
+                        source={{
+                          uri: photo.original,
+                        }}
+                        style={{
+                          width: windowWidth,
+                          height: windowHeight,
+                        }}
+                        resizeMode={FastImage.resizeMode.cover}
+                      />
+                    ) : (
+                      <Image
+                        source={require('../../assets/logo-black.png')}
+                        style={{width: 250, height: 250}}
+                      />
+                    )}
                   </View>
 
                   <View style={styles.optionsContainer}>
