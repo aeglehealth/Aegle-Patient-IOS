@@ -267,6 +267,7 @@ class HomePage extends React.Component {
     appState: AppState.currentState,
     permissionsAndroidCamera: true,
     permissionsAndroidMicroPhone: true,
+    photo: {},
   };
 
   unsubscribe = 0;
@@ -487,9 +488,17 @@ class HomePage extends React.Component {
     const {appointmentId, sessionId, roomId} = data && data;
 
     await AsyncStorage.removeItem(NOTIFICATION);
+
     Platform.OS === 'ios'
       ? await this.checkIosPermissions()
       : await this.confirmRequestPermissions();
+      
+    if (
+      // !this.state.permissionsAndroidCamera ||
+      !this.state.permissionsAndroidMicroPhone
+    ) {
+      return;
+    }
 
     try {
       const {client} = this.props;
@@ -502,7 +511,7 @@ class HomePage extends React.Component {
       const {
         time,
         approvedBy: {
-          profile: {firstName, lastName},
+          profile: {firstName, lastName, photo},
         },
         session: {id, room},
       } = res.data.getAppointmentById;
@@ -515,6 +524,7 @@ class HomePage extends React.Component {
         time,
         doctorName: `${firstName} ${lastName}`,
         appointmentId,
+        photo,
       });
     } catch (err) {
       ShowMessage(type.ERROR, 'Error');
@@ -1285,11 +1295,12 @@ class HomePage extends React.Component {
   };
 
   openVoice = () => {
-    const {room, token, appointmentId} = this.state;
+    const {room, token, appointmentId, photo} = this.state;
     this.props.navigation.navigate('VoiceChat', {
       roomName: room,
       token,
       appointmentId,
+      photo,
     });
   };
 
@@ -1505,7 +1516,7 @@ class HomePage extends React.Component {
                           </Text>
                           <Text style={styles.cardBodyText}>
                             Discover thousands of health conditions{'\n'}
-                            and there meaning here
+                            and their meaning here
                           </Text>
                         </View>
                       </TouchableOpacity>

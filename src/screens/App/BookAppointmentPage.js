@@ -452,7 +452,7 @@ export default class BookAppointmentPage extends React.Component {
                       />
 
                       <BookSelectView
-                        headText="Consultant Type"
+                        headText="Consultant type"
                         subText={this.state.consultationType}
                         icon={require('../../assets/booking-doctor.png')}
                         onPress={() => {
@@ -502,7 +502,7 @@ export default class BookAppointmentPage extends React.Component {
                           borderBottomColor: '#C4C4C4',
                         }}>
                         <Text style={styles.cardHeaderText}>
-                          Appointment Type
+                          Appointment type
                         </Text>
                         <View style={{flexDirection: 'row', marginTop: 15}}>
                           <View style={{flex: 1, marginRight: 5}}>
@@ -522,6 +522,23 @@ export default class BookAppointmentPage extends React.Component {
                             />
                           </View>
 
+                          {/* <View style={{flex: 1, marginRight: 5}}>
+                            <BookButton
+                            icon="chat"
+                            title="Chat"
+                            selected={this.state.meansOfContact === 'CHAT'}
+                            onPress={() => {
+                              this.setState({
+                                ...this.state,
+                                meansOfContact: 'CHAT',
+                                subscribeHomeVisit: false,
+                              });
+                            }}
+                            />
+                          </View> */}
+                        </View>
+
+                        <View style={{flexDirection: 'row', marginTop: 10}}>
                           <View style={{flex: 1, marginLeft: 5}}>
                             <BookButton
                               icon="video"
@@ -538,24 +555,7 @@ export default class BookAppointmentPage extends React.Component {
                               }}
                             />
                           </View>
-                        </View>
-
-                        <View style={{flexDirection: 'row', marginTop: 10}}>
-                          {/* <View style={{flex: 1, marginRight: 5}}>
-                            <BookButton
-                              icon="chat"
-                              title="Chat"
-                              selected={this.state.meansOfContact === 'CHAT'}
-                              onPress={() => {
-                                this.setState({
-                                  ...this.state,
-                                  meansOfContact: 'CHAT',
-                                  subscribeHomeVisit: false,
-                                });
-                              }}
-                            />
-                          </View> */}
-
+                          {/* 
                           <View style={{flex: 1, marginLeft: 5}}>
                             <BookButton
                               icon="home"
@@ -685,8 +685,8 @@ export default class BookAppointmentPage extends React.Component {
                               onBackdropPress={() =>
                                 this.setState({isModalVisible2: false})
                               }
-                              isVisible={this.state.isModalVisible2}>
-                              {/* <View
+                              isVisible={this.state.isModalVisible2}> */}
+                          {/* <View
                                 style={{
                                   flex: 1,
                                   backgroundColor: '#fff',
@@ -845,7 +845,7 @@ export default class BookAppointmentPage extends React.Component {
                                   </TouchableOpacity>
                                 </View>
                               </View> */}
-                              <HOMEVISIT
+                          {/* <HOMEVISIT
                                 style={{
                                   alignSelf: 'center',
                                   marginVertical: 30,
@@ -902,7 +902,7 @@ export default class BookAppointmentPage extends React.Component {
                                 </TouchableOpacity>
                               </View>
                             </Overlay>
-                          </View>
+                          </View> */}
                         </View>
                       </View>
 

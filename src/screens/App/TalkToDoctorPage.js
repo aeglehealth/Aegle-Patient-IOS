@@ -212,7 +212,7 @@ export default class TalkToDoctorPage extends React.Component {
                                         ) {
                                           ShowMessage(
                                             type.ERROR,
-                                            'Oops! You do not have Subscription plan. Please Subscribe to proceed.',
+                                            'Oops! You do not have a Subscription plan. Please Subscribe to proceed.',
                                           );
                                           return;
                                         }

@@ -360,7 +360,7 @@ class Paystack extends React.Component {
                 showsVerticalScrollIndicator={false}>
                 <View style={styles.main}>
                   <View style={styles.header}>
-                    <Image source={Aegle} style={{width: 30, height: 30}} />
+                    <Image source={Aegle} style={{width: 25, height: 25}} />
                     <View>
                       <Text style={{color: '#6C6C6C'}}>{email}</Text>
                       <Text style={{color: '#6C6C6C', alignSelf: 'flex-end'}}>
