@@ -492,7 +492,7 @@ class HomePage extends React.Component {
     Platform.OS === 'ios'
       ? await this.checkIosPermissions()
       : await this.confirmRequestPermissions();
-      
+
     if (
       // !this.state.permissionsAndroidCamera ||
       !this.state.permissionsAndroidMicroPhone
@@ -1028,17 +1028,6 @@ class HomePage extends React.Component {
   };
 
   handleBackgroundNotifications = async () => {
-    console.log('goooooddd');
-    if (await FastStorage.getItem(NOTIFICATION)) {
-      console.log(await FastStorage.getItem(NOTIFICATION), 'fastStorage');
-    }
-
-    if (await AsyncStorage.getItem(NOTIFICATION)) {
-      console.log(
-        await AsyncStorage.getItem(NOTIFICATION),
-        'AsyncStorageeeeee',
-      );
-    }
 
     if (await FastStorage.getItem(NOTIFICATION)) {
       console.log(await FastStorage.getItem(NOTIFICATION), 'aba');
@@ -1062,7 +1051,7 @@ class HomePage extends React.Component {
           this.showAlertChat(title, body, data);
         }
         return;
-      } else if (action === 'appointment.started' && type === 'voiceChat') {
+      } else if (action === 'appointment.started' && type === 'voiceCall') {
         const {appointmentId, sessionId, roomId} = data;
         if (appointmentId && sessionId && roomId) {
           console.log('shhshsh');
@@ -1106,17 +1095,17 @@ class HomePage extends React.Component {
   };
 
   videoFromNotification = async () => {
+    console.log('videoFromNotification');
     // await AsyncStorage.removeItem('NOTIFICATIONID');
     const notifications = await this.props.client.query({
       query: NOTIFICATIONS,
     });
     const {getNotifications} = notifications && notifications.data;
     const latestNotification = getNotifications[0];
+    console.log(latestNotification, 'gogogogo');
 
-    if (await AsyncStorage.getItem(NOTIFICATION)) {
-      console.log('paaser1');
-
-      const notification = await AsyncStorage.getItem(NOTIFICATION);
+    if (await FastStorage.getItem(NOTIFICATION)) {
+      const notification = await FastStorage.getItem(NOTIFICATION);
       const payload = JSON.parse(notification);
       const {
         data: {action},
@@ -1132,7 +1121,7 @@ class HomePage extends React.Component {
       } = latestNotification;
 
       let notificationIdArray = [];
-
+      console.log(appointmentId, status, 'status');
       if (status != 'APPROVED') {
         return;
       }
@@ -1149,8 +1138,10 @@ class HomePage extends React.Component {
         const idCheck = notificationIdArray.find(n => n == appointmentId);
 
         if (idCheck != undefined) {
+          console.log('returenen');
           return;
         }
+        console.log('returenen2');
         notificationIdArray.push(appointmentId);
         await AsyncStorage.setItem(
           'NOTIFICATIONID',
@@ -1160,9 +1151,9 @@ class HomePage extends React.Component {
 
       if (
         latestNotification &&
-        latestNotification.action == 'appointment.started'
+        latestNotification.action == 'appointment.started' &&
+        latestNotification.appointment.meansOfContact == 'VIDEO_CALL'
       ) {
-        console.log(latestNotification, 'currentlyy', 'psser7');
         const {
           appointment: {
             // id: appointmentId,
@@ -1178,12 +1169,32 @@ class HomePage extends React.Component {
           };
           this.handleVideo(data);
         }
+      } else if (
+        latestNotification &&
+        latestNotification.action == 'appointment.started' &&
+        latestNotification.appointment.meansOfContact == 'VOICE_CALL'
+      ) {
+        const {
+          appointment: {
+            // id: appointmentId,
+            session: {id: sessionId, room: roomId},
+          },
+        } = latestNotification;
+        console.log(appointmentId, sessionId, roomId, 'roomer');
+        if (appointmentId && sessionId && roomId) {
+          const data = {
+            appointmentId,
+            sessionId,
+            roomId,
+          };
+          this.handleVoice(data);
+        }
       }
     }
   };
 
   async componentDidMount() {
-    await FastStorage.removeItem(NOTIFICATION);
+    await this.videoFromNotification();
 
     const {client} = this.props;
     let that = this;
@@ -1227,8 +1238,6 @@ class HomePage extends React.Component {
 
     await this.fcmNotifications();
 
-    await this.videoFromNotification();
-
     // await this.getInitialNotification();
 
     AppState.addEventListener('change', this._handleAppStateChange);
@@ -1267,6 +1276,9 @@ class HomePage extends React.Component {
     if (AsyncStorage.getItem(SYMPTOMS_QUESTIONS)) {
       await AsyncStorage.removeItem(SYMPTOMS_QUESTIONS);
     }
+
+    await FastStorage.removeItem(NOTIFICATION);
+    await AsyncStorage.removeItem(NOTIFICATION);
   }
 
   async componentWillUnmount() {
@@ -1282,7 +1294,7 @@ class HomePage extends React.Component {
   };
 
   decline = () => {
-    this.setState({open: false, openChat: false});
+    this.setState({open: false, openChat: false, openVoice: false});
   };
 
   openVideo = () => {

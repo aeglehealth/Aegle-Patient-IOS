@@ -1,6 +1,6 @@
-import 'react-native-gesture-handler';
 /* eslint-disable react/prop-types */
 /* eslint-disable global-require */
+import 'react-native-gesture-handler';
 import React from 'react';
 import {Image} from 'react-native';
 import {createAppContainer} from 'react-navigation';
