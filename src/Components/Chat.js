@@ -1,24 +1,29 @@
-/* eslint-disable global-require */
-import React from 'react';
+import React, {Component} from 'react';
 import {
-  StyleSheet,
-  Text,
   View,
-  Image,
-  Dimensions,
+  Text,
+  ScrollView,
   TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  BackHandler,
 } from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import {Button, Icon} from 'react-native-elements';
-// import { DotsLoader } from "react-native-indicator";
-import Modal from 'react-native-modal';
+import {withApollo, Query} from 'react-apollo';
+import {Icon} from 'react-native-elements';
+import {
+  MEPOST,
+  COMPLETE_APPOINTMENT,
+  GetAppointmentById,
+} from '../QueryAndMutation';
+import Client from 'twilio-chat';
 import shortid from 'shortid';
-// import Client from 'twilio-chat';
-import {ThisMonthInstance} from 'twilio/lib/rest/api/v2010/account/usage/record/thisMonth';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import ActivityIndicatorPage from '../screens/App/ActivityIndicatorPage';
-import {UserContext} from '../store/context/UserContext';
-import {Mutation, Query} from 'react-apollo';
-import {JoinChatMutation, GetAppointmentById, ME} from '../QueryAndMutation';
+import Toast from '../Components/toster/Alert';
 
 function elevationShadowStyle(elevation) {
   return {
@@ -148,154 +153,118 @@ const styles = StyleSheet.create({
   },
 });
 
-var typing = false;
-
-export default class Chat extends React.Component {
-  static navigationOptions = {
-    headerStyle: styles.headerStyle,
-    headerBackImage: <Icon type="material-community" name="close" />,
-    headerLeftContainerStyle: {
-      paddingLeft: 10,
-    },
-    headerTitle: (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: 10,
-        }}>
-        <Image
-          source={require('../assets/logo-black.png')}
-          style={styles.headerImageIcon}
-        />
-      </View>
-    ),
-    headerRight: <View />,
-  };
-
+class Chat extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loadingMessages: true,
-      messagingClient: undefined,
-      runMutation: 0,
-      roomId: '',
-      prevChat: [],
-      message: '',
+      text: '',
       messages: [],
-      partsIndex: 0,
-      index: 0,
-      typing: undefined,
-      modalVisible: false,
+      channel: null,
+      loadingMessages: true,
+      message: '',
+      roomId: '',
+      appointmentId: this.props.navigation.state.params.appointmentId,
+      id: this.props.navigation.state.params.patientId,
+      roomId: this.props.navigation.state.params.roomId,
+      token: this.props.navigation.state.params.token,
     };
     this.scrollView = null;
   }
 
-  componentDidMount() {
-    // this.Twilio();
-    const {prevChat} = this.state;
-    const {index} = this.state;
-    if (this.state.messages.length > index) {
-      prevChat.push({
-        sender: 1,
-        message: this.state.messages[index].chat,
-      });
+  static navigationOptions = {headerShown: false};
 
-      this.setState(prevState => ({
-        replyOptions: prevState.messages[index].responses,
-      }));
+  joinChannel = async channel => {
+    if (channel.status !== 'joined') {
+      await channel.join();
     }
+
+    Toast('Joining chat room!');
+
+    this.setState({
+      channel,
+    });
+
+    channel.on('messageAdded', this.handleMessageAdded);
+    // this.scrollToBottom();
+  };
+
+  handleMessageAdded = message => {
+    const {messages} = this.state;
+    this.setState(
+      {
+        messages: [...messages, message],
+      },
+      // this.scrollToBottom,
+    );
+  };
+
+  joinChat = async () => {
+    const {token, roomId} = this.state;
+
+    const client = await Client.create(token);
+    this.setState({client});
+
+    client.on('tokenAboutToExpire', async () => {
+      client.updateToken(token);
+    });
+
+    try {
+      Toast('Please wait!');
+      const channel = await client.getChannelByUniqueName(roomId);
+      await this.joinChannel(channel);
+      Toast('Fetching messages!');
+      const messages = await channel.getMessages();
+      this.setState({loadingMessages: false, messages: messages.items || []});
+    } catch (err) {
+      console.log(err, 'err');
+      try {
+        const channel = await client.getChannelBySid(roomId);
+        this.joinChannel(channel);
+        const messages = await channel.getMessages();
+        this.setState({loadingMessages: false, messages: messages.items || []});
+      } catch {
+        this.setState({loadingMessages: false});
+        throw new Error('Unable to create channel, please reload this page');
+      }
+    }
+  };
+
+  handleBackButton() {
+    Toast(
+      "Oops!\nReturn key disabled.\nYou can end the chat by clicking the 'end' button above",
+    );
+    return true;
   }
 
-  async Twilio(token) {
-    await Client.create(token).then(client => {
-      this.setState({messagingClient: client});
-      client.on('tokenAboutToExpire', () =>
-        console.log('Token about to expire'),
-      );
-      client.on('channelJoined', channel => {
-        console.log('Joined channel ' + channel.friendlyName);
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    this.joinChat();
+  }
 
-        channel.getMessages().then(messages => {
-          this.setState({loadingMessages: false, messages: messages.items});
-          // console.log(messages.items)
-        });
-
-        channel.on('messageAdded', () => this.getMessage());
-        // channel.on("typingStarted", (member)=>{console.log("typing..."+member.channel.entity.uuid);return this.setState({typing:true})})
-        // channel.on("typingEnded", (member)=>this.setState({typing:undefined}))
-      });
-      this.state.messagingClient
-        .getChannelBySid(this.state.roomId)
-        .then(channel => channel.join());
-    });
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   async sendMessage() {
-    var channel = await this.state.messagingClient.getChannelBySid(
-      this.state.roomId,
-    );
-    var messageResponse = await channel.sendMessage(this.state.message);
+    const {channel} = this.state;
+    channel.sendMessage(this.state.message);
     this.setState({message: ''});
   }
 
   async getMessage() {
-    var channel = await this.state.messagingClient.getChannelBySid(
-      this.state.roomId,
-    );
+    const {channel} = this.state;
     channel.getMessages().then(messages => {
       this.setState({messages: messages.items});
     });
   }
 
   async typingMessage() {
-    var channel = await this.state.messagingClient.getChannelBySid(
-      this.state.roomId,
-    );
+    const {channel} = this.state;
     channel.typing();
   }
 
   render() {
-    const deviceWidth = Dimensions.get('window').width;
-    const deviceHeight = Dimensions.get('window').height;
-    const chatBubbles = this.state.messages.map(d => {
-      return (
-        <Query query={ME}>
-          {({data, loading}) =>
-            loading ? (
-              <ActivityIndicatorPage />
-            ) : (
-              <>
-                {console.log(data)}
-                <View
-                  style={{
-                    justifyContent:
-                      d.author !== data.me.id ? 'flex-start' : 'flex-end',
-                    flexDirection: 'row',
-                  }}
-                  key={shortid.generate()}>
-                  <View
-                    style={
-                      d.author !== data.me.id
-                        ? styles.chatReceived
-                        : styles.chatSent
-                    }>
-                    <Text
-                      style={[
-                        styles.chatText,
-                        {color: d.author !== data.me.id ? '#000' : '#fff'},
-                      ]}>
-                      {d.body}
-                    </Text>
-                  </View>
-                </View>
-              </>
-            )
-          }
-        </Query>
-      );
-    });
+    const {id, loadingMessages, appointmentId} = this.state;
 
     const replyOptions = (
       <>
@@ -306,6 +275,7 @@ export default class Chat extends React.Component {
             marginHorizontal: 10,
             borderRadius: 5,
             padding: 10,
+            borderColor: '#1b2cc1',
           }}
           value={this.state.message}
           onChangeText={message => {
@@ -318,87 +288,134 @@ export default class Chat extends React.Component {
         />
       </>
     );
-    var appointment = false;
-    console.log(
-      this.props.navigation.state.params.appointmentId,
-      this.props.navigation.state.params.patientId,
-    );
     return (
       <Query
         query={GetAppointmentById}
         variables={{
-          appointmentId: this.props.navigation.state.params.appointmentId,
-        }}>
+          appointmentId,
+        }}
+        pollInterval={5000}>
         {({data, loading}) => {
-          appointment = data;
-          if (!loading && this.state.roomId == '') {
-            this.setState({
-              roomId: appointment.getAppointmentById.session.room,
-            });
-            console.log('room', appointment.getAppointmentById.session.room);
-          }
-          return loading ? (
-            <ActivityIndicatorPage />
+          if (loading) return <ActivityIndicatorPage />;
+
+          const {status} = data.getAppointmentById;
+          return status === 'CANCELLED' || status === 'COMPLETED' ? (
+            this.props.navigation.navigate('Ratings', {appointmentId})
           ) : (
-            <Mutation mutation={JoinChatMutation}>
-              {(joinChat, {data, loading, error}) => {
-                if (data && !this.state.messagingClient)
-                  this.Twilio(data.joinChat.token);
-                if (loading) {
-                  !data && this.state.runMutation == '0'
-                    ? this.setState({
-                        runMutation: this.state.runMutation + 1,
-                      })
-                    : null;
-                } else {
-                  this.state.runMutation == '1'
-                    ? null
-                    : joinChat({
-                        variables: {
-                          data: {
-                            patientId: this.props.navigation.state.params
-                              .patientId,
-                            sessionId:
-                              appointment.getAppointmentById.session.id,
-                          },
-                        },
-                      });
-                }
-                return (
-                  <View style={styles.container}>
-                    {this.state.loadingMessages ? (
-                      <>
-                        <ActivityIndicatorPage />
-                      </>
-                    ) : (
-                      <>
-                        <ScrollView
-                          showsVerticalScrollIndicator={false}
-                          ref={ref => {
-                            this.scrollView = ref;
-                          }}
-                          onContentSizeChange={(
-                            contentWidth,
-                            contentHeight,
-                          ) => {
-                            this.scrollView.scrollToEnd({animated: true});
-                          }}>
-                          {chatBubbles}
-                          {this.state.typing ? <Text>Typing...</Text> : null}
-                          {this.state.typing ? (
-                            <View style={{padding: 10}} />
-                          ) : null}
-                        </ScrollView>
-                        <View style={{marginVertical: 10}}>{replyOptions}</View>
-                      </>
-                    )}
+            <>
+              <View
+                style={{
+                  width: wp('100%'),
+                  borderBottomColor: '#1b2cc1',
+                  borderBottomWidth: 0.5,
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    width: wp('80%'),
+                    justifyContent: 'space-between',
+                    marginLeft: 10,
+                    alignItems: 'center',
+                    height: hp('10%'),
+                    marginTop: 0,
+                  }}>
+                  <TouchableOpacity
+                    onPress={async () => {
+                      const {appointmentId} = this.state;
+                      const {client} = this.props;
+
+                      try {
+                        const res = await client.mutate({
+                          mutation: COMPLETE_APPOINTMENT,
+                          variables: {appointmentId},
+                          refetchQueries: [
+                            {
+                              query: MEPOST,
+                            },
+                          ],
+                        });
+                        if (res.data.completeAppointment) {
+                          this.props.navigation.navigate('Ratings', {
+                            appointmentId,
+                          });
+                        } else {
+                          this.props.navigation.navigate('Home');
+                        }
+                        return;
+                      } catch (err) {
+                        this.props.navigation.navigate('Home');
+                      }
+                    }}
+                    style={{backgroundColor: '#1b2cc1', borderRadius: 5}}>
+                    {/* <Icon type="material-community" name="close" /> */}
+                    <Text style={{color: 'white', padding: 10}}>End Chat</Text>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      padding: 10,
+                    }}>
+                    <Image
+                      source={require('../assets/logo-black.png')}
+                      style={styles.headerImageIcon}
+                    />
                   </View>
-                );
-              }}
-            </Mutation>
+                </View>
+              </View>
+              <View style={styles.container}>
+                {loadingMessages ? (
+                  <ActivityIndicatorPage />
+                ) : (
+                  <>
+                    <ScrollView
+                      showsVerticalScrollIndicator={false}
+                      ref={ref => {
+                        this.scrollView = ref;
+                      }}
+                      onContentSizeChange={(contentWidth, contentHeight) => {
+                        this.scrollView.scrollToEnd({animated: true});
+                      }}>
+                      {this.state.messages.map(d => {
+                        return (
+                          <View
+                            style={{
+                              justifyContent:
+                                d.author !== id ? 'flex-start' : 'flex-end',
+                              flexDirection: 'row',
+                            }}
+                            key={shortid.generate()}>
+                            <View
+                              style={
+                                d.author !== id
+                                  ? styles.chatReceived
+                                  : styles.chatSent
+                              }>
+                              <Text
+                                style={[
+                                  styles.chatText,
+                                  {
+                                    color: d.author !== id ? '#000' : '#fff',
+                                  },
+                                ]}>
+                                {d.body}
+                              </Text>
+                            </View>
+                          </View>
+                        );
+                      })}
+                    </ScrollView>
+                    <View style={{marginVertical: 10}}>{replyOptions}</View>
+                  </>
+                )}
+              </View>
+            </>
           );
         }}
       </Query>
     );
   }
 }
+
+export default withApollo(Chat);

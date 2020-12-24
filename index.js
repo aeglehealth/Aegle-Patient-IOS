@@ -26,22 +26,22 @@ import messaging from '@react-native-firebase/messaging';
 import FastStorage from 'react-native-fast-storage';
 
 messaging().onNotificationOpenedApp(async remoteMessage => {
-  console.log(remoteMessage, 'Message handled in the background! 1');
+  // console.log(remoteMessage, 'Message handled in the background! 1');
   if (remoteMessage) {
     const data = JSON.stringify(remoteMessage);
     await AsyncStorage.setItem(NOTIFICATION, data);
     await FastStorage.setItem(NOTIFICATION, data);
-    console.log(await FastStorage.getItem(NOTIFICATION), 'dat 1');
+    // console.log(await FastStorage.getItem(NOTIFICATION), 'dat 1');
   }
 });
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log(remoteMessage, 'Message handled in the background!23');
+  // console.log(remoteMessage, 'Message handled in the background!23');
   if (remoteMessage) {
     const data = JSON.stringify(remoteMessage);
     await AsyncStorage.setItem(NOTIFICATION, data);
     await FastStorage.setItem(NOTIFICATION, data);
-    console.log(await FastStorage.getItem(NOTIFICATION), 'dat111');
+    // console.log(await FastStorage.getItem(NOTIFICATION), 'dat111');
   }
 });
 
@@ -107,16 +107,16 @@ const httpLink = ApolloLink.from([
     cache,
   }),
   createUploadLink({
-    // uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
-    uri: 'https://api.aeglehealth.io/graphql',
+    uri: 'https://aegle-mongodb-api.herokuapp.com/graphql',
+    // uri: 'https://api.aeglehealth.io/graphql',
     credentials: 'include',
   }),
 ]);
 
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
-  uri: 'wss://api.aeglehealth.io/graphql',
-  // uri: 'ws://aegle-mongodb-api.herokuapp.com/graphql',
+  // uri: 'wss://api.aeglehealth.io/graphql',
+  uri: 'ws://aegle-mongodb-api.herokuapp.com/graphql',
   options: {
     reconnect: true,
   },

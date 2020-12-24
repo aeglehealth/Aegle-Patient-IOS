@@ -62,7 +62,7 @@
     "react-native-fast-storage": "^0.1.5",
     "react-native-fbsdk": "^3.0.0",
     "react-native-floating-action": "^1.19.1",
-    "react-native-gesture-handler": "~1.3.0",
+    "react-native-gesture-handler": "^1.9.0",
     "react-native-google-signin": "^2.1.1",
     "react-native-html-to-pdf": "^0.8.0",
     "react-native-image-picker": "^2.3.3",
@@ -96,6 +96,7 @@
     "shortid": "^2.2.15",
     "subscriptions-transport-ws": "^0.9.18",
     "throttle-debounce": "^2.1.0",
+    "twilio-chat": "^4.1.0",
     "util": "^0.12.3",
     "yup": "^0.28.3"
   },

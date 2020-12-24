@@ -64,8 +64,8 @@ import {
   AUTH_TOKEN,
 } from 'react-native-dotenv';
 import FastStorage from 'react-native-fast-storage';
-import {localNotificationService} from './LocalNotifications';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import GradientButton from '../../Components/GradientButton';
 
 function elevationShadowStyle(elevation) {
   return {
@@ -245,6 +245,55 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingHorizontal: 20,
   },
+  iconImage: {
+    height: 95,
+    width: 95,
+    alignSelf: 'center',
+  },
+  iconCircle: {
+    borderRadius: 50,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 30,
+    marginBottom: 20,
+    height: 95,
+    width: 95,
+    ...elevationShadowStyle(3),
+  },
+  headText: {
+    color: '#000',
+    fontFamily: 'Muli-ExtraBold',
+    textAlign: 'center',
+    justifyContent: 'center',
+    fontSize: 24,
+    marginBottom: 10,
+  },
+  mainBox: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 45,
+    paddingVertical: 25,
+    borderRadius: 10,
+  },
+  bodyText: {
+    color: '#828282',
+    fontFamily: 'Muli-Regular',
+    fontSize: 14,
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
+  buttonStyle: {
+    marginTop: 30,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignSelf: 'center',
+  },
+  buttonTitleStyle: {
+    color: '#fff',
+    fontSize: 20,
+    fontFamily: 'Muli-Bold',
+  },
 });
 
 class HomePage extends React.Component {
@@ -256,6 +305,7 @@ class HomePage extends React.Component {
     openChat: false,
     openVoice: false,
     openVoice: false,
+    openSub: false,
     id: '',
     token: '',
     appointmentId: '',
@@ -272,173 +322,10 @@ class HomePage extends React.Component {
 
   unsubscribe = 0;
 
-  // register = (onRegister, onNotification, onOpenNotification) => {
-  //   this.checkPermission(onRegister);
-  //   this.createNotificationListeners(
-  //     onRegister,
-  //     onNotification,
-  //     onOpenNotification,
-  //   );
-  // };
-
-  // registerAppWithFCM = async () => {
-  //   if (Platform.OS === 'ios') {
-  //     // await messaging().registerDeviceForRemoteMessages();
-  //     await messaging().setAutoInitEnabled(true);
-  //   }
-  // };
-
-  // checkPermission = onRegister => {
-  //   messaging()
-  //     .hasPermission()
-  //     .then(enabled => {
-  //       if (enabled) {
-  //         // User has permissions
-  //         this.getToken(onRegister);
-  //       } else {
-  //         // User doesn't have permission
-  //         this.requestPermission(onRegister);
-  //       }
-  //     })
-  //     .catch(error => {
-  //       console.log('[FCMService] Permission rejected ', error);
-  //     });
-  // };
-
-  // getToken = async onRegister => {
-  //   let that = this;
-  //   const getUniqueId = DeviceInfo.getUniqueId();
-  //   console.log(getUniqueId, 'id');
-  //   const fcmToken = await messaging().getToken();
-  //   if (fcmToken) {
-  //     onRegister(fcmToken);
-  //     console.log(fcmToken);
-  //     await AsyncStorage.setItem(FCM_TOKEN, fcmToken);
-  //     await AsyncStorage.setItem(UNIQUE_ID, getUniqueId);
-
-  //     try {
-  //       const me = await that.props.client.query({
-  //         query: MEPOST,
-  //       });
-
-  //       const {
-  //         me: {devices},
-  //       } = me.data;
-
-  //       const fingerPrint = devices.find(
-  //         arr => arr.fingerprint === getUniqueId,
-  //       );
-
-  //       const fcm = devices.find(arr => arr.fcmToken === fcmToken);
-
-  //       if (fingerPrint === undefined || fcm === undefined) {
-  //         console.log('result');
-  //         try {
-  //           const data = await that.props.client.mutate({
-  //             mutation: ADD_DEVICE,
-  //             variables: {
-  //               data: {
-  //                 fingerprint: getUniqueId,
-  //                 fcmToken,
-  //               },
-  //             },
-  //           });
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       }
-  //     } catch (err) {
-  //       ShowMessage(type.ERROR, err);
-  //     }
-  //   } else {
-  //     console.log('fcm token error');
-  //   }
-  // };
-
-  // requestPermission = onRegister => {
-  //   messaging()
-  //     .requestPermission()
-  //     .then(() => {
-  //       this.getToken(onRegister);
-  //     })
-  //     .catch(error => {
-  //       console.log('[FCMService] Request Permission rejected ', error);
-  //     });
-  // };
-
-  // deleteToken = () => {
-  //   console.log('[FCMService] deleteToken ');
-  //   messaging()
-  //     .deleteToken()
-  //     .catch(error => {
-  //       console.log('[FCMService] Delete token error ', error);
-  //     });
-  // };
-
-  // createNotificationListeners = (
-  //   onRegister,
-  //   onNotification,
-  //   onOpenNotification,
-  // ) => {
-  //   // When the application is running, but in the background
-  //   messaging().onNotificationOpenedApp(remoteMessage => {
-  //     console.log(
-  //       '[FCMService] onNotificationOpenedApp Notification caused app to open from background state:',
-  //       remoteMessage,
-  //     );
-  //     if (remoteMessage) {
-  //       const notification = remoteMessage.notification;
-  //       onOpenNotification(notification);
-  //       // this.removeDeliveredNotification(notification.notificationId)
-  //     }
-  //   });
-
-  //   // When the application is opened from a quit state.
-  //   messaging()
-  //     .getInitialNotification()
-  //     .then(remoteMessage => {
-  //       console.log(
-  //         '[FCMService] getInitialNotification Notification caused app to open from quit state:',
-  //         remoteMessage,
-  //       );
-
-  //       if (remoteMessage) {
-  //         const notification = remoteMessage.notification;
-  //         onOpenNotification(notification);
-  //         //  this.removeDeliveredNotification(notification.notificationId)
-  //       }
-  //     });
-
-  //   // Foreground state messages
-  //   this.messageListener = messaging().onMessage(async remoteMessage => {
-  //     console.log('[FCMService] A new FCM message arrived!', remoteMessage);
-  //     if (remoteMessage) {
-  //       let notification = null;
-  //       if (Platform.OS === 'ios') {
-  //         notification = remoteMessage.notification;
-  //       } else {
-  //         notification = remoteMessage.notification;
-  //       }
-  //       onNotification(notification);
-  //     }
-  //   });
-
-  //   // Triggered when have new token
-  //   messaging().onTokenRefresh(fcmToken => {
-  //     console.log('[FCMService] New token refresh: ', fcmToken);
-  //     onRegister(fcmToken);
-  //   });
-  // };
-
-  // unRegister = () => {
-  //   this.messageListener();
-  // };
-  // /////////////////////
-
   handleVideo = async data => {
     const {appointmentId, sessionId, roomId} = data && data;
 
-    await AsyncStorage.removeItem(NOTIFICATION);
+    await FastStorage.removeItem(NOTIFICATION);
 
     Platform.OS === 'ios'
       ? await this.checkIosPermissions()
@@ -487,7 +374,7 @@ class HomePage extends React.Component {
   handleVoice = async data => {
     const {appointmentId, sessionId, roomId} = data && data;
 
-    await AsyncStorage.removeItem(NOTIFICATION);
+    await FastStorage.removeItem(NOTIFICATION);
 
     Platform.OS === 'ios'
       ? await this.checkIosPermissions()
@@ -535,7 +422,8 @@ class HomePage extends React.Component {
   };
 
   handleChat = async data => {
-    const {appointmentId, sessionId, subject, room} = data && data;
+    console.log(data, 'chatdata');
+    const {appointmentId, sessionId, room} = data && data;
     const {id} = this.state;
 
     const {client} = this.props;
@@ -553,17 +441,17 @@ class HomePage extends React.Component {
         },
       } = res.data.getAppointmentById;
 
-      console.log('startChat', data, id, subject);
-      if (subject === id) {
-        this.setState({
-          roomId: room,
-          sessionId,
-          openChat: true,
-          time,
-          doctorName: `${firstName} ${lastName}`,
-          appointmentId,
-        });
-      }
+      console.log('startChat', data, id);
+      // if (subject === id) {
+      this.setState({
+        roomId: room,
+        sessionId,
+        openChat: true,
+        time,
+        doctorName: `${firstName} ${lastName}`,
+        appointmentId,
+      });
+      // }
     }
   };
 
@@ -572,7 +460,7 @@ class HomePage extends React.Component {
     this.setState({
       declineLoading: true,
     });
-    await AsyncStorage.removeItem(NOTIFICATION);
+    await FastStorage.removeItem(NOTIFICATION);
     console.log(appointmentId, 'id');
     const {client} = this.props;
     try {
@@ -919,7 +807,7 @@ class HomePage extends React.Component {
           onPress: async () => {
             this.unsubscribe;
             const {navigation} = this.props;
-            await AsyncStorage.removeItem(NOTIFICATION);
+            await FastStorage.removeItem(NOTIFICATION);
             console.log(data, 'dataaaas');
             const {action} = data;
             console.log(action.appointmentId, 'id');
@@ -979,7 +867,7 @@ class HomePage extends React.Component {
             );
             console.log('reach');
             that.handleVideo(data);
-            await AsyncStorage.removeItem(NOTIFICATION);
+            // await AsyncStorage.removeItem(NOTIFICATION);
             await FastStorage.removeItem(NOTIFICATION);
             this.unsubscribe;
             console.log('OK Pressed');
@@ -1000,7 +888,26 @@ class HomePage extends React.Component {
           text: 'OK',
           onPress: async () => {
             that.handleVoice(data);
-            await AsyncStorage.removeItem(NOTIFICATION);
+            await FastStorage.removeItem(NOTIFICATION);
+            console.log('OK Pressed');
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  showAlertChat = (title, message, data) => {
+    let that = this;
+    Alert.alert(
+      title,
+      message,
+      [
+        {
+          text: 'OK',
+          onPress: async () => {
+            that.handleChat(data);
+            await FastStorage.removeItem(NOTIFICATION);
             console.log('OK Pressed');
           },
         },
@@ -1018,7 +925,7 @@ class HomePage extends React.Component {
           text: 'OK',
           onPress: async () => {
             this.unsubscribe;
-            await AsyncStorage.removeItem(NOTIFICATION);
+            await FastStorage.removeItem(NOTIFICATION);
             // this.addToCalendar('Aegle Doctor Appointment', newDate);
           },
         },
@@ -1028,7 +935,6 @@ class HomePage extends React.Component {
   };
 
   handleBackgroundNotifications = async () => {
-
     if (await FastStorage.getItem(NOTIFICATION)) {
       console.log(await FastStorage.getItem(NOTIFICATION), 'aba');
       const notification = await FastStorage.getItem(NOTIFICATION);
@@ -1278,7 +1184,13 @@ class HomePage extends React.Component {
     }
 
     await FastStorage.removeItem(NOTIFICATION);
-    await AsyncStorage.removeItem(NOTIFICATION);
+    // await AsyncStorage.removeItem(NOTIFICATION);
+
+    setTimeout(async () => {
+      if ((await AsyncStorage.getItem('freeTrial')) == null) {
+        this.setState({openSub: true});
+      }
+    }, 5000);
   }
 
   async componentWillUnmount() {
@@ -1286,7 +1198,7 @@ class HomePage extends React.Component {
     // this.unRegister();
     // localNotificationService.unregister();
     this.unsubscribe;
-    await AsyncStorage.removeItem(NOTIFICATION);
+    await FastStorage.removeItem(NOTIFICATION);
   }
 
   handleOnCompleted = (data, renewState) => {
@@ -1294,7 +1206,12 @@ class HomePage extends React.Component {
   };
 
   decline = () => {
-    this.setState({open: false, openChat: false, openVoice: false});
+    this.setState({
+      open: false,
+      openChat: false,
+      openVoice: false,
+      openSub: false,
+    });
   };
 
   openVideo = () => {
@@ -1558,19 +1475,29 @@ class HomePage extends React.Component {
 
               <Overlay
                 isVisible={this.state.openChat}
-                onBackdropPress={this.decline}>
-                <View>
+                onBackdropPress={this.decline}
+                width={(deviceWidth / 4) * 3}
+                height={(deviceHeight / 3) * 2}
+                overlayStyle={{
+                  borderColor: '#1B2CC1',
+                  borderWidth: 1.5,
+                  justifyContent: 'space-around',
+                }}>
+                <>
                   <Aegle style={styles.logo} />
                   <Text style={styles.title}>
                     Dr. {doctorName} started your chat appointment scheduled for{' '}
                     {this.state.time} today
                   </Text>
-
                   <View style={styles.buttonDiv}>
                     <Mutation mutation={JoinChatMutation}>
                       {joinChat => (
                         <TouchableOpacity
+                          disabled={
+                            this.state.loading || this.state.declineLoading
+                          }
                           onPress={() => {
+                            this.setState({loading: true});
                             joinChat({
                               variables: {
                                 data: {
@@ -1586,6 +1513,7 @@ class HomePage extends React.Component {
                                     token,
                                     identity,
                                     appointmentId,
+                                    roomId,
                                   } = res.data.joinChat;
                                   this.setState({
                                     openChat: false,
@@ -1593,26 +1521,46 @@ class HomePage extends React.Component {
                                     identity,
                                     appointmentId,
                                     sessionId,
+                                    roomId,
+                                    loading: false,
                                   });
                                   this.openChat();
                                 }
                               })
-                              .catch(err => err);
+                              .catch(err => this.setState({loading: false}));
                           }}>
                           <View style={styles.accept}>
-                            <Text style={styles.button}>Accept</Text>
+                            {this.state.loading ? (
+                              <ActivityIndicator
+                                color="white"
+                                style={{paddingHorizontal: 25}}
+                              />
+                            ) : (
+                              <Text style={styles.button}>Join</Text>
+                            )}
                           </View>
                         </TouchableOpacity>
                       )}
                     </Mutation>
 
-                    <TouchableOpacity onPress={() => this.decline()}>
+                    <TouchableOpacity
+                      onPress={() => this.cancelAppointment()}
+                      disabled={
+                        this.state.declineLoading || this.state.loading
+                      }>
                       <View style={styles.decline}>
-                        <Text style={styles.button}>Decline</Text>
+                        {this.state.declineLoading ? (
+                          <ActivityIndicator
+                            color="white"
+                            style={{paddingHorizontal: 33}}
+                          />
+                        ) : (
+                          <Text style={styles.button}>Decline</Text>
+                        )}
                       </View>
                     </TouchableOpacity>
                   </View>
-                </View>
+                </>
               </Overlay>
 
               <Overlay
@@ -1788,6 +1736,47 @@ class HomePage extends React.Component {
                         )}
                       </View>
                     </TouchableOpacity>
+                  </View>
+                </>
+              </Overlay>
+
+              <Overlay
+                width={(deviceWidth / 4) * 3.5}
+                height={deviceHeight / 1.5}
+                overlayStyle={{
+                  borderRadius: 10,
+                }}
+                isVisible={this.state.openSub}
+                onBackdropPress={this.decline}>
+                <>
+                  <View style={styles.mainBox}>
+                    <View style={styles.iconCircle}>
+                      <Image
+                        source={require('../../assets/completed-mark.png')}
+                        style={styles.iconImage}
+                      />
+                    </View>
+                    <Text style={styles.headText}>Congrats!</Text>
+                    <Text
+                      style={
+                        styles.bodyText
+                      }>{`You have been awarded a 7-day\nfree trial to book appointments`}</Text>
+
+                    <GradientButton
+                      style={styles.buttonStyle}
+                      text="OK"
+                      textStyle={styles.buttonTitleStyle}
+                      gradientBegin="#1B2CC1"
+                      gradientEnd="rgba(27, 44, 193, 0.77)"
+                      gradientDirection="vertical"
+                      height={90}
+                      width={270}
+                      radius={5}
+                      onPressAction={async () => {
+                        this.decline();
+                        await AsyncStorage.setItem('freeTrial', 'true');
+                      }}
+                    />
                   </View>
                 </>
               </Overlay>

@@ -149,8 +149,6 @@ class VideoChat extends Component {
     const {appointmentId} = this.state;
     const {client} = this.props;
 
-    this.refs.twilioVideo.disconnect();
-
     try {
       const res = await client.mutate({
         mutation: COMPLETE_APPOINTMENT,
@@ -163,8 +161,9 @@ class VideoChat extends Component {
       });
       console.log(res, 'res1');
       if (res.data.completeAppointment) {
+        await this.refs.twilioVideo.disconnect();
         console.log(res, 'res2');
-        this.props.navigation.navigate('Ratings', {appointmentId});
+        await this.props.navigation.navigate('Ratings', {appointmentId});
       } else {
         this.props.navigation.navigate('Home');
       }
