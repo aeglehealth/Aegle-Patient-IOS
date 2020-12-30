@@ -423,7 +423,7 @@ class HomePage extends React.Component {
 
   handleChat = async data => {
     console.log(data, 'chatdata');
-    const {appointmentId, sessionId, room} = data && data;
+    const {appointmentId, sessionId, roomId} = data && data;
     const {id} = this.state;
 
     const {client} = this.props;
@@ -441,15 +441,17 @@ class HomePage extends React.Component {
         },
       } = res.data.getAppointmentById;
 
+      console.log(roomId, 'room');
+
       console.log('startChat', data, id);
       // if (subject === id) {
       this.setState({
-        roomId: room,
+        room: roomId,
         sessionId,
-        openChat: true,
         time,
         doctorName: `${firstName} ${lastName}`,
         appointmentId,
+        openChat: true,
       });
       // }
     }
@@ -634,15 +636,16 @@ class HomePage extends React.Component {
     }
   };
 
-  checkIosPermissions = () => {
-    checkMultiple([PERMISSIONS.IOS.CAMERA, PERMISSIONS.IOS.MICROPHONE]).then(
-      statuses => {
-        statuses[PERMISSIONS.IOS.CAMERA] != RESULTS.GRANTED &&
-          request(PERMISSIONS.IOS.CAMERA);
-        statuses[PERMISSIONS.IOS.MICROPHONE] != RESULTS.GRANTED &&
-          request(PERMISSIONS.IOS.MICROPHONE);
-      },
-    );
+  checkIosPermissions = async () => {
+    await checkMultiple([
+      PERMISSIONS.IOS.CAMERA,
+      PERMISSIONS.IOS.MICROPHONE,
+    ]).then(statuses => {
+      statuses[PERMISSIONS.IOS.CAMERA] != RESULTS.GRANTED &&
+        request(PERMISSIONS.IOS.CAMERA);
+      statuses[PERMISSIONS.IOS.MICROPHONE] != RESULTS.GRANTED &&
+        request(PERMISSIONS.IOS.MICROPHONE);
+    });
   };
 
   checkFirebasePermission = async () => {
@@ -1095,6 +1098,26 @@ class HomePage extends React.Component {
           };
           this.handleVoice(data);
         }
+      } else if (
+        latestNotification &&
+        latestNotification.action == 'appointment.started' &&
+        latestNotification.appointment.meansOfContact == 'CHAT'
+      ) {
+        const {
+          appointment: {
+            // id: appointmentId,
+            session: {id: sessionId, room: roomId},
+          },
+        } = latestNotification;
+        console.log(appointmentId, sessionId, roomId, 'roomer');
+        if (appointmentId && sessionId && roomId) {
+          const data = {
+            appointmentId,
+            sessionId,
+            roomId,
+          };
+          this.handleChat(data);
+        }
       }
     }
   };
@@ -1107,6 +1130,11 @@ class HomePage extends React.Component {
 
     PushNotificationIOS.removeAllDeliveredNotifications();
 
+    if (Platform.OS === 'ios') {
+      await this.checkIosPermissions();
+    } else {
+      await this.requestPermissions();
+    }
     // console.log(await FastStorage.getItem('key'), 'dom');
 
     // this.registerAppWithFCM();
@@ -1151,12 +1179,6 @@ class HomePage extends React.Component {
     // await this.getRefreshToken();
 
     this.handleBackgroundNotifications();
-
-    if (Platform.OS === 'ios') {
-      this.checkIosPermissions();
-    } else {
-      this.requestPermissions();
-    }
 
     const res = await client.query({
       query: MEPOST,
@@ -1234,14 +1256,12 @@ class HomePage extends React.Component {
   };
 
   openChat = () => {
-    this.setState({
-      openChat: false,
-    });
-    const {identity, token, appointmentId, sessionId, id} = this.state;
-    console.log(identity, token, appointmentId, sessionId, id, 'asfdgf');
+    console.log('openerrrr', this.state.room);
+    const {room, token, appointmentId, id} = this.state;
+    console.log(id, room, token, appointmentId, 'asfdgf');
     this.props.navigation.navigate('Chat', {
-      // identity,
-      // token,
+      roomId: room,
+      token,
       appointmentId,
       // sessionId,
       patientId: id,

@@ -15,8 +15,8 @@
 
 #import <CodePush/CodePush.h>
 #import <AppCenterReactNative.h>
-#import <AppCenterReactNativeAnalytics.h>
-#import <AppCenterReactNativeCrashes.h>
+// #import <AppCenterReactNativeAnalytics.h>
+// #import <AppCenterReactNativeCrashes.h>
 
 // @import Firebase;
 
@@ -53,8 +53,8 @@ static void InitializeFlipper(UIApplication *application) {
   #endif
   
   [AppCenterReactNative register];
-  [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
-  [AppCenterReactNativeCrashes registerWithAutomaticProcessing];
+  // [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
+  // [AppCenterReactNativeCrashes registerWithAutomaticProcessing];
 
   NSDictionary *appProperties = [RNFBMessagingModule addCustomPropsToUserProps:nil withLaunchOptions:launchOptions];
 

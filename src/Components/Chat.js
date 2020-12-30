@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   BackHandler,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {withApollo, Query} from 'react-apollo';
 import {Icon} from 'react-native-elements';
@@ -162,7 +163,7 @@ class Chat extends Component {
       channel: null,
       loadingMessages: true,
       message: '',
-      roomId: '',
+      // roomId: '',
       appointmentId: this.props.navigation.state.params.appointmentId,
       id: this.props.navigation.state.params.patientId,
       roomId: this.props.navigation.state.params.roomId,
@@ -264,8 +265,17 @@ class Chat extends Component {
   }
 
   render() {
-    const {id, loadingMessages, appointmentId} = this.state;
-
+    const {id, loadingMessages, appointmentId, token, roomId} = this.state;
+    console.log(
+      id,
+      'id',
+      appointmentId,
+      'appointment',
+      token,
+      'token',
+      roomId,
+      'room',
+    );
     const replyOptions = (
       <>
         <TextInput
@@ -303,113 +313,117 @@ class Chat extends Component {
             this.props.navigation.navigate('Ratings', {appointmentId})
           ) : (
             <>
-              <View
-                style={{
-                  width: wp('100%'),
-                  borderBottomColor: '#1b2cc1',
-                  borderBottomWidth: 0.5,
-                }}>
+              <KeyboardAvoidingView>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    width: wp('80%'),
-                    justifyContent: 'space-between',
-                    marginLeft: 10,
-                    alignItems: 'center',
-                    height: hp('10%'),
-                    marginTop: 0,
+                    width: wp('100%'),
+                    borderBottomColor: '#1b2cc1',
+                    borderBottomWidth: 0.5,
                   }}>
-                  <TouchableOpacity
-                    onPress={async () => {
-                      const {appointmentId} = this.state;
-                      const {client} = this.props;
-
-                      try {
-                        const res = await client.mutate({
-                          mutation: COMPLETE_APPOINTMENT,
-                          variables: {appointmentId},
-                          refetchQueries: [
-                            {
-                              query: MEPOST,
-                            },
-                          ],
-                        });
-                        if (res.data.completeAppointment) {
-                          this.props.navigation.navigate('Ratings', {
-                            appointmentId,
-                          });
-                        } else {
-                          this.props.navigation.navigate('Home');
-                        }
-                        return;
-                      } catch (err) {
-                        this.props.navigation.navigate('Home');
-                      }
-                    }}
-                    style={{backgroundColor: '#1b2cc1', borderRadius: 5}}>
-                    {/* <Icon type="material-community" name="close" /> */}
-                    <Text style={{color: 'white', padding: 10}}>End Chat</Text>
-                  </TouchableOpacity>
                   <View
                     style={{
-                      flex: 1,
-                      justifyContent: 'center',
+                      flexDirection: 'row',
+                      width: wp('80%'),
+                      justifyContent: 'space-between',
+                      marginLeft: 10,
                       alignItems: 'center',
-                      padding: 10,
+                      height: hp('10%'),
+                      marginTop: 0,
                     }}>
-                    <Image
-                      source={require('../assets/logo-black.png')}
-                      style={styles.headerImageIcon}
-                    />
+                    <TouchableOpacity
+                      onPress={async () => {
+                        const {appointmentId} = this.state;
+                        const {client} = this.props;
+
+                        try {
+                          const res = await client.mutate({
+                            mutation: COMPLETE_APPOINTMENT,
+                            variables: {appointmentId},
+                            refetchQueries: [
+                              {
+                                query: MEPOST,
+                              },
+                            ],
+                          });
+                          if (res.data.completeAppointment) {
+                            this.props.navigation.navigate('Ratings', {
+                              appointmentId,
+                            });
+                          } else {
+                            this.props.navigation.navigate('Home');
+                          }
+                          return;
+                        } catch (err) {
+                          this.props.navigation.navigate('Home');
+                        }
+                      }}
+                      style={{backgroundColor: '#1b2cc1', borderRadius: 5}}>
+                      {/* <Icon type="material-community" name="close" /> */}
+                      <Text style={{color: 'white', padding: 10}}>
+                        End Chat
+                      </Text>
+                    </TouchableOpacity>
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: 10,
+                      }}>
+                      <Image
+                        source={require('../assets/logo-black.png')}
+                        style={styles.headerImageIcon}
+                      />
+                    </View>
                   </View>
                 </View>
-              </View>
-              <View style={styles.container}>
-                {loadingMessages ? (
-                  <ActivityIndicatorPage />
-                ) : (
-                  <>
-                    <ScrollView
-                      showsVerticalScrollIndicator={false}
-                      ref={ref => {
-                        this.scrollView = ref;
-                      }}
-                      onContentSizeChange={(contentWidth, contentHeight) => {
-                        this.scrollView.scrollToEnd({animated: true});
-                      }}>
-                      {this.state.messages.map(d => {
-                        return (
-                          <View
-                            style={{
-                              justifyContent:
-                                d.author !== id ? 'flex-start' : 'flex-end',
-                              flexDirection: 'row',
-                            }}
-                            key={shortid.generate()}>
+                <View style={styles.container}>
+                  {loadingMessages ? (
+                    <ActivityIndicatorPage />
+                  ) : (
+                    <>
+                      <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        ref={ref => {
+                          this.scrollView = ref;
+                        }}
+                        onContentSizeChange={(contentWidth, contentHeight) => {
+                          this.scrollView.scrollToEnd({animated: true});
+                        }}>
+                        {this.state.messages.map(d => {
+                          return (
                             <View
-                              style={
-                                d.author !== id
-                                  ? styles.chatReceived
-                                  : styles.chatSent
-                              }>
-                              <Text
-                                style={[
-                                  styles.chatText,
-                                  {
-                                    color: d.author !== id ? '#000' : '#fff',
-                                  },
-                                ]}>
-                                {d.body}
-                              </Text>
+                              style={{
+                                justifyContent:
+                                  d.author !== id ? 'flex-start' : 'flex-end',
+                                flexDirection: 'row',
+                              }}
+                              key={shortid.generate()}>
+                              <View
+                                style={
+                                  d.author !== id
+                                    ? styles.chatReceived
+                                    : styles.chatSent
+                                }>
+                                <Text
+                                  style={[
+                                    styles.chatText,
+                                    {
+                                      color: d.author !== id ? '#000' : '#fff',
+                                    },
+                                  ]}>
+                                  {d.body}
+                                </Text>
+                              </View>
                             </View>
-                          </View>
-                        );
-                      })}
-                    </ScrollView>
-                    <View style={{marginVertical: 10}}>{replyOptions}</View>
-                  </>
-                )}
-              </View>
+                          );
+                        })}
+                      </ScrollView>
+                      <View style={{marginVertical: 10}}>{replyOptions}</View>
+                    </>
+                  )}
+                </View>
+              </KeyboardAvoidingView>
             </>
           );
         }}
