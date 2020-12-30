@@ -1,6 +1,3 @@
-/**
- * @format
- */
 import 'react-native-gesture-handler';
 import {AppRegistry} from 'react-native';
 import App from './App';
@@ -26,22 +23,22 @@ import messaging from '@react-native-firebase/messaging';
 import FastStorage from 'react-native-fast-storage';
 
 messaging().onNotificationOpenedApp(async remoteMessage => {
-  console.log(remoteMessage, 'Message handled in the background! 1');
+  // console.log(remoteMessage, 'Message handled in the background! 1');
   if (remoteMessage) {
     const data = JSON.stringify(remoteMessage);
     await AsyncStorage.setItem(NOTIFICATION, data);
     await FastStorage.setItem(NOTIFICATION, data);
-    console.log(await FastStorage.getItem(NOTIFICATION), 'dat 1');
+    // console.log(await FastStorage.getItem(NOTIFICATION), 'dat 1');
   }
 });
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log(remoteMessage, 'Message handled in the background!23');
+  // console.log(remoteMessage, 'Message handled in the background!23');
   if (remoteMessage) {
     const data = JSON.stringify(remoteMessage);
     await AsyncStorage.setItem(NOTIFICATION, data);
     await FastStorage.setItem(NOTIFICATION, data);
-    console.log(await FastStorage.getItem(NOTIFICATION), 'dat111');
+    // console.log(await FastStorage.getItem(NOTIFICATION), 'dat111');
   }
 });
 

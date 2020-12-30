@@ -504,24 +504,25 @@ export default class BookAppointmentPage extends React.Component {
                         <Text style={styles.cardHeaderText}>
                           Appointment type
                         </Text>
-                        <View style={{flexDirection: 'row', marginTop: 15}}>
-                          <View style={{flex: 1, marginRight: 5}}>
-                            <BookButton
-                              icon="phone"
-                              title="Voice call"
-                              selected={
-                                this.state.meansOfContact === 'VOICE_CALL'
-                              }
-                              onPress={() => {
-                                this.setState({
-                                  ...this.state,
-                                  meansOfContact: 'VOICE_CALL',
-                                  subscribeHomeVisit: false,
-                                });
-                              }}
-                            />
+                        <View>
+                          <View style={{flexDirection: 'row', marginTop: 15}}>
+                            <View style={{flex: 1}}>
+                              <BookButton
+                                icon="phone"
+                                title="Voice call"
+                                selected={
+                                  this.state.meansOfContact === 'VOICE_CALL'
+                                }
+                                onPress={() => {
+                                  this.setState({
+                                    ...this.state,
+                                    meansOfContact: 'VOICE_CALL',
+                                    subscribeHomeVisit: false,
+                                  });
+                                }}
+                              />
+                            </View>
                           </View>
-
                           {/* <View style={{flex: 1, marginRight: 5}}>
                             <BookButton
                             icon="chat"
@@ -539,7 +540,7 @@ export default class BookAppointmentPage extends React.Component {
                         </View>
 
                         <View style={{flexDirection: 'row', marginTop: 10}}>
-                          <View style={{flex: 1, marginLeft: 5}}>
+                          <View style={{flex: 1, marginRight: 5}}>
                             <BookButton
                               icon="video"
                               title="Video call"
@@ -550,6 +551,20 @@ export default class BookAppointmentPage extends React.Component {
                                 this.setState({
                                   ...this.state,
                                   meansOfContact: 'VIDEO_CALL',
+                                  subscribeHomeVisit: false,
+                                });
+                              }}
+                            />
+                          </View>
+                          <View style={{flex: 1, marginLeft: 5}}>
+                            <BookButton
+                              icon="chat"
+                              title="Chat"
+                              selected={this.state.meansOfContact === 'CHAT'}
+                              onPress={() => {
+                                this.setState({
+                                  ...this.state,
+                                  meansOfContact: 'CHAT',
                                   subscribeHomeVisit: false,
                                 });
                               }}
