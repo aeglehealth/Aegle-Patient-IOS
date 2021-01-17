@@ -1,10 +1,19 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import {Button, Icon} from 'react-native-elements';
 import {FloatingAction} from 'react-native-floating-action';
 import shortid from 'shortid';
 import {HeaderLeft} from '../../Components/HeaderLeft';
+import Tts from 'react-native-tts';
+import TtsToggleSwitch from '../../Components/TtsToggleSwitch';
+import Context from '../../../Context/Context';
 
 const styles = StyleSheet.create({
   container: {
@@ -55,6 +64,7 @@ export default class QuestionPage extends React.Component {
     const {params = {}} = navigation.state;
     return {
       headerStyle: styles.headerStyle,
+      headerRight: <TtsToggleSwitch position={true} />,
       headerLeft: <HeaderLeft navigation={navigation} />,
     };
   };
@@ -69,6 +79,10 @@ export default class QuestionPage extends React.Component {
     // buttonSelected: () => {},
   };
 
+  componentWillUnmount = () => {
+    Tts.stop();
+  };
+
   componentDidMount() {
     const {navigation} = this.props;
     const questions = navigation.getParam('questions', []);
@@ -81,10 +95,19 @@ export default class QuestionPage extends React.Component {
       question: questions[prevState.index],
       // answer,
     }));
+    this.context.display &&
+      setTimeout(() => {
+        Tts.setDefaultPitch(1);
+        Tts.setDefaultRate(0.4);
+        Tts.setDucking(true);
+        Tts.speak(`${questions[this.state.index].question}`);
+      }, 1000);
   }
 
   nextPage = () => {
     // Make sure the user provides an answer
+    Tts.stop();
+
     if (
       this.state.answer === 0 &&
       typeof this.state.question.options !== 'undefined'
@@ -112,8 +135,18 @@ export default class QuestionPage extends React.Component {
       // answer,
     }));
 
+    this.context.display &&
+      setTimeout(() => {
+        Tts.setDefaultPitch(1);
+        Tts.setDefaultRate(0.4);
+        Tts.setDucking(true);
+        Tts.speak(`${questions[this.state.index].question}`);
+      }, 1000);
+
     this.setState({answer: 0});
   };
+
+  static contextType = Context;
 
   render() {
     const {question} = this.state;

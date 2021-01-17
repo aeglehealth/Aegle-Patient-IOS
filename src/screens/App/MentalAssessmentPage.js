@@ -8,10 +8,14 @@ import {
   ScrollView,
   Image,
   TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 import shortid from 'shortid';
 import {HeaderLeft} from '../../Components/HeaderLeft';
+import Tts from 'react-native-tts';
+import TtsToggleSwitch from '../../Components/TtsToggleSwitch';
+import Context from '../../../Context/Context';
 
 const styles = StyleSheet.create({
   container: {
@@ -73,8 +77,23 @@ export default class MentalAssessmentPage extends React.Component {
     return {
       headerStyle: styles.headerStyle,
       headerLeft: <HeaderLeft navigation={navigation} />,
+      headerRight: <TtsToggleSwitch position={true} />,
     };
   };
+
+  componentDidMount() {
+    this.context.display &&
+      setTimeout(() => {
+        Tts.setDefaultPitch(1.35);
+        Tts.setDefaultRate(0.4);
+        Tts.setDucking(true);
+        Tts.speak(`${this.state.questions[this.state.index].question}`);
+      }, 1000);
+  }
+
+  componentWillUnmount() {
+    Tts.stop();
+  }
 
   state = {
     review: '',
@@ -255,6 +274,8 @@ export default class MentalAssessmentPage extends React.Component {
       answer,
     }));
   };
+
+  static contextType = Context;
 
   render() {
     const question = this.state.questions[this.state.index];

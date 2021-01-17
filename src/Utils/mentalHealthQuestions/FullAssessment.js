@@ -1,6 +1,6 @@
 export const messages = [
   {
-    chat: 'Hi, have we met before😊?',
+    chat: 'Hi, have we met before?',
     responses: [
       {
         id: 1,
@@ -506,7 +506,7 @@ export const messages = [
     ],
   },
   {
-    chat: `Let’s talk about your heart now.${'\n'}Have you ever been diagnosed with any of these heart problems`,
+    chat: `Let’s talk about your heart now.${'\n'}Have you ever been diagnosed with any of these heart problems?`,
     responses: [
       {
         id: 1,
@@ -730,7 +730,7 @@ export const messages = [
     ],
   },
   {
-    chat: 'I have added all your responses to your risk profile📝.',
+    chat: 'I have added all your responses to your risk profile.',
     responses: [
       {
         id: 1,
@@ -1092,7 +1092,7 @@ export const messages = [
     ],
   },
   {
-    chat: `If Oscars were given for a job well done, I’d nominate you😊${'\n'}${'\n'}Kudos for completing this section of the assessmentt👍`,
+    chat: `If Oscars were given for a job well done, I’d nominate you${'\n'}${'\n'}Kudos for completing this section of the assessment`,
     responses: [
       {
         id: 1,

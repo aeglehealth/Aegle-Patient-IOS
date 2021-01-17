@@ -28,7 +28,7 @@ import {
   START_VIDEO_CALL,
   NOTIFICATION as NOTIFICATIONS,
 } from '../../QueryAndMutation';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Aegle from '../../assets/aegle-black.svg';
 import FastImage from 'react-native-fast-image';
 import {NavigationActions} from 'react-navigation';
@@ -66,6 +66,7 @@ import {
 import FastStorage from 'react-native-fast-storage';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import GradientButton from '../../Components/GradientButton';
+import Tts from 'react-native-tts';
 
 function elevationShadowStyle(elevation) {
   return {
@@ -318,6 +319,7 @@ class HomePage extends React.Component {
     permissionsAndroidCamera: true,
     permissionsAndroidMicroPhone: true,
     photo: {},
+    isSwitchOn: false,
   };
 
   unsubscribe = 0;
@@ -1135,6 +1137,8 @@ class HomePage extends React.Component {
     } else {
       await this.requestPermissions();
     }
+
+    let name;
     // console.log(await FastStorage.getItem('key'), 'dom');
 
     // this.registerAppWithFCM();
@@ -1197,6 +1201,8 @@ class HomePage extends React.Component {
       );
     }
 
+    name = profile.firstName;
+
     if (AsyncStorage.getItem(SYMPTOMS)) {
       await AsyncStorage.removeItem(SYMPTOMS);
     }
@@ -1211,8 +1217,17 @@ class HomePage extends React.Component {
     setTimeout(async () => {
       if ((await AsyncStorage.getItem('freeTrial')) == null) {
         this.setState({openSub: true});
+      } else {
+        this.setState({openSub: false});
       }
-    }, 5000);
+    }, 6000);
+
+    if ((await AsyncStorage.getItem(NOTIFICATION)) == null) {
+      Tts.setDefaultPitch(1.35);
+      Tts.setDefaultRate(0.41);
+      Tts.setDucking(true);
+      Tts.speak(`Hello, how can I help you ${name}`);
+    }
   }
 
   async componentWillUnmount() {
@@ -1374,29 +1389,9 @@ class HomePage extends React.Component {
                     }}>
                     <TouchableOpacity
                       onPress={() =>
-                        this.props.navigation.navigate('Question2', {
-                          questions: [
-                            {
-                              id: 1,
-                              question: `${me &&
-                                me.profile
-                                  .firstName} who is the assessment for?`,
-                              options: [
-                                {
-                                  text: 'Myself',
-                                  value: 1,
-                                },
-                                {
-                                  text: 'Someone else',
-                                  value: 2,
-                                },
-                              ],
-                            },
-                          ],
-                          nextPage: () =>
-                            this.props.navigation.navigate('SymptomSearch', {
-                              me,
-                            }),
+                        this.props.navigation.navigate('AssessmentIntro', {
+                          name: me.profile.firstName,
+                          me,
                         })
                       }>
                       <SymptomImg
@@ -1780,7 +1775,7 @@ class HomePage extends React.Component {
                     <Text
                       style={
                         styles.bodyText
-                      }>{`You have been awarded a 7-day\nfree trial to book appointments`}</Text>
+                      }>{`You have 7 Days\nFree Access to Doctors and Specialists`}</Text>
 
                     <GradientButton
                       style={styles.buttonStyle}

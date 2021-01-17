@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import CustomIconInput from '../../Components/CustomIconInput';
 import StackedLabelInput from '../../Components/StackedLabelInput';
 import {HeaderLeft} from '../../Components/HeaderLeft';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
   container: {

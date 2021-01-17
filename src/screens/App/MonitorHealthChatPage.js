@@ -18,6 +18,9 @@ import Modal from 'react-native-modal';
 import shortid from 'shortid';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Toast from '../../Components/toster/Alert';
+import Tts from 'react-native-tts';
+import TtsToggleSwitch from '../../Components/TtsToggleSwitch';
+import Context from '../../../Context/Context';
 
 function elevationShadowStyle(elevation) {
   return {
@@ -198,7 +201,7 @@ export default class MonitorHealthChatPage extends React.Component {
           />
         </View>
       ),
-      headerRight: <View />,
+      headerRight: <TtsToggleSwitch position={true} />,
       headerLeft: <HeaderLeft navigation={navigation} />,
     };
   };
@@ -250,6 +253,14 @@ export default class MonitorHealthChatPage extends React.Component {
         message: this.state.messages[index].chat,
       });
 
+      this.context.display &&
+        setTimeout(() => {
+          Tts.setDefaultPitch(1.35);
+          Tts.setDefaultRate(0.41);
+          Tts.setDucking(true);
+          Tts.speak(this.state.messages[this.state.index].chat);
+        }, 1000);
+
       this.setState(prevState => ({
         replyOptions: prevState.messages[index].responses,
       }));
@@ -265,6 +276,7 @@ export default class MonitorHealthChatPage extends React.Component {
   };
 
   selectedOption = obj => {
+    Tts.stop();
     const {prevChat, position} = this.state;
     let {index} = this.state;
     prevChat.push({
@@ -273,6 +285,31 @@ export default class MonitorHealthChatPage extends React.Component {
     });
 
     this.setState({prevChat});
+
+    if (index === 57 && position === 0) {
+      this.progressBar(position);
+      return;
+    }
+
+    if (index === 8 && position === 1) {
+      this.progressBar(position);
+      return;
+    }
+
+    if (index === 62 && position === 2) {
+      this.progressBar(position);
+      return;
+    }
+
+    if (index === 37 && position === 3) {
+      this.progressBar(position);
+      return;
+    }
+
+    if (index === 21 && position === 4) {
+      this.progressBar(position);
+      return;
+    }
 
     this.timeout = setTimeout(() => {
       if (this.state.messages.length > index + 1) {
@@ -319,36 +356,21 @@ export default class MonitorHealthChatPage extends React.Component {
         //   });
       }
 
+      this.context.display &&
+        setTimeout(() => {
+          Tts.setDefaultPitch(1.35);
+          Tts.setDefaultRate(0.41);
+          Tts.setDucking(true);
+          Tts.speak(this.state.messages[this.state.index].chat);
+        }, 1000);
+
       this.setState({prevChat, typing: false});
     }, 2000);
-    if (index === 57 && position === 0) {
-      this.progressBar(position);
-      return;
-    }
-
-    if (index === 8 && position === 1) {
-      this.progressBar(position);
-      return;
-    }
-
-    if (index === 62 && position === 2) {
-      this.progressBar(position);
-      return;
-    }
-
-    if (index === 37 && position === 3) {
-      this.progressBar(position);
-      return;
-    }
-
-    if (index === 21 && position === 4) {
-      this.progressBar(position);
-      return;
-    }
   };
 
   componentWillUnmount = () => {
     clearTimeout(this.timeout);
+    Tts.stop();
   };
 
   handleInput = () => {
@@ -389,6 +411,13 @@ export default class MonitorHealthChatPage extends React.Component {
 
     this.setState({prevChat, typing: false});
   };
+
+  onToggleSwitch = () => {
+    this.context.toggleDisplay();
+    Tts.stop();
+  };
+
+  static contextType = Context;
 
   render() {
     const deviceWidth = Dimensions.get('window').width;

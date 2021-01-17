@@ -1,6 +1,6 @@
 export const messages = [
   {
-    chat: `Your food🍜 choices each day affect your health — your general wellbeing, how you feel today, tomorrow and in the possible future.${'\n'}${'\n'}Good nutrition is an important part of leading a healthy lifestyle. Combined with physical activity, your diet can help you to reach and maintain a healthy weight, reduce your risk of chronic diseases (like heart disease and cancer), and promote your overall health.${'\n'}${'\n'}I will be carrying out a nutritional assessment based on established nutritional guidelines to determine your risk and challenges.`,
+    chat: `Your food choices each day affect your health — your general wellbeing, how you feel today, tomorrow and in the possible future.${'\n'}${'\n'}Good nutrition is an important part of leading a healthy lifestyle. Combined with physical activity, your diet can help you to reach and maintain a healthy weight, reduce your risk of chronic diseases (like heart disease and cancer), and promote your overall health.${'\n'}${'\n'}I will be carrying out a nutritional assessment based on established nutritional guidelines to determine your risk and challenges.`,
     responses: [
       {
         id: 1,
@@ -341,7 +341,7 @@ export const messages = [
     ],
   },
   {
-    chat: `I'm happy to tell you that we have come to the end of this assessment😁.${'\n'}${'\n'}Please note the feedbacks following this assessment are meant to be indicators only and do not replace a full assessment by a qualified physician.${'\n'}${'\n'}If you ever feel worried about your results or symptoms, we would always advice you to seek medical help.`,
+    chat: `I'm happy to tell you that we have come to the end of this assessment.${'\n'}${'\n'}Please note the feedbacks following this assessment are meant to be indicators only and do not replace a full assessment by a qualified physician.${'\n'}${'\n'}If you ever feel worried about your results or symptoms, we would always advice you to seek medical help.`,
     responses: [
       {
         id: 1,

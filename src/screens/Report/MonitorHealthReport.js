@@ -26,6 +26,9 @@ import MET from '../../assets/mental_text.svg';
 import {messages as mentalMessages} from '../../Utils/mentalHealthQuestions/Mental';
 import {messages as moodMessages} from '../../Utils/mentalHealthQuestions/Mood';
 import {messages as nutritionMessages} from '../../Utils/mentalHealthQuestions/Nutrition';
+import Tts from 'react-native-tts';
+import TtsToggleSwitch from '../../Components/TtsToggleSwitch';
+import Context from '../../../Context/Context';
 
 function elevationShadowStyle(elevation) {
   return {
@@ -51,7 +54,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerText: {
-    fontFamily: 'Muli-Regular',
+    fontFamily: 'Muli',
     fontSize: 20,
     fontWeight: 'bold',
   },
@@ -151,7 +154,7 @@ export default class MonitorHealthReport extends Component {
           </Text>
         </View>
       ),
-      headerRight: <View />,
+      headerRight: <TtsToggleSwitch position={true} />,
       headerRightContainerStyle: {
         paddingRight: 10,
         justifyContent: 'center',
@@ -190,11 +193,41 @@ export default class MonitorHealthReport extends Component {
 
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.goBack);
+    this.context.display &&
+      setTimeout(() => {
+        Tts.setDefaultPitch(1.35);
+        Tts.setDefaultRate(0.41);
+        Tts.setDucking(true);
+        if (this.props.navigation.state.params.position === 0) {
+          Tts.speak(
+            `Based on your responses, here is something to keep in mind. The key to maintaining good health is the combination of many factors like regular exercise, good diet, stress management, work-life balance, healthy relationships, high self-esteem and more. Majority of health complications and deaths are related to poor healthy living. You've told me a bit about your health - what you eat and drink, whether you smoke and how much exercise you take. These are all things that have a big impact on your health. Regular check-ups can also help find potential health issues before they become a problem. When you see your doctor regularly, they are able to detect health conditions or diseases early. Early detection gives you the best chance for getting the right treatment quickly, avoiding any complications.`,
+          );
+        } else if (this.props.navigation.state.params.position === 1) {
+          Tts.speak(
+            `Based on your responses, aim to be physically active every day. Any activity is better than none, and more is better still. Do strengthening activities that work all the major muscles (legs, hips, back, abdomen, chest, shoulders and arms) on at least 2 days a week. Engage in at least 150 minutes of moderate intensity activity a week or 75 minutes of vigorous intensity activity a week. Also reduce time spent sitting or lying down and break up long periods of not moving with some activity`,
+          );
+        } else if (this.props.navigation.state.params.position === 2) {
+          Tts.speak(
+            `show symptoms of certain mental disorders. For the most part, the criteria used to determine whether you might be diagnosed with a disorder are taken from the Diagnostic and Statistical Manual of Mental Disorders, Fifth Edition (DSM-5), which is the standard text used by mental health professionals. From your responses, It is highly advisable that you seek professional help, even for any areas where you are symptomatic. It is important to remember, however, that this test only assesses whether you show signs of the most common mental disorders. If you are experiencing problems in your life that are not covered in this test, seeking help could assist you in overcoming these issues.`,
+          );
+        } else if (this.props.navigation.state.params.position === 3) {
+          Tts.speak(
+            `Based on your responses, you are experiencing some symptoms seen in depression and anxiety. This might be having a big impact on your daily life and you may also be experiencing physical symptoms, but only an experienced health professional can tell for sure. You should see a therapist or make an appointment to see a doctor for a review. Both can help you and assess whether you might benefit from extra support or treatment.`,
+          );
+        } else if (this.props.navigation.state.params.position === 4) {
+          Tts.speak(`
+          Based on your responses, here is something to keep in mind. he key to maintaining good health is the combination of many factors like regular exercise, good diet, stress management, work-life balance, healthy relationships, high self-esteem and more. Majority of health complications and deaths are related to poor healthy living. You've told me a bit about your health - what you eat and drink, whether you smoke and how much exercise you take. These are all things that have a big impact on your health. Regular check-ups can also help find potential health issues before they become a problem. When you see your doctor regularly, they are able to detect health conditions or diseases early. Early detection gives you the best chance for getting the right treatment quickly, avoiding any complications.
+          `);
+        }
+      }, 1000);
   }
 
   componentWillUnmount = () => {
+    Tts.stop();
     BackHandler.removeEventListener('hardwareBackPress', this.goBack);
   };
+
+  static contextType = Context;
 
   render() {
     const {position, pass} = this.props.navigation.state.params;
@@ -235,7 +268,10 @@ export default class MonitorHealthReport extends Component {
             ''
           )}
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('TalkToDoctor')}>
+            onPress={() => {
+              Tts.stop();
+              this.props.navigation.navigate('TalkToDoctor');
+            }}>
             <View style={styles.buttonSolidStyle}>
               <Text style={styles.buttonSolidTitleStyle}>Talk to a doctor</Text>
             </View>
@@ -244,6 +280,7 @@ export default class MonitorHealthReport extends Component {
           {(position === 1 || position === 2 || position === 3) && (
             <TouchableOpacity
               onPress={() => {
+                Tts.stop();
                 let index = position;
                 index--;
                 this.setState({modalVisible: true, partsIndex: index});
@@ -277,6 +314,7 @@ export default class MonitorHealthReport extends Component {
             </Text>
             <TouchableOpacity
               onPress={() => {
+                Tts.stop();
                 let index = position;
                 index++;
                 this.setState({

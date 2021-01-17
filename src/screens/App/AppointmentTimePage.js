@@ -13,6 +13,7 @@ import {Button} from 'react-native-elements';
 import shortid from 'shortid';
 import Arrow from '../../assets/arrow1.svg';
 import {timeIntervals} from '../../Components/TimeInterval/Interval';
+import {timeConversion, formatAMPM} from '../../Utils/dateFormater';
 
 function elevationShadowStyle(elevation) {
   return {
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Muli-Regular',
   },
   cardHeader: {
-    fontFamily: 'Muli-Regular',
+    fontFamily: 'Muli',
     fontWeight: 'bold',
     fontSize: 14,
     marginBottom: 5,
@@ -183,38 +184,43 @@ export default class AppointmentTimePage extends React.Component {
   };
 
   render() {
+    const time = new Date(new Date().getTime() + 30 * 60000);
+
     const timeCards = this.state.timeOptions.map(d => {
       const timeRows =
         d.rows.length > 0 &&
         d.rows.map(x => {
+          const y = timeConversion(x) > timeConversion(formatAMPM(time)) && x;
           return (
-            <View
-              key={shortid.generate()}
-              style={{
-                marginTop: 10,
-              }}>
-              <View key={shortid.generate()}>
-                <Button
-                  buttonStyle={
-                    this.state.selectedTime === x
-                      ? styles.buttonSolid
-                      : styles.button
-                  }
-                  titleStyle={
-                    this.state.selectedTime === x
-                      ? styles.buttonSolidTitle
-                      : styles.buttonTitle
-                  }
-                  type="outline"
-                  title={x}
-                  onPress={() => {
-                    this.setState({selectedTime: x});
-                    this.props.navigation.state.params.onChangeTime(x);
-                    this.state.selectedDate && this.props.navigation.goBack();
-                  }}
-                />
+            y && (
+              <View
+                key={shortid.generate()}
+                style={{
+                  marginTop: 10,
+                }}>
+                <View key={shortid.generate()}>
+                  <Button
+                    buttonStyle={
+                      this.state.selectedTime === y
+                        ? styles.buttonSolid
+                        : styles.button
+                    }
+                    titleStyle={
+                      this.state.selectedTime === y
+                        ? styles.buttonSolidTitle
+                        : styles.buttonTitle
+                    }
+                    type="outline"
+                    title={y}
+                    onPress={() => {
+                      this.setState({selectedTime: y});
+                      this.props.navigation.state.params.onChangeTime(y);
+                      this.state.selectedDate && this.props.navigation.goBack();
+                    }}
+                  />
+                </View>
               </View>
-            </View>
+            )
           );
         });
 

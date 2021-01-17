@@ -1,6 +1,6 @@
 export const messages = [
   {
-    chat: `Life affects us all differently. We all go through difficult times, and negative emotions can be a healthy reaction to the challenges we face. But for many of us, things can become more serious, and each year as many as 1 in 4 of us experiences a mental health problem${'\n'}${'\n'}Being aware of what can affect our mental health 🧠 can make it easier to understand when we, or someone we care about, are struggling, and helps us think about what we can do to improve things or where to get support.`,
+    chat: `Life affects us all differently. We all go through difficult times, and negative emotions can be a healthy reaction to the challenges we face. But for many of us, things can become more serious, and each year as many as 1 in 4 of us experiences a mental health problem${'\n'}${'\n'}Being aware of what can affect our mental health can make it easier to understand when we, or someone we care about, are struggling, and helps us think about what we can do to improve things or where to get support.`,
     responses: [
       {
         id: 1,
@@ -1174,7 +1174,7 @@ export const messages = [
     ],
   },
   {
-    chat: `Good Job👍${'\n'}${'\n'}That’s all I have for mental assessment.`,
+    chat: `Good Job${'\n'}${'\n'}That’s all I have for mental assessment.`,
     responses: [
       {
         id: 1,

@@ -540,7 +540,7 @@ export default class BookAppointmentPage extends React.Component {
                         </View>
 
                         <View style={{flexDirection: 'row', marginTop: 10}}>
-                          <View style={{flex: 1, marginRight: 5}}>
+                          <View style={{flex: 1}}>
                             <BookButton
                               icon="video"
                               title="Video call"
@@ -556,7 +556,7 @@ export default class BookAppointmentPage extends React.Component {
                               }}
                             />
                           </View>
-                          <View style={{flex: 1, marginLeft: 5}}>
+                          {/* <View style={{flex: 1, marginLeft: 5}}>
                             <BookButton
                               icon="chat"
                               title="Chat"
@@ -569,7 +569,7 @@ export default class BookAppointmentPage extends React.Component {
                                 });
                               }}
                             />
-                          </View>
+                          </View> */}
                           {/* 
                           <View style={{flex: 1, marginLeft: 5}}>
                             <BookButton

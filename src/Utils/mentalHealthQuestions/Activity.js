@@ -1,6 +1,6 @@
 export const messages = [
   {
-    chat: `We all know the importance of exercise🏋️in our daily lives, but what we may not know is why or what exercise can do for our health.${'\n'}${'\n'}It's important to remember that we have evolved from nomadic ancestors who spent all their time moving around in search of food and shelter, travelling long distances daily. Our bodies are designed to be regularly active and not dormant.${'\n'}${'\n'}Following the standard guidelines, I will be assessing your activity levels to determine your risks and benefits.`,
+    chat: `We all know the importance of exercise in our daily lives, but what we may not know is why or what exercise can do for our health.${'\n'}${'\n'}It's important to remember that we have evolved from nomadic ancestors who spent all their time moving around in search of food and shelter, travelling long distances daily. Our bodies are designed to be regularly active and not dormant.${'\n'}${'\n'}Following the standard guidelines, I will be assessing your activity levels to determine your risks and benefits.`,
     responses: [
       {
         id: 1,
@@ -172,7 +172,7 @@ export const messages = [
     ],
   },
   {
-    chat: `Good Job👍.${'\n'}${'\n'}That’s all I have for activity assessment.
+    chat: `Good Job.${'\n'}${'\n'}That’s all I have for activity assessment.
         `,
     responses: [
       {

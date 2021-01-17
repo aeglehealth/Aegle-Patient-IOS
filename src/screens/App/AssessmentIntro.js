@@ -72,52 +72,24 @@ export default class AssessmentFollowUp extends Component {
   static navigationOptions = ({navigation}) => {
     const {params = {}} = navigation.state;
     return {
+      headerRight: <TtsToggleSwitch position={true} />,
       headerStyle: styles.headerStyle,
       headerLeft: <HeaderLeft navigation={navigation} />,
-      headerRight: <TtsToggleSwitch position={true} />,
     };
   };
-
-  componentDidMount() {
-    this.context.display &&
-      setTimeout(() => {
-        Tts.setDefaultPitch(1.1);
-        Tts.setDefaultRate(0.4);
-        Tts.setDucking(true);
-        Tts.speak(`Was this assessment helpful?`);
-      }, 1000);
-  }
 
   state = {
     questions: [
       {
         id: 1,
-        question: `Was this assessment helpful?`,
+        question: `Hi ${this.props.navigation.state.params.name}, I will ask you questions to understand the symptoms you are having, carry out an assessment, and help you sort out your health. Are you happy to proceed?`,
         options: [
           {
-            text: 'Yes',
+            text: `Let’s do it`,
             value: 1,
           },
           {
-            text: 'No',
-            value: 2,
-          },
-          {
-            text: `I'm not sure`,
-            value: 3,
-          },
-        ],
-      },
-      {
-        id: 2,
-        question: `Not satisfied with your assessment?`,
-        options: [
-          {
-            text: 'Book appointment',
-            value: 1,
-          },
-          {
-            text: 'Skip',
+            text: 'Exit',
             value: 2,
           },
         ],
@@ -127,12 +99,50 @@ export default class AssessmentFollowUp extends Component {
     index: 0,
   };
 
+  componentWillUnmount = () => {
+    Tts.stop();
+  };
+
+  componentDidMount() {
+    this.context.display &&
+      setTimeout(() => {
+        Tts.setDefaultPitch(1.1);
+        Tts.setDefaultRate(0.4);
+        Tts.setDucking(true);
+        Tts.speak(
+          `Hi ${this.props.navigation.state.params.name}, I will ask you questions to understand the symptoms you are having, carry out an assessment, and help you sort out your health. Are you happy to proceed?`,
+        );
+      }, 1000);
+  }
+
   nextPage = () => {
     const {questions, index} = this.state;
-
-    if (questions[index].id === 2) {
+    Tts.stop();
+    if (questions[index].id === 1) {
       if (this.state.answer === 1) {
-        this.props.navigation.navigate('BookAppointment');
+        this.props.navigation.navigate('Question2', {
+          questions: [
+            {
+              id: 1,
+              question: `Who is this for?`,
+              options: [
+                {
+                  text: 'Myself',
+                  value: 1,
+                },
+                {
+                  text: 'Someone else',
+                  value: 2,
+                },
+              ],
+            },
+          ],
+          nextPage: () => {
+            this.props.navigation.navigate('SymptomSearch', {
+              me: this.props.navigation.state.params.me,
+            });
+          },
+        });
         return;
       } else {
         this.props.navigation.navigate('Home');
@@ -148,14 +158,6 @@ export default class AssessmentFollowUp extends Component {
       index: prevState.index + 1,
       answer,
     }));
-
-    this.context.display &&
-      setTimeout(() => {
-        Tts.setDefaultPitch(1.1);
-        Tts.setDefaultRate(0.4);
-        Tts.setDucking(true);
-        Tts.speak(`Not satisfied with your assessment?`);
-      }, 1000);
   };
 
   static contextType = Context;

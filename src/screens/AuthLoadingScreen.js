@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StatusBar, View} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ActivityIndicatorPage from './App/ActivityIndicatorPage';
 import SplashScreen from 'react-native-splash-screen';
 import {AUTH_TOKEN} from 'react-native-dotenv';

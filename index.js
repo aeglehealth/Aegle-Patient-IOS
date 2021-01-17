@@ -6,7 +6,7 @@ import React, {useState, useEffect} from 'react';
 import {ApolloProvider} from 'react-apollo';
 import {ApolloProvider as Provider} from '@apollo/react-hooks';
 import ShowMessage, {type} from './src/Components/toster/ShowMessage';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {UserContext} from './src/store/context/UserContext';
 import {createUploadLink} from 'apollo-upload-client';
 import {ApolloClient} from 'apollo-client';
@@ -21,6 +21,7 @@ import {WebSocketLink} from 'apollo-link-ws';
 import {DEPLOYMENT_URL, AUTH_TOKEN, NOTIFICATION} from 'react-native-dotenv';
 import messaging from '@react-native-firebase/messaging';
 import FastStorage from 'react-native-fast-storage';
+import TtsContext from './Context/TtsContext';
 
 messaging().onNotificationOpenedApp(async remoteMessage => {
   // console.log(remoteMessage, 'Message handled in the background! 1');
@@ -217,13 +218,9 @@ const AegleApp = props => {
   return (
     <ApolloProvider client={client}>
       <Provider client={client}>
-        <UserContext.Provider
-          value={{
-            data: data.data,
-            renewState: datas => setState({data: datas}),
-          }}>
+        <TtsContext>
           <App />
-        </UserContext.Provider>
+        </TtsContext>
       </Provider>
     </ApolloProvider>
   );
