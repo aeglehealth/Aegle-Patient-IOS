@@ -11,11 +11,14 @@ import {
 } from 'react-native';
 import {SearchBar} from 'react-native-elements';
 import shortid from 'shortid';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {debounce} from 'throttle-debounce';
 import {searchResult} from '../../Utils/symptomQuestions/SymptomQuestions';
 import {HeaderLeft} from '../../Components/HeaderLeft';
 import {SYMPTOMS, PREDICT_URL, SERVER_KEY} from 'react-native-dotenv';
+import Tts from 'react-native-tts';
+import TtsToggleSwitch from '../../Components/TtsToggleSwitch';
+import Context from '../../../Context/Context';
 
 const styles = StyleSheet.create({
   container: {
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
     color: '#1B2CC1',
   },
   searchItemDescription: {
-    fontFamily: 'Muli-Regular',
+    fontFamily: 'Muli',
     fontSize: 14,
     color: 'gray',
   },
@@ -95,6 +98,7 @@ export default class SymptomSearchPage extends React.Component {
   static navigationOptions = ({navigation}) => {
     const {params = {}} = navigation.state;
     return {
+      headerRight: <TtsToggleSwitch position={true} />,
       headerStyle: styles.headerStyle,
       headerLeft: <HeaderLeft navigation={navigation} />,
       headerLeftContainerStyle: {
@@ -106,7 +110,8 @@ export default class SymptomSearchPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      introText: "Okay, let's start with the symptom bothering you the most",
+      introText:
+        'Now, tell me the symptom bothering you. Type in the box below to continue.',
       searchTerm: '',
       symptomsArr: [],
       queryMatches: [],
@@ -137,6 +142,16 @@ export default class SymptomSearchPage extends React.Component {
   };
 
   componentDidMount() {
+    this.context.display &&
+      setTimeout(() => {
+        Tts.setDefaultPitch(1.1);
+        Tts.setDefaultRate(0.4);
+        Tts.setDucking(true);
+        Tts.speak(
+          `Now, tell me the symptom bothering you. Type in the box below to continue`,
+        );
+      }, 1000);
+
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
 
     fetch(PREDICT_URL, {
@@ -155,12 +170,15 @@ export default class SymptomSearchPage extends React.Component {
   }
 
   componentWillUnmount = () => {
+    Tts.stop();
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   };
 
   handleChange = searchTerm => {
     this.setState({searchTerm}, () => this.check(this.state.searchTerm));
   };
+
+  static contextType = Context;
 
   render() {
     return (
@@ -187,6 +205,7 @@ export default class SymptomSearchPage extends React.Component {
               <View key={shortid.generate()}>
                 <TouchableOpacity
                   onPress={async () => {
+                    Tts.stop();
                     Keyboard.dismiss();
                     //synchronize these terms if the user selects the suggested symptom
                     let searchTerm = this.state.searchTerm;

@@ -4,6 +4,7 @@ import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import {Button} from 'react-native-elements';
 import shortid from 'shortid';
 import {HeaderLeft} from '../../Components/HeaderLeft';
+import Tts from 'react-native-tts';
 
 const styles = StyleSheet.create({
   container: {
@@ -56,6 +57,19 @@ export default class MentalAssessmentBookOptionPage extends React.Component {
       headerLeft: <HeaderLeft navigation={navigation} />,
     };
   };
+
+  componentDidMount() {
+    setTimeout(() => {
+      Tts.setDefaultPitch(1.35);
+      Tts.setDefaultRate(0.4);
+      Tts.setDucking(true);
+      Tts.speak(`${this.state.questions[this.state.index].question}`);
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    Tts.stop();
+  }
 
   constructor(props) {
     super(props);

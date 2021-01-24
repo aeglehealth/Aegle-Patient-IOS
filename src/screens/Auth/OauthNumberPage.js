@@ -15,7 +15,7 @@ import {Formik} from 'formik';
 import {Icon} from 'react-native-elements';
 import {Mutation} from 'react-apollo';
 import {PHONENUMBER_VERIFICATION, UPDATE_PROFILE} from '../../QueryAndMutation';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ShowMessage, {type} from '../../Components/toster/ShowMessage';
 import {HeaderLeft} from '../../Components/HeaderLeft';
 import {EMAIL, FIRST_NAME} from 'react-native-dotenv';

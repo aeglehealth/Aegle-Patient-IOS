@@ -6,7 +6,7 @@ export const searchResult = [
       {
         id: 1,
         question:
-          'One final question. Are your symptoms getting better, worse or staying the same? ',
+          'Before you go, I have one more question. Are your symptoms getting better or staying the same?',
         options: [
           {
             text: 'Getting better',

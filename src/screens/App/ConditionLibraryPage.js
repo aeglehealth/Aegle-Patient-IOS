@@ -21,7 +21,7 @@ import {
   RECENT_CONDITIONS,
 } from 'react-native-dotenv';
 import ActivityIndicatorPage from '../App/ActivityIndicatorPage';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {HeaderLeft} from '../../Components/HeaderLeft';
 import FastImage from 'react-native-fast-image';
 import {debounce} from 'throttle-debounce';

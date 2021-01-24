@@ -17,7 +17,7 @@ import {
   CollapseHeader,
   CollapseBody,
 } from 'accordion-collapse-react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import shortid from 'shortid';
 import DialogModal from '../../Components/DialogModal';
 import MenuModal from '../../Components/MenuModal';
@@ -422,21 +422,25 @@ class ReportPage extends React.Component {
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={
                   <View>
-                    <Text style={styles.headerText}>Summary</Text>
+                    <Text style={styles.headerText}>Report</Text>
                     <Text style={styles.bodyText}>
-                      People with symptoms similar to yours may require urgent
-                      medical care. If you think this is an urgent problem you
-                      should seek advice from a doctor straight away.
+                      Most people who present with similar symptoms may need to
+                      see a doctor. To avoid complications, seek medical advice.
+                      Don’t delay the care you need.
                     </Text>
                     <>
                       {this.state.conditions.length > 0 ? (
-                        <Text style={styles.headerText}>Possible causes</Text>
+                        <Text style={styles.headerText}>
+                          Conditions with similar symptoms
+                        </Text>
                       ) : (
                         <View style={{flex: 1, marginVertical: 20}}>
-                          <Text style={styles.headerText}>Possible causes</Text>
+                          <Text style={styles.headerText}>
+                            Conditions with similar symptoms
+                          </Text>
                           <Text style={styles.bodyText}>
-                            Unfortunately, your symptoms were not enough to
-                            provide a comprehensive assessment
+                            The symptoms you entered were not enough to provide
+                            a comprehensive report.
                           </Text>
                         </View>
                       )}
@@ -497,11 +501,10 @@ class ReportPage extends React.Component {
                     </Collapse>
                     <Text />
                     <Text style={styles.cardBodyText}>
-                      This list includes conditions that Aegle has identified as
-                      possible causes for your symptoms. This is not a diagnosis
-                      and is also not an exhaustive list. You might have a
-                      condition that is not suggested here. Please consult a
-                      doctor if you are concerned about your health.
+                      This report is not a medical diagnosis, but a
+                      non-exhaustive list of possible conditions where your
+                      symptoms are present. Seek medical advice if you are
+                      concerned.
                     </Text>
 
                     <TouchableOpacity

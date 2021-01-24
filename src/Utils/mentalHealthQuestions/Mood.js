@@ -1,6 +1,6 @@
 export const messages = [
   {
-    chat: `Mood☹️problems affect people all over the world, so you are never alone in how you feel at any moment.${'\n'}${'\n'}We will cover questions about your moods, stress levels and self-esteem, your answers are private so feel free to let me in.`,
+    chat: `Mood problems affect people all over the world, so you are never alone in how you feel at any moment.${'\n'}${'\n'}We will cover questions about your moods, stress levels and self-esteem, your answers are private so feel free to let me in.`,
     responses: [
       {
         id: 1,
@@ -650,7 +650,7 @@ export const messages = [
     ],
   },
   {
-    chat: `Good Job👍${'\n'}${'\n'}That’s all I have for mood assessment`,
+    chat: `Good Job${'\n'}${'\n'}That’s all I have for mood assessment`,
     responses: [
       {
         id: 1,

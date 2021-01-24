@@ -7,16 +7,20 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   BackHandler,
+  TouchableOpacity,
 } from 'react-native';
 import {Button, Icon} from 'react-native-elements';
 import {FloatingAction} from 'react-native-floating-action';
 import shortid from 'shortid';
 import {searchResult} from '../../Utils/symptomQuestions/symptomFollowUpQuestions';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Arrow from '../../assets/arrow.svg';
 import {withApollo} from 'react-apollo';
 import {MEPOST} from '../../QueryAndMutation';
 import {SYMPTOMS, SYMPTOMS_QUESTIONS} from 'react-native-dotenv';
+import Tts from 'react-native-tts';
+import TtsToggleSwitch from '../../Components/TtsToggleSwitch';
+import Context from '../../../Context/Context';
 
 const styles = StyleSheet.create({
   container: {
@@ -39,7 +43,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: '#000',
-    fontFamily: 'Muli-Regular',
+    fontFamily: 'Muli',
     fontWeight: 'bold',
     fontSize: 24,
     lineHeight: 30,
@@ -82,6 +86,7 @@ class QuestionPage extends React.Component {
     const {params = {}} = navigation.state;
     return {
       headerStyle: styles.headerStyle,
+      headerRight: <TtsToggleSwitch position={true} />,
       headerLeft: (
         <TouchableWithoutFeedback
           onPress={async () => {
@@ -115,6 +120,13 @@ class QuestionPage extends React.Component {
       question: questions[prevState.index],
       // answer,
     }));
+    this.context.display &&
+      setTimeout(() => {
+        Tts.setDefaultPitch(1.35);
+        Tts.setDefaultRate(0.4);
+        Tts.setDucking(true);
+        Tts.speak(`${questions[this.state.index].question}`);
+      }, 500);
 
     //save all symptom questions to asyncStorage
     if (await AsyncStorage.getItem(SYMPTOMS_QUESTIONS)) {
@@ -154,11 +166,14 @@ class QuestionPage extends React.Component {
   };
 
   componentWillUnmount = () => {
+    Tts.stop();
     BackHandler.removeEventListener('hardwareBackPress', this.goBack);
   };
 
   nextPage = () => {
     // Make sure the user provides an answer
+    Tts.stop();
+
     if (
       this.state.answer === 0 &&
       typeof this.state.question.options !== 'undefined'
@@ -182,6 +197,7 @@ class QuestionPage extends React.Component {
         params: {
           questions,
           nextPage: () => {
+            Tts.stop();
             this.props.navigation.navigate({
               routeName: 'Question2',
               key: `Questions-${shortid.generate()}`,
@@ -189,12 +205,11 @@ class QuestionPage extends React.Component {
                 questions: [
                   {
                     id: 1,
-                    question: `Thanks ${this.state.firstName}, All done. Following your responses, I have listed the likely causes of your symptoms`,
+                    question: `Thanks ${this.state.firstName}.\nFollowing your responses, I have listed the likely causes of your symptoms.`,
                   },
                   {
                     id: 2,
-                    question:
-                      'Don’t forget this assessment only shows a list of possible conditions, not an actual diagnosis. Talk to a doctor if you are concerned.',
+                    question: `${this.state.firstName}, keep in mind that this assessment only shows a list of possible conditions, not an actual diagnosis.\nTalk to a doctor if you are concerned.`,
                   },
                 ],
                 nextPage: () => {
@@ -241,8 +256,18 @@ class QuestionPage extends React.Component {
       answer,
     }));
 
+    this.context.display &&
+      setTimeout(() => {
+        Tts.setDefaultPitch(1);
+        Tts.setDefaultRate(0.4);
+        Tts.setDucking(true);
+        Tts.speak(`${questions[this.state.index].question}`);
+      }, 500);
+
     this.setState({answer: 0});
   };
+
+  static contextType = Context;
 
   render() {
     const {question} = this.state;

@@ -21,7 +21,7 @@
 //   CHAT_START_SUBSCRIPTION,
 //   JoinChatMutation,
 // } from '../../QueryAndMutation';
-// import AsyncStorage from '@react-native-community/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 // import Aegle from '../../assets/aegle-black.svg';
 // import FastImage from 'react-native-fast-image';
 // import ActivityIndicatorPage from './ActivityIndicatorPage';

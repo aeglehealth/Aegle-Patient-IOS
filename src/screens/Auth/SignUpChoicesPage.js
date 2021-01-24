@@ -5,7 +5,7 @@ import {GoogleSignin, statusCodes} from 'react-native-google-signin';
 import {GOOGLE_SIGNUP, FACEBOOK_SIGNUP} from '../../QueryAndMutation';
 import {withApollo} from 'react-apollo';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ActivityIndicatorPage from '../App/ActivityIndicatorPage';
 import ShowMessage, {type} from '../../Components/toster/ShowMessage';
 import {WEBCLIENTID, IOSCLIENTID, AUTH_TOKEN} from 'react-native-dotenv';
