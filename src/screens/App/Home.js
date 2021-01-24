@@ -327,7 +327,7 @@ class HomePage extends React.Component {
   handleVideo = async data => {
     const {appointmentId, sessionId, roomId} = data && data;
 
-    await FastStorage.removeItem(NOTIFICATION);
+    setTimeout(async () => await FastStorage.removeItem(NOTIFICATION), 6000);
 
     Platform.OS === 'ios'
       ? await this.checkIosPermissions()
@@ -376,7 +376,7 @@ class HomePage extends React.Component {
   handleVoice = async data => {
     const {appointmentId, sessionId, roomId} = data && data;
 
-    await FastStorage.removeItem(NOTIFICATION);
+    setTimeout(async () => await FastStorage.removeItem(NOTIFICATION), 6000);
 
     Platform.OS === 'ios'
       ? await this.checkIosPermissions()
@@ -464,7 +464,7 @@ class HomePage extends React.Component {
     this.setState({
       declineLoading: true,
     });
-    await FastStorage.removeItem(NOTIFICATION);
+    setTimeout(async () => await FastStorage.removeItem(NOTIFICATION), 6000);
     console.log(appointmentId, 'id');
     const {client} = this.props;
     try {
@@ -812,7 +812,10 @@ class HomePage extends React.Component {
           onPress: async () => {
             this.unsubscribe;
             const {navigation} = this.props;
-            await FastStorage.removeItem(NOTIFICATION);
+            setTimeout(
+              async () => await FastStorage.removeItem(NOTIFICATION),
+              6000,
+            );
             console.log(data, 'dataaaas');
             const {action} = data;
             console.log(action.appointmentId, 'id');
@@ -873,7 +876,10 @@ class HomePage extends React.Component {
             console.log('reach');
             that.handleVideo(data);
             // await AsyncStorage.removeItem(NOTIFICATION);
-            await FastStorage.removeItem(NOTIFICATION);
+            setTimeout(
+              async () => await FastStorage.removeItem(NOTIFICATION),
+              6000,
+            );
             this.unsubscribe;
             console.log('OK Pressed');
           },
@@ -893,7 +899,10 @@ class HomePage extends React.Component {
           text: 'OK',
           onPress: async () => {
             that.handleVoice(data);
-            await FastStorage.removeItem(NOTIFICATION);
+            setTimeout(
+              async () => await FastStorage.removeItem(NOTIFICATION),
+              6000,
+            );
             console.log('OK Pressed');
           },
         },
@@ -912,7 +921,10 @@ class HomePage extends React.Component {
           text: 'OK',
           onPress: async () => {
             that.handleChat(data);
-            await FastStorage.removeItem(NOTIFICATION);
+            setTimeout(
+              async () => await FastStorage.removeItem(NOTIFICATION),
+              6000,
+            );
             console.log('OK Pressed');
           },
         },
@@ -930,7 +942,10 @@ class HomePage extends React.Component {
           text: 'OK',
           onPress: async () => {
             this.unsubscribe;
-            await FastStorage.removeItem(NOTIFICATION);
+            setTimeout(
+              async () => await FastStorage.removeItem(NOTIFICATION),
+              6000,
+            );
             // this.addToCalendar('Aegle Doctor Appointment', newDate);
           },
         },
@@ -1210,8 +1225,8 @@ class HomePage extends React.Component {
     if (AsyncStorage.getItem(SYMPTOMS_QUESTIONS)) {
       await AsyncStorage.removeItem(SYMPTOMS_QUESTIONS);
     }
+    setTimeout(async () => await FastStorage.removeItem(NOTIFICATION), 6000);
 
-    await FastStorage.removeItem(NOTIFICATION);
     // await AsyncStorage.removeItem(NOTIFICATION);
 
     setTimeout(async () => {
