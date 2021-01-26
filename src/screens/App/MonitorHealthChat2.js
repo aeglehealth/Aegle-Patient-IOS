@@ -259,7 +259,11 @@ export default class MonitorHealthChatPage extends React.Component {
           Tts.setDefaultPitch(1.35);
           Tts.setDefaultRate(0.41);
           Tts.setDucking(true);
-          Tts.speak(this.state.messages[this.state.index].chat);
+          Tts.speak(this.state.messages[this.state.index].chat, {
+            iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+            quality: 500,
+            latency: 300,
+          });
         }, 1000);
 
       this.setState(prevState => ({
@@ -362,7 +366,11 @@ export default class MonitorHealthChatPage extends React.Component {
           Tts.setDefaultPitch(1.35);
           Tts.setDefaultRate(0.41);
           Tts.setDucking(true);
-          Tts.speak(this.state.messages[this.state.index].chat);
+          Tts.speak(this.state.messages[this.state.index].chat, {
+            iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+            quality: 500,
+            latency: 300,
+          });
         }, 1000);
 
       this.setState({prevChat, typing: false});

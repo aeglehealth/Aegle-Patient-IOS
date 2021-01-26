@@ -81,10 +81,14 @@ export default class AssessmentFollowUp extends Component {
   componentDidMount() {
     this.context.display &&
       setTimeout(() => {
-        Tts.setDefaultPitch(1.1);
+        Tts.setDefaultPitch(1.35);
         Tts.setDefaultRate(0.4);
         Tts.setDucking(true);
-        Tts.speak(`Was this assessment helpful?`);
+        Tts.speak(`Was this assessment helpful?`, {
+          iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+          quality: 500,
+          latency: 300,
+        });
       }, 1000);
   }
 
@@ -151,10 +155,14 @@ export default class AssessmentFollowUp extends Component {
 
     this.context.display &&
       setTimeout(() => {
-        Tts.setDefaultPitch(1.1);
+        Tts.setDefaultPitch(1.35);
         Tts.setDefaultRate(0.4);
         Tts.setDucking(true);
-        Tts.speak(`Not satisfied with your assessment?`);
+        Tts.speak(`Not satisfied with your assessment?`, {
+          iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+          quality: 500,
+          latency: 300,
+        });
       }, 1000);
   };
 

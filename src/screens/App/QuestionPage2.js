@@ -100,7 +100,11 @@ export default class QuestionPage extends React.Component {
         Tts.setDefaultPitch(1);
         Tts.setDefaultRate(0.4);
         Tts.setDucking(true);
-        Tts.speak(`${questions[this.state.index].question}`);
+        Tts.speak(`${questions[this.state.index].question}`, {
+          iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+          quality: 500,
+          latency: 300,
+        });
       }, 1000);
   }
 
@@ -140,7 +144,11 @@ export default class QuestionPage extends React.Component {
         Tts.setDefaultPitch(1);
         Tts.setDefaultRate(0.4);
         Tts.setDucking(true);
-        Tts.speak(`${questions[this.state.index].question}`);
+        Tts.speak(`${questions[this.state.index].question}`, {
+          iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+          quality: 500,
+          latency: 300,
+        });
       }, 1000);
 
     this.setState({answer: 0});

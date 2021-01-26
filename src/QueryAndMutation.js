@@ -68,6 +68,7 @@ export const ME = gql`
         medicalCert
         cv
       }
+      createdAt
       local {
         email
       }
