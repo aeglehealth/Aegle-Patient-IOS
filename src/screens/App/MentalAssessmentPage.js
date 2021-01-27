@@ -85,7 +85,7 @@ export default class MentalAssessmentPage extends React.Component {
     this.context.display &&
       setTimeout(() => {
         Tts.setDefaultPitch(1.35);
-        Tts.setDefaultRate(0.4);
+        Tts.setDefaultRate(0.41);
         Tts.setDucking(true);
         Tts.speak(`${this.state.questions[this.state.index].question}`, {
           iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',

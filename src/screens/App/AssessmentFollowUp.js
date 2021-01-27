@@ -82,7 +82,7 @@ export default class AssessmentFollowUp extends Component {
     this.context.display &&
       setTimeout(() => {
         Tts.setDefaultPitch(1.35);
-        Tts.setDefaultRate(0.4);
+        Tts.setDefaultRate(0.41);
         Tts.setDucking(true);
         Tts.speak(`Was this assessment helpful?`, {
           iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
@@ -156,7 +156,7 @@ export default class AssessmentFollowUp extends Component {
     this.context.display &&
       setTimeout(() => {
         Tts.setDefaultPitch(1.35);
-        Tts.setDefaultRate(0.4);
+        Tts.setDefaultRate(0.41);
         Tts.setDucking(true);
         Tts.speak(`Not satisfied with your assessment?`, {
           iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',

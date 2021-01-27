@@ -97,8 +97,8 @@ export default class QuestionPage extends React.Component {
     }));
     this.context.display &&
       setTimeout(() => {
-        Tts.setDefaultPitch(1);
-        Tts.setDefaultRate(0.4);
+        Tts.setDefaultPitch(1.35);
+        Tts.setDefaultRate(0.41);
         Tts.setDucking(true);
         Tts.speak(`${questions[this.state.index].question}`, {
           iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
@@ -141,8 +141,8 @@ export default class QuestionPage extends React.Component {
 
     this.context.display &&
       setTimeout(() => {
-        Tts.setDefaultPitch(1);
-        Tts.setDefaultRate(0.4);
+        Tts.setDefaultPitch(1.35);
+        Tts.setDefaultRate(0.41);
         Tts.setDucking(true);
         Tts.speak(`${questions[this.state.index].question}`, {
           iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
