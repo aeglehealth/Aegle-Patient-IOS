@@ -1192,6 +1192,14 @@ class HomePage extends React.Component {
 
     name = profile.firstName;
 
+    if (AsyncStorage.getItem(SYMPTOMS)) {
+      await AsyncStorage.removeItem(SYMPTOMS);
+    }
+
+    if (AsyncStorage.getItem(SYMPTOMS_QUESTIONS)) {
+      await AsyncStorage.removeItem(SYMPTOMS_QUESTIONS);
+    }
+
     if ((await AsyncStorage.getItem(NOTIFICATION)) == null) {
       Tts.setDefaultPitch(1.35);
       Tts.setDefaultRate(0.41);
@@ -1201,14 +1209,6 @@ class HomePage extends React.Component {
         quality: 500,
         latency: 300,
       });
-    }
-
-    if (AsyncStorage.getItem(SYMPTOMS)) {
-      await AsyncStorage.removeItem(SYMPTOMS);
-    }
-
-    if (AsyncStorage.getItem(SYMPTOMS_QUESTIONS)) {
-      await AsyncStorage.removeItem(SYMPTOMS_QUESTIONS);
     }
 
     setTimeout(async () => {
