@@ -106,11 +106,16 @@ export default class AssessmentFollowUp extends Component {
   componentDidMount() {
     this.context.display &&
       setTimeout(() => {
-        Tts.setDefaultPitch(1.1);
-        Tts.setDefaultRate(0.4);
+        Tts.setDefaultPitch(1.35);
+        Tts.setDefaultRate(0.41);
         Tts.setDucking(true);
         Tts.speak(
           `Hi ${this.props.navigation.state.params.name}, I will ask you questions to understand the symptoms you are having, carry out an assessment, and help you sort out your health. Are you happy to proceed?`,
+          {
+            iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+            quality: 500,
+            latency: 300,
+          },
         );
       }, 1000);
   }

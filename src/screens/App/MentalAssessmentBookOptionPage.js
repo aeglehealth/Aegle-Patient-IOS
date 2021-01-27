@@ -61,9 +61,13 @@ export default class MentalAssessmentBookOptionPage extends React.Component {
   componentDidMount() {
     setTimeout(() => {
       Tts.setDefaultPitch(1.35);
-      Tts.setDefaultRate(0.4);
+      Tts.setDefaultRate(0.41);
       Tts.setDucking(true);
-      Tts.speak(`${this.state.questions[this.state.index].question}`);
+      Tts.speak(`${this.state.questions[this.state.index].question}`, {
+        iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+        quality: 500,
+        latency: 300,
+      });
     }, 1000);
   }
 

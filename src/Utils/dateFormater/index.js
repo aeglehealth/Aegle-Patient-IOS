@@ -1,4 +1,5 @@
 import moment from 'moment';
+import {compareAsc} from 'date-fns';
 
 export const date1 = date => moment(date).format('YYYY-MM-DD');
 
@@ -191,4 +192,16 @@ export const formatAMPM = date => {
   minutes = minutes < 10 ? '0' + minutes : minutes;
   var strTime = hours + ':' + minutes + ' ' + ampm;
   return strTime;
+};
+
+export const checkFreeTrial = async date => {
+  const expiryTime = new Date(new Date(date).getTime() + 60 * 60000 * 24 * 7);
+  const currentTime = new Date(new Date().getTime());
+
+  const option = compareAsc(expiryTime, currentTime);
+
+  if (option == 1) {
+    return false;
+  }
+  return true;
 };

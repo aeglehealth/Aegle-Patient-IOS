@@ -53,7 +53,11 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import moment from 'moment';
-import {utcDateToString, timeConversion} from '../../Utils/dateFormater';
+import {
+  utcDateToString,
+  timeConversion,
+  checkFreeTrial,
+} from '../../Utils/dateFormater';
 import {
   FCM_TOKEN,
   UNIQUE_ID,
@@ -1154,36 +1158,6 @@ class HomePage extends React.Component {
     }
 
     let name;
-    // console.log(await FastStorage.getItem('key'), 'dom');
-
-    // this.registerAppWithFCM();
-    // this.register(onRegister, onNotification, onOpenNotification);
-    // localNotificationService.configure(onOpenNotification);
-    // function onRegister(token) {
-    //   console.log('[App] onRegister: ', token);
-    // }
-
-    // function onNotification(notify) {
-    //   console.log('[App] onNotification: ', notify);
-    //   const options = {
-    //     soundName: 'default',
-    //     playSound: true, //,
-    //     // largeIcon: 'ic_launcher', // add icon large for Android (Link: app/src/main/mipmap)
-    //     // smallIcon: 'ic_launcher' // add icon small for Android (Link: app/src/main/mipmap)
-    //   };
-    //   localNotificationService.showNotification(
-    //     0,
-    //     notify.title,
-    //     notify.body,
-    //     notify,
-    //     options,
-    //   );
-    // }
-
-    // function onOpenNotification(notify) {
-    //   console.log('[App] onOpenNotification: ', notify);
-    //   alert('Open Notification: ' + notify.body);
-    // }
 
     await this.requestNotificationPermission();
 
@@ -1204,7 +1178,7 @@ class HomePage extends React.Component {
       fetchPolicy: 'network-only',
     });
 
-    const {id, profile, isPhoneVerified} = res.data.me;
+    const {id, profile, isPhoneVerified, createdAt} = res.data.me;
     this.setState({id});
     await AsyncStorage.setItem(FIRST_NAME, profile.firstName);
 
@@ -1225,24 +1199,30 @@ class HomePage extends React.Component {
     if (AsyncStorage.getItem(SYMPTOMS_QUESTIONS)) {
       await AsyncStorage.removeItem(SYMPTOMS_QUESTIONS);
     }
-    setTimeout(async () => await FastStorage.removeItem(NOTIFICATION), 6000);
-
-    // await AsyncStorage.removeItem(NOTIFICATION);
-
-    setTimeout(async () => {
-      if ((await AsyncStorage.getItem('freeTrial')) == null) {
-        this.setState({openSub: true});
-      } else {
-        this.setState({openSub: false});
-      }
-    }, 6000);
 
     if ((await AsyncStorage.getItem(NOTIFICATION)) == null) {
       Tts.setDefaultPitch(1.35);
       Tts.setDefaultRate(0.41);
       Tts.setDucking(true);
-      Tts.speak(`Hello, how can I help you ${name}`);
+      Tts.speak(`Hello, how can I help you ${name}`, {
+        iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+        quality: 500,
+        latency: 300,
+      });
     }
+
+    setTimeout(async () => {
+      if ((await AsyncStorage.getItem('freeTrial')) == null) {
+        const freeTrial = await checkFreeTrial(createdAt);
+        if (freeTrial == true) {
+          await AsyncStorage.setItem('freeTrial', 'true');
+          return;
+        }
+        this.setState({openSub: true});
+      } else {
+        this.setState({openSub: false});
+      }
+    }, 6000);
   }
 
   async componentWillUnmount() {

@@ -144,11 +144,16 @@ export default class SymptomSearchPage extends React.Component {
   componentDidMount() {
     this.context.display &&
       setTimeout(() => {
-        Tts.setDefaultPitch(1.1);
-        Tts.setDefaultRate(0.4);
+        Tts.setDefaultPitch(1.35);
+        Tts.setDefaultRate(0.41);
         Tts.setDucking(true);
         Tts.speak(
           `Now, tell me the symptom bothering you. Type in the box below to continue`,
+          {
+            iosVoiceId: 'com.apple.ttsbundle.Samantha-compact',
+            quality: 500,
+            latency: 300,
+          },
         );
       }, 1000);
 
