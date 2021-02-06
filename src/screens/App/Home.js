@@ -1144,34 +1144,10 @@ class HomePage extends React.Component {
   };
 
   async componentDidMount() {
-    await this.videoFromNotification();
+    let name;
 
     const {client} = this.props;
     let that = this;
-
-    PushNotificationIOS.removeAllDeliveredNotifications();
-
-    if (Platform.OS === 'ios') {
-      await this.checkIosPermissions();
-    } else {
-      await this.requestPermissions();
-    }
-
-    let name;
-
-    await this.requestNotificationPermission();
-
-    await this.checkFirebasePermission();
-
-    await this.fcmNotifications();
-
-    // await this.getInitialNotification();
-
-    AppState.addEventListener('change', this._handleAppStateChange);
-
-    // await this.getRefreshToken();
-
-    this.handleBackgroundNotifications();
 
     const res = await client.query({
       query: MEPOST,
@@ -1179,26 +1155,7 @@ class HomePage extends React.Component {
     });
 
     const {id, profile, isPhoneVerified, createdAt} = res.data.me;
-    this.setState({id});
-    await AsyncStorage.setItem(FIRST_NAME, profile.firstName);
-
-    if (!isPhoneVerified) {
-      ShowMessage(type.ERROR, 'Please verify your phone number');
-      setTimeout(
-        () => this.props.navigation.navigate('OauthNumberPage', {route: 'app'}),
-        3000,
-      );
-    }
-
     name = profile.firstName;
-
-    if (AsyncStorage.getItem(SYMPTOMS)) {
-      await AsyncStorage.removeItem(SYMPTOMS);
-    }
-
-    if (AsyncStorage.getItem(SYMPTOMS_QUESTIONS)) {
-      await AsyncStorage.removeItem(SYMPTOMS_QUESTIONS);
-    }
 
     if ((await AsyncStorage.getItem(NOTIFICATION)) == null) {
       Tts.setDefaultPitch(1.35);
@@ -1209,6 +1166,50 @@ class HomePage extends React.Component {
         quality: 500,
         latency: 300,
       });
+    }
+
+    await this.videoFromNotification();
+
+    PushNotificationIOS.removeAllDeliveredNotifications();
+
+    if (Platform.OS === 'ios') {
+      await this.checkIosPermissions();
+    } else {
+      await this.requestPermissions();
+    }
+
+    await this.requestNotificationPermission();
+
+    await this.checkFirebasePermission();
+
+    await this.fcmNotifications();
+
+    this.setState({id});
+
+    // await this.getInitialNotification();
+
+    AppState.addEventListener('change', this._handleAppStateChange);
+
+    // await this.getRefreshToken();
+
+    this.handleBackgroundNotifications();
+
+    await AsyncStorage.setItem(FIRST_NAME, profile.firstName);
+
+    if (!isPhoneVerified) {
+      ShowMessage(type.ERROR, 'Please verify your phone number');
+      setTimeout(
+        () => this.props.navigation.navigate('OauthNumberPage', {route: 'app'}),
+        3000,
+      );
+    }
+
+    if (AsyncStorage.getItem(SYMPTOMS)) {
+      await AsyncStorage.removeItem(SYMPTOMS);
+    }
+
+    if (AsyncStorage.getItem(SYMPTOMS_QUESTIONS)) {
+      await AsyncStorage.removeItem(SYMPTOMS_QUESTIONS);
     }
 
     setTimeout(async () => {
